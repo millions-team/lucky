@@ -7,7 +7,7 @@ tmp
 # dependencies
 node_modules
 # IDEs and editors
-/.idea
+.idea
 .project
 .classpath
 .c9/
@@ -45,3 +45,5 @@ anchor/target/.rustc_info.json
 !anchor/target/types/*.ts
 test-ledger
 .yarn
+
+CACHEDIR.TAG

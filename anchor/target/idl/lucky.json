@@ -3,6 +3,27 @@
   "name": "lucky",
   "instructions": [
     {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "close",
       "accounts": [
         {
@@ -25,6 +46,11 @@
           "name": "lucky",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": false,
+          "isSigner": true
         }
       ],
       "args": []
@@ -36,27 +62,11 @@
           "name": "lucky",
           "isMut": true,
           "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "initialize",
-      "accounts": [
+        },
         {
           "name": "payer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "lucky",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "systemProgram",
           "isMut": false,
-          "isSigner": false
+          "isSigner": true
         }
       ],
       "args": []
@@ -68,6 +78,11 @@
           "name": "lucky",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": false,
+          "isSigner": true
         }
       ],
       "args": [
@@ -87,12 +102,13 @@
           {
             "name": "count",
             "type": "u8"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
           }
         ]
       }
     }
-  ],
-  "metadata": {
-    "address": "79UvKxp3h9Dci5cHVRagBcxB2GzSUkdqQRFYBAhzA3NY"
-  }
+  ]
 }

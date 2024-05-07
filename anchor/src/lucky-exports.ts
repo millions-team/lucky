@@ -8,7 +8,7 @@ export { Lucky, LuckyIDL };
 
 // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
 export const LUCKY_PROGRAM_ID = new PublicKey(
-  '79UvKxp3h9Dci5cHVRagBcxB2GzSUkdqQRFYBAhzA3NY'
+  '26X5wc1gq84wsjKSgWLfoVfgurRQkuoDaDSdunzQ6txV'
 );
 
 // This is a helper function to get the program ID for the Lucky program depending on the cluster.

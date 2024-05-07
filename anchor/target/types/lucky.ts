@@ -1,191 +1,229 @@
 export type Lucky = {
-  version: '0.1.0';
-  name: 'lucky';
-  instructions: [
+  "version": "0.1.0",
+  "name": "lucky",
+  "instructions": [
     {
-      name: 'close';
-      accounts: [
+      "name": "initialize",
+      "accounts": [
         {
-          name: 'payer';
-          isMut: true;
-          isSigner: true;
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
         },
         {
-          name: 'lucky';
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: 'decrement';
-      accounts: [
-        {
-          name: 'lucky';
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: 'increment';
-      accounts: [
-        {
-          name: 'lucky';
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [];
-    },
-    {
-      name: 'initialize';
-      accounts: [
-        {
-          name: 'payer';
-          isMut: true;
-          isSigner: true;
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": true
         },
         {
-          name: 'lucky';
-          isMut: true;
-          isSigner: true;
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
-      ];
-      args: [];
+      ],
+      "args": []
     },
     {
-      name: 'set';
-      accounts: [
+      "name": "close",
+      "accounts": [
         {
-          name: 'lucky';
-          isMut: true;
-          isSigner: false;
-        }
-      ];
-      args: [
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
         {
-          name: 'value';
-          type: 'u8';
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": false
         }
-      ];
+      ],
+      "args": []
+    },
+    {
+      "name": "decrement",
+      "accounts": [
+        {
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "increment",
+      "accounts": [
+        {
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set",
+      "accounts": [
+        {
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "value",
+          "type": "u8"
+        }
+      ]
     }
-  ];
-  accounts: [
+  ],
+  "accounts": [
     {
-      name: 'lucky';
-      type: {
-        kind: 'struct';
-        fields: [
+      "name": "lucky",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            name: 'count';
-            type: 'u8';
+            "name": "count",
+            "type": "u8"
+          },
+          {
+            "name": "owner",
+            "type": "publicKey"
           }
-        ];
-      };
+        ]
+      }
     }
-  ];
+  ]
 };
 
 export const IDL: Lucky = {
-  version: '0.1.0',
-  name: 'lucky',
-  instructions: [
+  "version": "0.1.0",
+  "name": "lucky",
+  "instructions": [
     {
-      name: 'close',
-      accounts: [
+      "name": "initialize",
+      "accounts": [
         {
-          name: 'payer',
-          isMut: true,
-          isSigner: true,
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
         },
         {
-          name: 'lucky',
-          isMut: true,
-          isSigner: false,
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": true
         },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
       ],
-      args: [],
+      "args": []
     },
     {
-      name: 'decrement',
-      accounts: [
+      "name": "close",
+      "accounts": [
         {
-          name: 'lucky',
-          isMut: true,
-          isSigner: false,
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
         },
+        {
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": false
+        }
       ],
-      args: [],
+      "args": []
     },
     {
-      name: 'increment',
-      accounts: [
+      "name": "decrement",
+      "accounts": [
         {
-          name: 'lucky',
-          isMut: true,
-          isSigner: false,
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": false
         },
+        {
+          "name": "payer",
+          "isMut": false,
+          "isSigner": true
+        }
       ],
-      args: [],
+      "args": []
     },
     {
-      name: 'initialize',
-      accounts: [
+      "name": "increment",
+      "accounts": [
         {
-          name: 'payer',
-          isMut: true,
-          isSigner: true,
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          name: 'lucky',
-          isMut: true,
-          isSigner: true,
-        },
-        {
-          name: 'systemProgram',
-          isMut: false,
-          isSigner: false,
-        },
+          "name": "payer",
+          "isMut": false,
+          "isSigner": true
+        }
       ],
-      args: [],
+      "args": []
     },
     {
-      name: 'set',
-      accounts: [
+      "name": "set",
+      "accounts": [
         {
-          name: 'lucky',
-          isMut: true,
-          isSigner: false,
+          "name": "lucky",
+          "isMut": true,
+          "isSigner": false
         },
-      ],
-      args: [
         {
-          name: 'value',
-          type: 'u8',
-        },
+          "name": "payer",
+          "isMut": false,
+          "isSigner": true
+        }
       ],
-    },
+      "args": [
+        {
+          "name": "value",
+          "type": "u8"
+        }
+      ]
+    }
   ],
-  accounts: [
+  "accounts": [
     {
-      name: 'lucky',
-      type: {
-        kind: 'struct',
-        fields: [
+      "name": "lucky",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            name: 'count',
-            type: 'u8',
+            "name": "count",
+            "type": "u8"
           },
-        ],
-      },
-    },
-  ],
+          {
+            "name": "owner",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ]
 };

@@ -5,6 +5,7 @@ import { useMemo } from 'react';
 import { ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { useLuckyProgram, useLuckyProgramAccount } from './lucky-data-access';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export function LuckyCreate() {
   const { initialize } = useLuckyProgram();
@@ -21,6 +22,7 @@ export function LuckyCreate() {
 }
 
 export function LuckyList() {
+  const { publicKey } = useWallet();
   const { accounts, getProgramAccount } = useLuckyProgram();
 
   if (getProgramAccount.isLoading) {
@@ -46,6 +48,7 @@ export function LuckyList() {
             <LuckyCard
               key={account.publicKey.toString()}
               account={account.publicKey}
+              wallet={publicKey}
             />
           ))}
         </div>
@@ -59,24 +62,26 @@ export function LuckyList() {
   );
 }
 
-function LuckyCard({ account }: { account: PublicKey }) {
+function LuckyCard({ account, wallet }: { account: PublicKey, wallet: PublicKey | null }) {
   const {
     accountQuery,
     incrementMutation,
     setMutation,
     decrementMutation,
-    closeMutation,
+    closeMutation
   } = useLuckyProgramAccount({ account });
 
   const count = useMemo(
     () => accountQuery.data?.count ?? 0,
     [accountQuery.data?.count]
   );
+  const isOwner = useMemo(() => accountQuery.data && wallet?.equals(accountQuery.data.owner), [wallet, accountQuery.data?.owner]);
 
   return accountQuery.isLoading ? (
     <span className="loading loading-spinner loading-lg"></span>
   ) : (
-    <div className="card card-bordered border-base-300 border-4 text-neutral-content">
+    <div
+      className={`card card-bordered border-4 text-neutral-content ${isOwner ? 'border-secondary' : 'border-base-300'}`}>
       <div className="card-body items-center text-center">
         <div className="space-y-6">
           <h2
