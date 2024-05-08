@@ -13,6 +13,7 @@ const links: { label: string; path: string }[] = [
   { label: 'Account', path: '/account' },
   { label: 'Clusters', path: '/clusters' },
   { label: 'Lucky Program', path: '/lucky' },
+    { label: 'TinyAdventure Program', path: '/tiny-adventure' },
 ];
 
 export default function RootLayout({
