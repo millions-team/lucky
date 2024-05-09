@@ -7,4 +7,4 @@ import { IDL as TinyAdventureIDL } from '../target/types/tiny_adventure';
 export { TinyAdventure, TinyAdventureIDL };
 
 // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
-export const programId = new PublicKey('9yrseR6jAhuoPgQgDBwoQTi6A47Mh6FChSbAXWSpC9nP')
+export const TINY_ADVENTURE_PROGRAM_ID = new PublicKey('9yrseR6jAhuoPgQgDBwoQTi6A47Mh6FChSbAXWSpC9nP')

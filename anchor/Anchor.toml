@@ -5,6 +5,8 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
+lucky = "26X5wc1gq84wsjKSgWLfoVfgurRQkuoDaDSdunzQ6txV"
+dealer = "Fr5X3UAzQVMsPwJSVXEDVC9WpssNAd35apibXJXVdWvM"
 tiny_adventure = "9yrseR6jAhuoPgQgDBwoQTi6A47Mh6FChSbAXWSpC9nP"
 
 [registry]

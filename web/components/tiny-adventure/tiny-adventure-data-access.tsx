@@ -1,7 +1,6 @@
 'use client';
 
-
-import { programId, TinyAdventureIDL } from '@lucky/anchor';
+import { TINY_ADVENTURE_PROGRAM_ID, TinyAdventureIDL } from '@lucky/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { PublicKey } from '@solana/web3.js';
@@ -14,7 +13,7 @@ import { useEffect, useState } from 'react';
 
 export const [globalLevel1GameDataAccount] = PublicKey.findProgramAddressSync(
   [Buffer.from('level1', 'utf8')],
-  programId
+  TINY_ADVENTURE_PROGRAM_ID
 );
 
 export function useTinyAdventureProgram() {
@@ -22,42 +21,48 @@ export function useTinyAdventureProgram() {
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
   const provider = useAnchorProvider();
-  const program = new Program(TinyAdventureIDL, programId, provider);
+  const program = new Program(
+    TinyAdventureIDL,
+    TINY_ADVENTURE_PROGRAM_ID,
+    provider
+  );
 
   const getProgramAccount = useQuery({
     queryKey: ['get-program-account', { cluster }],
-    queryFn: () => connection.getParsedAccountInfo(programId)
+    queryFn: () => connection.getParsedAccountInfo(TINY_ADVENTURE_PROGRAM_ID),
   });
 
   const initialize = useMutation({
     mutationKey: ['tinyAdventure', 'initialize', { cluster }],
-    mutationFn: (publicKey: PublicKey) => program.methods.initialize()
-      .accounts({
-        newGameDataAccount: globalLevel1GameDataAccount,
-        signer: publicKey,
-      })
-      .rpc(),
+    mutationFn: (publicKey: PublicKey) =>
+      program.methods
+        .initialize()
+        .accounts({
+          newGameDataAccount: globalLevel1GameDataAccount,
+          signer: publicKey,
+        })
+        .rpc(),
     onSuccess: (signature) => {
       transactionToast(signature);
     },
-    onError: () => toast.error('Failed to run program')
+    onError: () => toast.error('Failed to run program'),
   });
 
   return {
     program,
-    programId,
+    programId: TINY_ADVENTURE_PROGRAM_ID,
     getProgramAccount,
-    initialize
+    initialize,
   };
 }
 
-export function useGameData({ account }: { account: PublicKey }){
+export function useGameData({ account }: { account: PublicKey }) {
   const { cluster } = useCluster();
   const { program } = useTinyAdventureProgram();
   const transactionToast = useTransactionToast();
 
-  const [playerPosition, setPlayerPosition] = useState("........")
-  const [message, setMessage] = useState("")
+  const [playerPosition, setPlayerPosition] = useState('........');
+  const [message, setMessage] = useState('');
 
   const gameData = useQuery({
     queryKey: ['tinyAdventure', 'fetch', { cluster, account }],
@@ -65,36 +70,36 @@ export function useGameData({ account }: { account: PublicKey }){
   });
 
   useEffect(() => {
-    if(!gameData?.data) return;
+    if (!gameData?.data) return;
 
     const { playerPosition } = gameData.data;
     switch (playerPosition) {
       case 0:
-        setPlayerPosition("o........")
-        setMessage("A journey begins...")
-        break
+        setPlayerPosition('o........');
+        setMessage('A journey begins...');
+        break;
       case 1:
-        setPlayerPosition("....o....")
-        setMessage("")
-        break
+        setPlayerPosition('....o....');
+        setMessage('');
+        break;
       case 2:
-        setPlayerPosition("......o..")
-        setMessage("")
-        break
+        setPlayerPosition('......o..');
+        setMessage('');
+        break;
       case 3:
-        setPlayerPosition(".........\\o/")
-        setMessage("You have reached the end! Super!")
-        break
+        setPlayerPosition('.........\\o/');
+        setMessage('You have reached the end! Super!');
+        break;
       default:
-        transactionToast("Invalid player position")
-        break
+        transactionToast('Invalid player position');
+        break;
     }
-
-  }, [gameData, transactionToast])
+  }, [gameData, transactionToast]);
 
   const moveLeft = useMutation({
     mutationKey: ['tinyAdventure', 'moveLeft', { cluster, account }],
-    mutationFn: () => program.methods.moveLeft().accounts({ gameDataAccount: account }).rpc(),
+    mutationFn: () =>
+      program.methods.moveLeft().accounts({ gameDataAccount: account }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return gameData.refetch();
@@ -103,7 +108,8 @@ export function useGameData({ account }: { account: PublicKey }){
 
   const moveRight = useMutation({
     mutationKey: ['tinyAdventure', 'moveRight', { cluster, account }],
-    mutationFn: () => program.methods.moveRight().accounts({ gameDataAccount: account }).rpc(),
+    mutationFn: () =>
+      program.methods.moveRight().accounts({ gameDataAccount: account }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return gameData.refetch();
@@ -115,6 +121,6 @@ export function useGameData({ account }: { account: PublicKey }){
     playerPosition,
     message,
     moveLeft,
-    moveRight
-  }
+    moveRight,
+  };
 }
