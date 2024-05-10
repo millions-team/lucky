@@ -25,9 +25,9 @@ export default function LuckyFeature() {
             label={ellipsify(programId.toString())}
           />
         </p>
-        <LuckyCreate />
+        <LuckyCreate publicKey={publicKey} />
       </AppHero>
-      <LuckyList />
+      <LuckyList publicKey={publicKey} />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">

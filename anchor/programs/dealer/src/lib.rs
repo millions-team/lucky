@@ -1,7 +1,7 @@
 #![allow(clippy::result_large_err)]
 
 use anchor_lang::prelude::*;
-declare_id!("GM7wCpnL7eqrgTzkce6hn4YG6r4gh5g4mahFkZ3edEJ7");
+declare_id!("GtzLtimeFCuttdgxHz9QgHtyt4ZFfvkWKTRkQqS6yCqZ");
 const DEALER_SEED: &[u8] = b"DEALER";
 // const STRATEGY_SEED: &[u8] = b"STRATEGY";
 const MIN: u128 = 100000;

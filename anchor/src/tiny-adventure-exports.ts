@@ -8,5 +8,5 @@ export { TinyAdventure, TinyAdventureIDL };
 
 // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
 export const TINY_ADVENTURE_PROGRAM_ID = new PublicKey(
-  '7WAg3mDQmnKsqUNsUyFcM3msznXx9K833AmdTF4q8qno'
+  '3hjhpnRWrcTYpmcygPjKnJRnJ3udVSzXYaChbrhgBWqC'
 );

@@ -49,3 +49,4 @@ test-ledger
 CACHEDIR.TAG
 
 .env*
+.vercel

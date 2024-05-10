@@ -2,7 +2,7 @@
 
 use anchor_lang::prelude::*;
 
-declare_id!("DNV1U7s5em8tWwbjBW2Z8rzabAFcSMzQ1zRwoGUZnKAm");
+declare_id!("6VCjdiYiU9rAWo7TptZMa423j44GSnyzWMG2KbCCdUz8");
 // ---------------------------------- CONSTANTS ----------------------------------
 const GAME_SEED: &[u8] = b"LUCKY_GAME";
 const MIN: u32 = 100000;

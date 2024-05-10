@@ -1,9 +1,14 @@
 'use client';
 
-import { LuckyIDL, getLuckyProgramId } from '@lucky/anchor';
+import {
+  LuckyIDL,
+  getLuckyProgramId,
+  getLuckyPlayerPDA,
+  DealerOptions,
+} from '@lucky/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { Cluster, Keypair, PublicKey } from '@solana/web3.js';
+import { Cluster, PublicKey } from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -22,11 +27,6 @@ export function useLuckyProgram() {
   );
   const program = new Program(LuckyIDL, programId, provider);
 
-  const accounts = useQuery({
-    queryKey: ['lucky', 'all', { cluster }],
-    queryFn: () => program.account.lucky.all(),
-  });
-
   const getProgramAccount = useQuery({
     queryKey: ['get-program-account', { cluster }],
     queryFn: () => connection.getParsedAccountInfo(programId),
@@ -34,15 +34,13 @@ export function useLuckyProgram() {
 
   const initialize = useMutation({
     mutationKey: ['lucky', 'initialize', { cluster }],
-    mutationFn: (keypair: Keypair) =>
+    mutationFn: (player: PublicKey) =>
       program.methods
         .initialize()
-        .accounts({ lucky: keypair.publicKey })
-        .signers([keypair])
+        .accounts({ player: getLuckyPlayerPDA(player) })
         .rpc(),
     onSuccess: (signature) => {
       transactionToast(signature);
-      return accounts.refetch();
     },
     onError: () => toast.error('Failed to initialize account'),
   });
@@ -50,56 +48,37 @@ export function useLuckyProgram() {
   return {
     program,
     programId,
-    accounts,
     getProgramAccount,
     initialize,
   };
 }
 
-export function useLuckyProgramAccount({ account }: { account: PublicKey }) {
+export function useLuckyProgramAccount({
+  account: player,
+}: {
+  account: PublicKey;
+}) {
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
-  const { program, accounts } = useLuckyProgram();
+  const { program } = useLuckyProgram();
 
   const accountQuery = useQuery({
-    queryKey: ['lucky', 'fetch', { cluster, account }],
-    queryFn: () => program.account.lucky.fetch(account),
+    queryKey: ['lucky', 'fetch', { cluster, player }],
+    queryFn: () => program.account.lucky.fetch(player),
   });
 
   const closeMutation = useMutation({
-    mutationKey: ['lucky', 'close', { cluster, account }],
-    mutationFn: () =>
-      program.methods.close().accounts({ lucky: account }).rpc(),
+    mutationKey: ['lucky', 'close', { cluster, player }],
+    mutationFn: () => program.methods.close().accounts({ player }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
-      return accounts.refetch();
     },
   });
 
-  const decrementMutation = useMutation({
-    mutationKey: ['lucky', 'decrement', { cluster, account }],
-    mutationFn: () =>
-      program.methods.decrement().accounts({ lucky: account }).rpc(),
-    onSuccess: (tx) => {
-      transactionToast(tx);
-      return accountQuery.refetch();
-    },
-  });
-
-  const incrementMutation = useMutation({
-    mutationKey: ['lucky', 'increment', { cluster, account }],
-    mutationFn: () =>
-      program.methods.increment().accounts({ lucky: account }).rpc(),
-    onSuccess: (tx) => {
-      transactionToast(tx);
-      return accountQuery.refetch();
-    },
-  });
-
-  const setMutation = useMutation({
-    mutationKey: ['lucky', 'set', { cluster, account }],
-    mutationFn: (value: number) =>
-      program.methods.set(value).accounts({ lucky: account }).rpc(),
+  const playMutation = useMutation({
+    mutationKey: ['lucky', 'set', { cluster, player }],
+    mutationFn: (options: DealerOptions) =>
+      program.methods.play(options).accounts({ player }).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accountQuery.refetch();
@@ -109,8 +88,6 @@ export function useLuckyProgramAccount({ account }: { account: PublicKey }) {
   return {
     accountQuery,
     closeMutation,
-    decrementMutation,
-    incrementMutation,
-    setMutation,
+    playMutation,
   };
 }
