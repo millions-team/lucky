@@ -14,13 +14,14 @@ import {
   ExplorerLink,
 } from '../cluster/cluster-ui';
 import toast, { Toaster } from 'react-hot-toast';
-
 export function UiLayout({
   children,
   links,
+  env = 'development',
 }: {
   children: ReactNode;
-  links: { label: string; path: string }[];
+  links: { label: string; path: string; program?: boolean }[];
+  env?: string;
 }) {
   const pathname = usePathname();
 
@@ -36,10 +37,12 @@ export function UiLayout({
             />
           </Link>
           <ul className="menu menu-horizontal px-1 space-x-2">
-            {links.map(({ label, path }) => (
+            {links.map(({ label, path, program }) => (
               <li key={path}>
                 <Link
-                  className={pathname.startsWith(path) ? 'active' : ''}
+                  className={`${pathname.startsWith(path) ? 'active' : ''} ${
+                    program ? 'border border-accent' : ''
+                  }`}
                   href={path}
                 >
                   {label}
@@ -50,7 +53,7 @@ export function UiLayout({
         </div>
         <div className="flex-none space-x-2">
           <WalletButton />
-          <ClusterUiSelect />
+          {env !== 'production' && <ClusterUiSelect />}
         </div>
       </div>
       <ClusterChecker>

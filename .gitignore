@@ -47,3 +47,5 @@ test-ledger
 .yarn
 
 CACHEDIR.TAG
+
+.env*
