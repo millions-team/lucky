@@ -8,7 +8,7 @@ export { Dealer, DealerIDL };
 
 // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
 export const DEALER_PROGRAM_ID = new PublicKey(
-  'Fr5X3UAzQVMsPwJSVXEDVC9WpssNAd35apibXJXVdWvM'
+  'GM7wCpnL7eqrgTzkce6hn4YG6r4gh5g4mahFkZ3edEJ7'
 );
 
 // This is a helper function to get the program ID for the Dealer program depending on the cluster.

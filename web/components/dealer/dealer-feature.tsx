@@ -16,7 +16,7 @@ export default function DealerFeature() {
       <AppHero
         title="Dealer"
         subtitle={
-          'Create a new account by clicking the "Create" button. The state of a account is stored on-chain and can be manipulated by calling the program\'s methods (increment, decrement, set, and close).'
+          'Create a new account by clicking the "Create" button. The state of a account is stored on-chain and can be manipulated by calling the program\'s method (roll).'
         }
       >
         <p className="mb-6">

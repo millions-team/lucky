@@ -1,8 +1,7 @@
 #![allow(clippy::result_large_err)]
 
 use anchor_lang::prelude::*;
-
-declare_id!("Fr5X3UAzQVMsPwJSVXEDVC9WpssNAd35apibXJXVdWvM");
+declare_id!("GM7wCpnL7eqrgTzkce6hn4YG6r4gh5g4mahFkZ3edEJ7");
 const DEALER_SEED: &[u8] = b"DEALER";
 // const STRATEGY_SEED: &[u8] = b"STRATEGY";
 const MIN: u128 = 100000;
@@ -44,7 +43,7 @@ pub mod dealer {
     }
 }
 
-fn range(seed:u128) -> u128 {
+fn range(seed: u128) -> u128 {
     return MIN + seed % (MAX - MIN);
 }
 
@@ -91,10 +90,7 @@ pub struct InitializeDealer<'info> {
 
     #[account(
         init,
-        seeds = [
-            DEALER_SEED,
-            payer.key().as_ref(),
-        ],
+        seeds = [DEALER_SEED, payer.key().as_ref()],
         space = 8 + Dealer::INIT_SPACE,
         payer = payer,
         bump
@@ -110,10 +106,7 @@ pub struct CloseDealer<'info> {
 
     #[account(
         mut,
-        seeds = [
-            DEALER_SEED,
-            payer.key().as_ref(),
-        ],
+        seeds = [DEALER_SEED, payer.key().as_ref()],
         close = payer, // close account and return lamports to payer
         bump
     )]
@@ -127,10 +120,7 @@ pub struct Update<'info> {
 
     #[account(
         mut,
-        seeds = [
-            DEALER_SEED,
-            payer.key().as_ref(),
-        ],
+        seeds = [DEALER_SEED, payer.key().as_ref()],
         bump
     )]
     pub dealer: Account<'info, Dealer>,
@@ -157,15 +147,15 @@ pub struct Dealer {
 #[error_code]
 pub enum StrategyError {
     #[msg("PseudoRandom error")]
-    PseudoRandomError=100,
+    PseudoRandomError = 100,
     #[msg("Vrf error")]
-    VrfError=200,
+    VrfError = 200,
 }
 
 #[error_code]
 pub enum DealerError {
     #[msg("Invalid seed")]
-    InvalidSeed=10,
+    InvalidSeed = 10,
     #[msg("Two consecutive values are the same")]
-    TwoEqualConsecutiveValues=11,
+    TwoEqualConsecutiveValues = 11,
 }

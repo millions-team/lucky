@@ -5,9 +5,9 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-lucky = "26X5wc1gq84wsjKSgWLfoVfgurRQkuoDaDSdunzQ6txV"
-dealer = "Fr5X3UAzQVMsPwJSVXEDVC9WpssNAd35apibXJXVdWvM"
-tiny_adventure = "9yrseR6jAhuoPgQgDBwoQTi6A47Mh6FChSbAXWSpC9nP"
+lucky = "DNV1U7s5em8tWwbjBW2Z8rzabAFcSMzQ1zRwoGUZnKAm"
+dealer = "GM7wCpnL7eqrgTzkce6hn4YG6r4gh5g4mahFkZ3edEJ7"
+tiny_adventure = "7WAg3mDQmnKsqUNsUyFcM3msznXx9K833AmdTF4q8qno"
 
 [registry]
 url = "https://api.apr.dev"

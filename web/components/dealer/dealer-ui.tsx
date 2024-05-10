@@ -77,10 +77,12 @@ function DealerCard({
   });
 
   const data = useMemo(() => accountQuery.data, [accountQuery.data]);
+  if (accountQuery.isLoading || !data)
+    return <span className="loading loading-spinner loading-lg"></span>;
 
-  return accountQuery.isLoading || !data ? (
-    <span className="loading loading-spinner loading-lg"></span>
-  ) : (
+  const { count, lastValue } = data;
+
+  return (
     <div
       className={`card card-bordered border-4 text-neutral-content ${
         owned ? 'border-accent' : 'border-base-300'
@@ -88,14 +90,14 @@ function DealerCard({
     >
       <div className="card-body items-center text-center relative">
         <div className="badge absolute right-0 top-0 badge-primary m-4 badge-lg">
-          {data.count}
+          {count}
         </div>
         <div className="space-y-6">
           <h2
             className="card-title justify-center text-3xl cursor-pointer"
             onClick={() => accountQuery.refetch()}
           >
-            {data.lastValue.toString()}
+            {lastValue.toString()}
           </h2>
           <div className="card-actions justify-around">
             <button
