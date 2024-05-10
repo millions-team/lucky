@@ -21,3 +21,16 @@ export function getLuckyProgramId(cluster: Cluster) {
       return LUCKY_PROGRAM_ID;
   }
 }
+
+export function getLuckyPlayerPDA(key: PublicKey) {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('LUCKY_GAME', 'utf8'), key.toBytes()],
+    LUCKY_PROGRAM_ID
+  )[0];
+}
+
+export type DealerOptions = {
+  slots: number;
+  choices: number;
+  luckyShoot: boolean;
+};

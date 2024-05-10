@@ -11,9 +11,9 @@ export type Lucky = {
           "isSigner": true
         },
         {
-          "name": "lucky",
+          "name": "player",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "systemProgram",
@@ -24,6 +24,30 @@ export type Lucky = {
       "args": []
     },
     {
+      "name": "play",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "options",
+          "type": {
+            "defined": "DealerOptions"
+          }
+        }
+      ],
+      "returns": "u32"
+    },
+    {
       "name": "close",
       "accounts": [
         {
@@ -32,65 +56,12 @@ export type Lucky = {
           "isSigner": true
         },
         {
-          "name": "lucky",
+          "name": "player",
           "isMut": true,
           "isSigner": false
         }
       ],
       "args": []
-    },
-    {
-      "name": "decrement",
-      "accounts": [
-        {
-          "name": "lucky",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "payer",
-          "isMut": false,
-          "isSigner": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "increment",
-      "accounts": [
-        {
-          "name": "lucky",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "payer",
-          "isMut": false,
-          "isSigner": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "set",
-      "accounts": [
-        {
-          "name": "lucky",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "payer",
-          "isMut": false,
-          "isSigner": true
-        }
-      ],
-      "args": [
-        {
-          "name": "value",
-          "type": "u8"
-        }
-      ]
     }
   ],
   "accounts": [
@@ -101,14 +72,155 @@ export type Lucky = {
         "fields": [
           {
             "name": "count",
-            "type": "u8"
+            "type": "u32"
           },
           {
-            "name": "owner",
-            "type": "publicKey"
+            "name": "lastValue",
+            "type": "u32"
+          },
+          {
+            "name": "winningCount",
+            "type": "u32"
+          },
+          {
+            "name": "winner",
+            "type": "bool"
+          },
+          {
+            "name": "strategy",
+            "type": {
+              "defined": "Strategy"
+            }
           }
         ]
       }
+    }
+  ],
+  "types": [
+    {
+      "name": "DealerOptions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "slots",
+            "type": "u32"
+          },
+          {
+            "name": "choices",
+            "type": "u8"
+          },
+          {
+            "name": "luckyShoot",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Strategy",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PseudoRandom"
+          },
+          {
+            "name": "Vrf"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LuckyError",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "InvalidSeed"
+          },
+          {
+            "name": "TwoEqualConsecutiveValues"
+          },
+          {
+            "name": "InvalidRoll"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "SignupEvent",
+      "fields": [
+        {
+          "name": "owner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "player",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "LuckyPlayerEvent",
+      "fields": [
+        {
+          "name": "player",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "value",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "winningCount",
+          "type": "u32",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "LuckyGameEvent",
+      "fields": [
+        {
+          "name": "player",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "slots",
+          "type": "u32",
+          "index": false
+        },
+        {
+          "name": "choices",
+          "type": "u8",
+          "index": false
+        },
+        {
+          "name": "luckyShoot",
+          "type": "bool",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6100,
+      "name": "PseudoRandomError",
+      "msg": "PseudoRandom error"
+    },
+    {
+      "code": 6200,
+      "name": "VrfError",
+      "msg": "Vrf error"
     }
   ]
 };
@@ -126,9 +238,9 @@ export const IDL: Lucky = {
           "isSigner": true
         },
         {
-          "name": "lucky",
+          "name": "player",
           "isMut": true,
-          "isSigner": true
+          "isSigner": false
         },
         {
           "name": "systemProgram",
@@ -139,6 +251,30 @@ export const IDL: Lucky = {
       "args": []
     },
     {
+      "name": "play",
+      "accounts": [
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "player",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "options",
+          "type": {
+            "defined": "DealerOptions"
+          }
+        }
+      ],
+      "returns": "u32"
+    },
+    {
       "name": "close",
       "accounts": [
         {
@@ -147,65 +283,12 @@ export const IDL: Lucky = {
           "isSigner": true
         },
         {
-          "name": "lucky",
+          "name": "player",
           "isMut": true,
           "isSigner": false
         }
       ],
       "args": []
-    },
-    {
-      "name": "decrement",
-      "accounts": [
-        {
-          "name": "lucky",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "payer",
-          "isMut": false,
-          "isSigner": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "increment",
-      "accounts": [
-        {
-          "name": "lucky",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "payer",
-          "isMut": false,
-          "isSigner": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "set",
-      "accounts": [
-        {
-          "name": "lucky",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "payer",
-          "isMut": false,
-          "isSigner": true
-        }
-      ],
-      "args": [
-        {
-          "name": "value",
-          "type": "u8"
-        }
-      ]
     }
   ],
   "accounts": [
@@ -216,14 +299,155 @@ export const IDL: Lucky = {
         "fields": [
           {
             "name": "count",
-            "type": "u8"
+            "type": "u32"
           },
           {
-            "name": "owner",
-            "type": "publicKey"
+            "name": "lastValue",
+            "type": "u32"
+          },
+          {
+            "name": "winningCount",
+            "type": "u32"
+          },
+          {
+            "name": "winner",
+            "type": "bool"
+          },
+          {
+            "name": "strategy",
+            "type": {
+              "defined": "Strategy"
+            }
           }
         ]
       }
+    }
+  ],
+  "types": [
+    {
+      "name": "DealerOptions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "slots",
+            "type": "u32"
+          },
+          {
+            "name": "choices",
+            "type": "u8"
+          },
+          {
+            "name": "luckyShoot",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Strategy",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PseudoRandom"
+          },
+          {
+            "name": "Vrf"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LuckyError",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "InvalidSeed"
+          },
+          {
+            "name": "TwoEqualConsecutiveValues"
+          },
+          {
+            "name": "InvalidRoll"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "SignupEvent",
+      "fields": [
+        {
+          "name": "owner",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "player",
+          "type": "publicKey",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "LuckyPlayerEvent",
+      "fields": [
+        {
+          "name": "player",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "value",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "winningCount",
+          "type": "u32",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "LuckyGameEvent",
+      "fields": [
+        {
+          "name": "player",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "slots",
+          "type": "u32",
+          "index": false
+        },
+        {
+          "name": "choices",
+          "type": "u8",
+          "index": false
+        },
+        {
+          "name": "luckyShoot",
+          "type": "bool",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6100,
+      "name": "PseudoRandomError",
+      "msg": "PseudoRandom error"
+    },
+    {
+      "code": 6200,
+      "name": "VrfError",
+      "msg": "Vrf error"
     }
   ]
 };

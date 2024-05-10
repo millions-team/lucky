@@ -2,64 +2,169 @@
 
 use anchor_lang::prelude::*;
 
-declare_id!("26X5wc1gq84wsjKSgWLfoVfgurRQkuoDaDSdunzQ6txV");
+declare_id!("DNV1U7s5em8tWwbjBW2Z8rzabAFcSMzQ1zRwoGUZnKAm");
+// ---------------------------------- CONSTANTS ----------------------------------
+const GAME_SEED: &[u8] = b"LUCKY_GAME";
+const MIN: u32 = 100000;
+const MAX: u32 = 1000000;
+const MIN_CHOICES: u8 = 4;
+const DIGITS: u8 = 6;
 
-pub fn is_owner(ctx: &Context<Update>) -> Result<()> {
-    if ctx.accounts.lucky.owner != ctx.accounts.payer.key() {
-        msg!("Unauthorized");
-        return Err(ProgramError::Custom(0).into()); // 0 is the error code;
-    }
-    Ok(())
+// ---------------------------------- ENUMS --------------------------------------
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
+#[derive(InitSpace)]
+pub enum Strategy {
+    PseudoRandom,
+    Vrf,
 }
 
-#[program]
-pub mod lucky {
-    use super::*;
-
-    pub fn initialize(ctx: Context<InitializeLucky>) -> Result<()> {
-        ctx.accounts.lucky.owner = ctx.accounts.payer.key();
-        Ok(())
-    }
-
-    pub fn close(ctx: Context<CloseLucky>) -> Result<()> {
-        if ctx.accounts.lucky.owner != ctx.accounts.payer.key() {
-            msg!("Unauthorized");
-            return Err(ProgramError::Custom(0).into()); // 0 is the error code;
-        }
-        Ok(())
-    }
-
-    pub fn decrement(ctx: Context<Update>) -> Result<()> {
-        is_owner(&ctx)?;
-        ctx.accounts.lucky.count = ctx.accounts.lucky.count.checked_sub(1).unwrap();
-        Ok(())
-    }
-
-    pub fn increment(ctx: Context<Update>) -> Result<()> {
-        is_owner(&ctx)?;
-        ctx.accounts.lucky.count = ctx.accounts.lucky.count.checked_add(1).unwrap();
-        Ok(())
-    }
-
-
-    pub fn set(ctx: Context<Update>, value: u8) -> Result<()> {
-        is_owner(&ctx)?;
-        ctx.accounts.lucky.count = value.clone();
-        Ok(())
-    }
+#[error_code]
+pub enum StrategyError {
+    #[msg("PseudoRandom error")]
+    PseudoRandomError = 100,
+    #[msg("Vrf error")]
+    VrfError = 200,
 }
 
+#[error_code]
+pub enum LuckyError {
+    #[msg("Invalid seed")]
+    InvalidSeed = 10,
+    #[msg("Two consecutive values are the same")]
+    TwoEqualConsecutiveValues = 11,
+    #[msg("Roll out of bound")]
+    InvalidRoll = 12,
+}
+
+// ---------------------------------- ACCOUNTS -----------------------------------
+#[account]
+#[derive(InitSpace)]
+pub struct Lucky {
+    pub count: u32,
+    pub last_value: u32,
+    pub winning_count: u32,
+    pub winner: bool,
+    pub strategy: Strategy,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, AnchorSerialize, AnchorDeserialize)]
+pub struct DealerOptions {
+    pub slots: u32,
+    pub choices: u8,
+    pub lucky_shoot: bool,
+}
+
+// ---------------------------------- EVENTS -------------------------------------
+#[event]
+pub struct SignupEvent {
+    owner: Pubkey,
+    player: Pubkey,
+}
+
+#[event]
+pub struct LuckyPlayerEvent {
+    player: Pubkey,
+    value: u64,
+    winning_count: u32,
+}
+
+#[event]
+pub struct LuckyGameEvent {
+    player: Pubkey,
+    slots: u32,
+    choices: u8,
+    lucky_shoot: bool,
+}
+
+// ---------------------------------- FUNCTIONS ----------------------------------
+
+fn range(seed: u32) -> u32 {
+    return MIN + seed % (MAX - MIN);
+}
+
+fn shuffle_number(seed: u64) -> u32 {
+    let mut numbers = seed.to_string().chars().map(|c| c.to_digit(10).unwrap() as u64).collect::<Vec<u64>>();
+    let mut shuffled = Vec::new();
+
+    while !numbers.is_empty() {
+        let l = numbers.len() - 1;
+        let index = numbers[l] % numbers.len() as u64;
+        shuffled.push(numbers.remove(index as usize));
+    }
+
+    return shuffled.iter().fold(0, |acc, &x| acc * 10 + x) as u32;
+}
+
+fn pseudo_random() -> Result<u32> {
+    let timestamp = Clock::get()?.unix_timestamp;
+    msg!("Timestamp: {}", timestamp);
+    if timestamp == 0 {
+        let code = StrategyError::PseudoRandomError as u32 + LuckyError::InvalidSeed as u32;
+        return Err(ProgramError::Custom(code).into());
+    }
+
+    // seed is the blockhash converted to a number joined with the timestamp
+    // let hash = blockhash.to_bytes().iter().fold(0, |acc, &x| acc * 10 + x);
+    let seed = shuffle_number(timestamp as u64);
+    let ranged = range(seed);
+    msg!("Seed: {}, Ranged: {}", seed, ranged);
+
+    Ok(shuffle_number(ranged as u64))
+}
+
+fn vrf() -> Result<u32> {
+    // TODO: implement VRF
+    let seed = pseudo_random();
+    Ok(seed?)
+}
+
+fn split_value(value: u32, size: u32) -> Vec<u32> {
+    let mut digits = value.to_string().chars().map(|c| c.to_digit(10).unwrap() as u32).collect::<Vec<u32>>();
+    if digits.len() % size as usize != 0 { panic!("Invalid chunk size"); }
+
+    let mut parts = Vec::new();
+    while !digits.is_empty() {
+        let chunk = digits.drain(0..size as usize).collect::<Vec<u32>>();
+        let number = chunk.iter().fold(0, |acc, &x| acc * 10 + x);
+        parts.push(number);
+    }
+
+    return parts;
+}
+
+fn is_winner(value: u32, options: DealerOptions) -> bool {
+    if value < MIN || value > MAX { panic!("Value out of bound"); }
+    if options.choices < MIN_CHOICES { panic!("Invalid choices"); }
+    if options.slots < 1 || options.slots > DIGITS as u32 { panic!("Invalid slots"); }
+    if options.slots == 1 && options.lucky_shoot { panic!("Invalid call"); }
+
+    let winner = (options.choices / 2) as u32;
+    msg!("🔎 Winner: {}", if options.lucky_shoot || options.slots == 1 {winner.to_string()} else {"any".parse::<String>().unwrap()});
+    if options.slots == 1 { return value % options.choices as u32 == winner; }
+
+    let parts = split_value(value, DIGITS as u32 / options.slots);
+    let shoots = parts.iter().map(|part| part % options.choices as u32).collect::<Vec<u32>>();
+    let result = shoots.iter().fold(*shoots.first().unwrap_or(&0), |prev, &current| if prev == current { current } else { options.choices as u32 + 1 });
+
+    msg!("🚦 Parts: {:?}, Shoots: {:?}, Result: {}", parts, shoots, result);
+    return if options.lucky_shoot { result == winner } else { result != options.choices as u32 + 1 };
+}
+
+// ---------------------------------- INSTRUCTIONS -------------------------------
 #[derive(Accounts)]
 pub struct InitializeLucky<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
 
     #[account(
-    init,
-    space = 8 + Lucky::INIT_SPACE,
-    payer = payer
+        init,
+        seeds = [GAME_SEED, payer.key().as_ref()],
+        space = 8 + Lucky::INIT_SPACE,
+        payer = payer,
+        bump
     )]
-    pub lucky: Account<'info, Lucky>,
+    pub player: Account<'info, Lucky>,
     pub system_program: Program<'info, System>,
 }
 
@@ -69,23 +174,92 @@ pub struct CloseLucky<'info> {
     pub payer: Signer<'info>,
 
     #[account(
-    mut,
-    close = payer, // close account and return lamports to payer
+        mut,
+        seeds = [GAME_SEED, payer.key().as_ref()],
+        close = payer, // close account and return lamports to payer
+        bump
     )]
-    pub lucky: Account<'info, Lucky>,
+    pub player: Account<'info, Lucky>,
 }
 
 #[derive(Accounts)]
-pub struct Update<'info> {
+pub struct Play<'info> {
     #[account(mut)]
-    pub lucky: Account<'info, Lucky>,
-    #[account(signer)]
     pub payer: Signer<'info>,
+
+    #[account(
+        mut,
+        seeds = [GAME_SEED, payer.key().as_ref()],
+        bump
+    )]
+    pub player: Account<'info, Lucky>,
 }
 
-#[account]
-#[derive(InitSpace)]
-pub struct Lucky {
-    count: u8,
-    owner: Pubkey,
+// ---------------------------------- PROGRAM ------------------------------------
+#[program]
+pub mod lucky {
+    use super::*;
+
+    pub fn initialize(ctx: Context<InitializeLucky>) -> Result<()> {
+        ctx.accounts.player.count = 0;
+        ctx.accounts.player.last_value = 0;
+        ctx.accounts.player.winning_count = 0;
+        ctx.accounts.player.winner = false;
+
+        let strategy = Strategy::PseudoRandom;
+        ctx.accounts.player.strategy = strategy;
+
+        msg!("Lucky player initialized with strategy {:?}", strategy);
+        emit!(SignupEvent {
+            owner: *ctx.accounts.payer.to_account_info().key,
+            player: *ctx.accounts.player.to_account_info().key
+        });
+        Ok(())
+    }
+
+    pub fn play(ctx: Context<Play>, options: DealerOptions) -> Result<u32> {
+        msg!("⚙️ Game Settings | slots: {}, choices: {}, lucky_shoot: {}", options.slots, options.choices, options.lucky_shoot);
+        let value = match ctx.accounts.player.strategy {
+            Strategy::PseudoRandom => {
+                pseudo_random()?
+            }
+            Strategy::Vrf => {
+                vrf()?
+            }
+        };
+        if value == ctx.accounts.player.last_value {
+            return Err(ProgramError::Custom(LuckyError::TwoEqualConsecutiveValues as u32).into());
+        }
+        if value < MIN || value > MAX {
+            return Err(ProgramError::Custom(LuckyError::InvalidRoll as u32).into());
+        }
+
+        emit!(LuckyGameEvent {
+            player: *ctx.accounts.player.to_account_info().key,
+            slots: options.slots,
+            choices: options.choices,
+            lucky_shoot: options.lucky_shoot
+        });
+        msg!("🎲 Dealer roll #{}: {}", ctx.accounts.player.count, value);
+        let winner = is_winner(value, options);
+        ctx.accounts.player.winner = winner;
+        ctx.accounts.player.last_value = value;
+        ctx.accounts.player.count = ctx.accounts.player.count.checked_add(1).unwrap();
+
+        if winner {
+            let winning_count = ctx.accounts.player.winning_count.checked_add(1).unwrap();
+            ctx.accounts.player.winning_count = winning_count;
+            msg!("🎉 Lucky winner: {}", winning_count);
+            emit!(LuckyPlayerEvent {
+                player: *ctx.accounts.player.to_account_info().key,
+                value: value as u64,
+                winning_count
+            });
+        }
+        Ok(value)
+    }
+
+    pub fn close(_ctx: Context<CloseLucky>) -> Result<()> {
+        Ok(())
+    }
 }
