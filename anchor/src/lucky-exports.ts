@@ -29,6 +29,20 @@ export function getLuckyPlayerPDA(key: PublicKey) {
   )[0];
 }
 
+export function getLuckyBountyPDA() {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('LUCKY_BOUNTY', 'utf8')],
+    LUCKY_PROGRAM_ID
+  )[0];
+}
+
+export function getLuckyVaultPDA() {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from('LUCKY_VAULT', 'utf8')],
+    LUCKY_PROGRAM_ID
+  )[0];
+}
+
 export type DealerOptions = {
   slots: number;
   choices: number;

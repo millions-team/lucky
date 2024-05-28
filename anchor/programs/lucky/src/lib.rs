@@ -1,10 +1,18 @@
 #![allow(clippy::result_large_err)]
 
-use anchor_lang::prelude::*;
+use anchor_lang::{
+    prelude::*,
+    solana_program::{native_token::LAMPORTS_PER_SOL},
+    system_program,
+};
 
 declare_id!("6VCjdiYiU9rAWo7TptZMa423j44GSnyzWMG2KbCCdUz8");
 // ---------------------------------- CONSTANTS ----------------------------------
 const GAME_SEED: &[u8] = b"LUCKY_GAME";
+const VAULT_SEED: &[u8] = b"LUCKY_VAULT";
+const BOUNTY_SEED: &[u8] = b"LUCKY_BOUNTY";
+const BASE_AMOUNT: u64 = 7 * LAMPORTS_PER_SOL / 1000; // 0.007 SOL
+// const BASE_BOUNTY: u64 = 20000 * LAMPORTS_PER_SOL; // 20,000 $LUCKY
 const MIN: u32 = 100000;
 const MAX: u32 = 1000000;
 const MIN_CHOICES: u8 = 4;
@@ -63,7 +71,7 @@ pub struct SignupEvent {
 }
 
 #[event]
-pub struct LuckyPlayerEvent {
+pub struct LuckyWinnerEvent {
     player: Pubkey,
     value: u64,
     winning_count: u32,
@@ -78,6 +86,12 @@ pub struct LuckyGameEvent {
 }
 
 // ---------------------------------- FUNCTIONS ----------------------------------
+fn roll_price(options: DealerOptions) -> u64 {
+    let mut price = BASE_AMOUNT / options.slots as u64;
+    price *= if options.lucky_shoot {5} else {1};
+
+    return price;
+}
 
 fn range(seed: u32) -> u32 {
     return MIN + seed % (MAX - MIN);
@@ -98,7 +112,7 @@ fn shuffle_number(seed: u64) -> u32 {
 
 fn pseudo_random() -> Result<u32> {
     let timestamp = Clock::get()?.unix_timestamp;
-    msg!("Timestamp: {}", timestamp);
+    // msg!("Timestamp: {}", timestamp);
     if timestamp == 0 {
         let code = StrategyError::PseudoRandomError as u32 + LuckyError::InvalidSeed as u32;
         return Err(ProgramError::Custom(code).into());
@@ -108,7 +122,7 @@ fn pseudo_random() -> Result<u32> {
     // let hash = blockhash.to_bytes().iter().fold(0, |acc, &x| acc * 10 + x);
     let seed = shuffle_number(timestamp as u64);
     let ranged = range(seed);
-    msg!("Seed: {}, Ranged: {}", seed, ranged);
+    // msg!("Seed: {}, Ranged: {}", seed, ranged);
 
     Ok(shuffle_number(ranged as u64))
 }
@@ -149,6 +163,23 @@ fn is_winner(value: u32, options: DealerOptions) -> bool {
 
     msg!("🚦 Parts: {:?}, Shoots: {:?}, Result: {}", parts, shoots, result);
     return if options.lucky_shoot { result == winner } else { result != options.choices as u32 + 1 };
+}
+
+fn pay_roll(ctx: &Context<Play>, options: DealerOptions) -> Result<()> {
+    let lamports = roll_price(options);
+
+    msg!("🛫 Transferring bet to vault");
+    let cpi_context = CpiContext::new(
+        ctx.accounts.system_program.to_account_info(),
+        system_program::Transfer {
+            from: ctx.accounts.payer.to_account_info(),
+            to: ctx.accounts.vault.to_account_info(),
+        },
+    );
+    system_program::transfer(cpi_context, lamports)?;
+    msg!("🛬 Bet stored");
+
+    Ok(())
 }
 
 // ---------------------------------- INSTRUCTIONS -------------------------------
@@ -193,6 +224,21 @@ pub struct Play<'info> {
         bump
     )]
     pub player: Account<'info, Lucky>,
+
+    #[account(
+        mut,
+        seeds = [BOUNTY_SEED],
+        bump,
+    )]
+    pub bounty: SystemAccount<'info>,
+
+    #[account(
+        mut,
+        seeds = [VAULT_SEED],
+        bump,
+    )]
+    pub vault: SystemAccount<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 // ---------------------------------- PROGRAM ------------------------------------
@@ -218,21 +264,17 @@ pub mod lucky {
     }
 
     pub fn play(ctx: Context<Play>, options: DealerOptions) -> Result<u32> {
+        msg!("🎰 Playing lucky game");
         msg!("⚙️ Game Settings | slots: {}, choices: {}, lucky_shoot: {}", options.slots, options.choices, options.lucky_shoot);
+
+        pay_roll(&ctx, options)?;
+        msg!("🎲 Rolling the dice");
         let value = match ctx.accounts.player.strategy {
-            Strategy::PseudoRandom => {
-                pseudo_random()?
-            }
-            Strategy::Vrf => {
-                vrf()?
-            }
+            Strategy::PseudoRandom => { pseudo_random()? }
+            Strategy::Vrf => { vrf()? }
         };
-        if value == ctx.accounts.player.last_value {
-            return Err(ProgramError::Custom(LuckyError::TwoEqualConsecutiveValues as u32).into());
-        }
-        if value < MIN || value > MAX {
-            return Err(ProgramError::Custom(LuckyError::InvalidRoll as u32).into());
-        }
+        if value == ctx.accounts.player.last_value { panic!("Two equal consecutive values"); }
+        if value < MIN || value > MAX { panic!("Value out of bound"); }
 
         emit!(LuckyGameEvent {
             player: *ctx.accounts.player.to_account_info().key,
@@ -250,7 +292,7 @@ pub mod lucky {
             let winning_count = ctx.accounts.player.winning_count.checked_add(1).unwrap();
             ctx.accounts.player.winning_count = winning_count;
             msg!("🎉 Lucky winner: {}", winning_count);
-            emit!(LuckyPlayerEvent {
+            emit!(LuckyWinnerEvent {
                 player: *ctx.accounts.player.to_account_info().key,
                 value: value as u64,
                 winning_count

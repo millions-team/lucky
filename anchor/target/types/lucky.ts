@@ -35,6 +35,21 @@ export type Lucky = {
           "name": "player",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "bounty",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
@@ -166,7 +181,7 @@ export type Lucky = {
       ]
     },
     {
-      "name": "LuckyPlayerEvent",
+      "name": "LuckyWinnerEvent",
       "fields": [
         {
           "name": "player",
@@ -262,6 +277,21 @@ export const IDL: Lucky = {
           "name": "player",
           "isMut": true,
           "isSigner": false
+        },
+        {
+          "name": "bounty",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
       "args": [
@@ -393,7 +423,7 @@ export const IDL: Lucky = {
       ]
     },
     {
-      "name": "LuckyPlayerEvent",
+      "name": "LuckyWinnerEvent",
       "fields": [
         {
           "name": "player",
