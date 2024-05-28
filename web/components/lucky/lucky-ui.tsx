@@ -9,28 +9,21 @@ import { DealerOptions, getLuckyPlayerPDA } from '@lucky/anchor';
 import { IconCashBanknote, IconSparkles } from '@tabler/icons-react';
 
 const BOUNTY = 20000;
-const MIN_CHOICES = 4;
 const DIGITS = 6;
 const POWER_MULTIPLIER = 5;
 
 type Slot = Omit<DealerOptions, 'luckyShoot'> & {
   chunk: number;
   multiplier: number;
+  price: number;
 };
 
-const SLOTS: Slot[] = Array.from({ length: DIGITS })
-  .map((_, i) => ({
-    chunk: i + 1,
-    slots: DIGITS / (i + 1),
-  }))
-  .filter(({ chunk, slots }) => DIGITS % chunk === 0)
-  .map(({ chunk, slots }, i) => ({
-    chunk,
-    slots,
-    multiplier: slots > 1 ? Math.floor(slots * (10 / (i + 1))) : 1,
-    choices: MIN_CHOICES + DIGITS / slots - 1,
-  }))
-  .sort(({ slots: a }, { slots: b }) => a - b);
+const SLOTS: Slot[] = [
+  { slots: 1, choices: 25, chunk: DIGITS, multiplier: 1, price: 2.5 },
+  { slots: 2, choices: 12, chunk: 3, multiplier: 5, price: 2.05 },
+  { slots: 3, choices: 8, chunk: 2, multiplier: 15, price: 1.8 },
+  { slots: 6, choices: 4, chunk: 1, multiplier: 60, price: 1 },
+];
 export function LuckyCreate({ publicKey }: { publicKey: PublicKey }) {
   const { initialize } = useLuckyProgram();
 
@@ -119,8 +112,17 @@ export function LuckyList({ publicKey }: { publicKey: PublicKey }) {
             $LUCKY
           </h2>
         </div>
+        <span className="text-4xl">
+          {new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+          }).format(
+            options[slots].price * (powerWinner ? POWER_MULTIPLIER : 1)
+          )}
+        </span>
         <div className="flex flex-row">
-          {options[slots].choices} | Winner: {winner}
+          {options[slots].choices} | Winner:{' '}
+          {powerWinner || options[slots].slots === 1 ? winner : 'any'}
         </div>
       </div>
 

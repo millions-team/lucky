@@ -9,7 +9,7 @@ import { LuckyCreate, LuckyList } from './lucky-ui';
 
 export default function LuckyFeature() {
   const { publicKey } = useWallet();
-  const { programId } = useLuckyProgram();
+  const { programId, vaultPDA, bountyPDA } = useLuckyProgram();
 
   return publicKey ? (
     <div>
@@ -19,11 +19,25 @@ export default function LuckyFeature() {
           'Create a new account by clicking the "Create" button. The state of a account is stored on-chain and can be manipulated by calling the program\'s methods (increment, decrement, set, and close).'
         }
       >
-        <p className="mb-6">
-          <ExplorerLink
-            path={`account/${programId}`}
-            label={ellipsify(programId.toString())}
-          />
+        <p className="flex flex-row gap-8 items-center justify-center mb-6">
+          <div className="tooltip tooltip-primary" data-tip="Program">
+            <ExplorerLink
+              path={`account/${programId}`}
+              label={ellipsify(programId.toString())}
+            />
+          </div>
+          <div className="tooltip tooltip-secondary" data-tip="Vault">
+            <ExplorerLink
+              path={`account/${vaultPDA}`}
+              label={ellipsify(vaultPDA.toString())}
+            />
+          </div>
+          <div className="tooltip tooltip-accent" data-tip="Bounty">
+            <ExplorerLink
+              path={`account/${bountyPDA}`}
+              label={ellipsify(bountyPDA.toString())}
+            />
+          </div>
         </p>
         <LuckyCreate publicKey={publicKey} />
       </AppHero>
