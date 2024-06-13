@@ -2,13 +2,13 @@
 import { Cluster, PublicKey } from '@solana/web3.js';
 import type { Dealer } from '../target/types/dealer';
 import { IDL as DealerIDL } from '../target/types/dealer';
-import { metadata } from '../target/idl/dealer.json';
+import IDL from '../target/idl/dealer.json';
 
 // Re-export the generated IDL and type
 export { Dealer, DealerIDL };
 
 // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
-export const DEALER_PROGRAM_ID = new PublicKey(metadata.address);
+export const DEALER_PROGRAM_ID = new PublicKey(IDL.metadata.address);
 
 // This is a helper function to get the program ID for the Dealer program depending on the cluster.
 export function getDealerProgramId(cluster: Cluster) {

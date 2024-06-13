@@ -2,13 +2,13 @@
 import { Cluster, PublicKey } from '@solana/web3.js';
 import type { Vault } from '../target/types/vault';
 import { IDL as VaultIDL } from '../target/types/vault';
-import { metadata } from '../target/idl/vault.json';
+import IDL from '../target/idl/vault.json';
 
 // Re-export the generated IDL and type
 export { Vault, VaultIDL };
 
 // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
-export const VAULT_PROGRAM_ID = new PublicKey(metadata.address);
+export const VAULT_PROGRAM_ID = new PublicKey(IDL.metadata.address);
 
 // This is a helper function to get the program ID for the Lucky program depending on the cluster.
 export function getVaultProgramId(cluster: Cluster) {
