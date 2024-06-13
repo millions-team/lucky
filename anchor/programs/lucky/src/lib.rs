@@ -110,7 +110,7 @@ fn shuffle_number(seed: u64) -> u32 {
     return shuffled.iter().fold(0, |acc, &x| acc * 10 + x) as u32;
 }
 
-fn pseudo_random() -> Result<u32> {
+fn pseudo_random(_seed: u32) -> Result<u32> {
     let timestamp = Clock::get()?.unix_timestamp;
     // msg!("Timestamp: {}", timestamp);
     if timestamp == 0 {
@@ -120,7 +120,7 @@ fn pseudo_random() -> Result<u32> {
 
     // seed is the blockhash converted to a number joined with the timestamp
     // let hash = blockhash.to_bytes().iter().fold(0, |acc, &x| acc * 10 + x);
-    let seed = shuffle_number(timestamp as u64);
+    let seed = shuffle_number(timestamp as u64 + _seed as u64);
     let ranged = range(seed);
     // msg!("Seed: {}, Ranged: {}", seed, ranged);
 
@@ -128,9 +128,7 @@ fn pseudo_random() -> Result<u32> {
 }
 
 fn vrf() -> Result<u32> {
-    // TODO: implement VRF
-    let seed = pseudo_random();
-    Ok(seed?)
+    panic!("VRF not implemented");
 }
 
 fn split_value(value: u32, size: u32) -> Vec<u32> {
@@ -269,8 +267,9 @@ pub mod lucky {
 
         pay_roll(&ctx, options)?;
         msg!("🎲 Rolling the dice");
+        let seed = ctx.accounts.player.count;
         let value = match ctx.accounts.player.strategy {
-            Strategy::PseudoRandom => { pseudo_random()? }
+            Strategy::PseudoRandom => { pseudo_random(seed)? }
             Strategy::Vrf => { vrf()? }
         };
         if value == ctx.accounts.player.last_value { panic!("Two equal consecutive values"); }

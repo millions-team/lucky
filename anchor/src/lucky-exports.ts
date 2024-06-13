@@ -48,3 +48,6 @@ export type DealerOptions = {
   choices: number;
   luckyShoot: boolean;
 };
+
+export const MIN = 100000;
+export const MAX = 1000000;
