@@ -61,9 +61,9 @@ export function Withdraw({
           </button>
         </div>
       </div>
-      <figure className="bg-base-300 relative">
-        <img src={image} alt="Album" />
-        <div className="absolute right-2 bottom-2 text-base-content font-bold">
+      <figure className="bg-base-300 relative lg:w-36">
+        <img src={image} alt="Album" className="w-16" />
+        <div className="absolute w-full h-6 right-0 top-2 text-accent font-bold pr-2 text-end">
           {Intl.NumberFormat('en-US', {}).format(balance)}
         </div>
       </figure>

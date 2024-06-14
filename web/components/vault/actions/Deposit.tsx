@@ -14,11 +14,11 @@ export function Deposit({ token, player, balance, onCompleted }: ActionsProps) {
 
   return (
     <div className="card lg:card-side bg-base-200 shadow-xl my-8">
-      <figure className="bg-base-300 relative">
-        <img src={image} alt="Album" />
-        <div className="absolute right-2 bottom-2 text-base-content font-bold">
+      <figure className="bg-base-300 relative lg:w-36">
+        <img src={image} alt="Album" className="w-16" />
+        <span className="absolute h-6 w-full right-0 bottom-2 text-accent font-bold text-end pr-2">
           {Intl.NumberFormat('en-US', {}).format(balance)}
-        </div>
+        </span>
       </figure>
       <div className="card-body">
         <h2 className="card-title">Storing {token.name}</h2>
