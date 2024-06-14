@@ -9,7 +9,8 @@ export default function DashboardFeature() {
         <div className="max-w-md">
           <h1 className="text-5xl font-bold">Hello there</h1>
           <p className="py-6">
-            Wanna try your luck? Click the button below to get started.
+            Wanna try your luck?
+            <span className="font-bold block">Feed a rabbit</span>
           </p>
           <PlayButton />
         </div>

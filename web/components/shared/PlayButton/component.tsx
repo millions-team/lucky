@@ -91,9 +91,7 @@ export function PlayButton({
             ].join(' ')}
             style={{ gridArea: `i${i + 1}` }}
             data-area={`i${i + 1}`}
-          >
-            <span>{value.toString().padStart(2, '0')}</span>
-          </div>
+          />
         ))}
       </div>
     </button>

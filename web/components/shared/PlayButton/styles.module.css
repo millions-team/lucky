@@ -34,76 +34,103 @@
   overflow: hidden;
   animation: blink-shadow 1s linear infinite;
   transition: transform 0.3s ease;
-}
-
-.border, .border * {
   user-select: none;
-}
 
-.border::before {
-  content: "💠";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border-radius: 50%;
-  animation: rotate 10s linear infinite;
-  opacity: 1;
-}
+  & * {
+    user-select: none;
+  }
 
-.border[data-result="1"]::before {
-  transform: rotate(0deg);
-}
+  &::before {
+    content: "🥕";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    animation: rotate 10s linear infinite;
+    opacity: 1;
+  }
 
-.border[data-result="2"]::before {
-  transform: rotate(45deg);
-}
+  &[data-result="1"]::before {
+    transform: rotate(0deg);
+  }
 
-.border[data-result="6"]::before {
-  transform: rotate(90deg);
-}
+  &[data-result="2"]::before {
+    transform: rotate(45deg);
+  }
 
-.border[data-result="7"]::before {
-  transform: rotate(135deg);
-}
+  &[data-result="6"]::before {
+    transform: rotate(90deg);
+  }
 
-.border[data-result="4"]::before {
-  transform: rotate(180deg);
-}
+  &[data-result="7"]::before {
+    transform: rotate(135deg);
+  }
 
-.border[data-result="3"]::before {
-  transform: rotate(225deg);
-}
+  &[data-result="4"]::before {
+    transform: rotate(180deg);
+  }
 
-.border[data-result="5"]::before {
-  transform: rotate(270deg);
-}
+  &[data-result="3"]::before {
+    transform: rotate(225deg);
+  }
 
-.border[data-result="8"]::before {
-  transform: rotate(315deg);
-}
+  &[data-result="5"]::before {
+    transform: rotate(270deg);
+  }
 
-.border[data-pending="true"]::before {
-  animation-duration: 0.5s;
-}
+  &[data-result="8"]::before {
+    transform: rotate(315deg);
+  }
 
-.border[data-revealed="true"]::before {
-  animation: none;
-}
+  &[data-pending="true"]::before {
+    animation-duration: 0.5s;
+  }
 
-.button {
-  @apply text-yellow-300;
-  @apply text-2xl;
-  animation: blink 1s linear infinite;
-}
+  &[data-revealed="true"]::before {
+    animation: none;
+  }
 
-@media (hover: hover) {
-  .border:hover:not(:active) {
+  @media (hover: hover) {
+    &:hover:not(:active) {
+      box-shadow: 0 0 10px #ffc600, 0 0 20px #ffc600, 0 0 30px #ffc600, 0 0 40px #ffc600;
+      animation: none;
+      transform: scale(1.1);
+
+      .button {
+        text-shadow: 0 0 10px #ffc600, 0 0 20px #ffc600, 0 0 30px #ffc600, 0 0 40px #ffc600;
+        animation: none;
+      }
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+
+    &::before {
+      animation: rotate 1s linear infinite;
+    }
+  }
+
+  &:disabled {
+    pointer-events: none;
+  }
+
+  &[data-pending="true"] {
     box-shadow: 0 0 10px #ffc600, 0 0 20px #ffc600, 0 0 30px #ffc600, 0 0 40px #ffc600;
     animation: none;
     transform: scale(1.1);
+  }
 
+  &[data-match="true"] {
+    box-shadow: 0 0 10px #1c6bd1, 0 0 20px #1c6bd1, 0 0 30px #1c6bd1, 0 0 40px #1c6bd1;
+    animation: none;
+    transform: scale(1.1);
+  }
+
+  &[data-pending="true"],
+  &[data-match="true"] {
     .button {
       text-shadow: 0 0 10px #ffc600, 0 0 20px #ffc600, 0 0 30px #ffc600, 0 0 40px #ffc600;
       animation: none;
@@ -111,36 +138,10 @@
   }
 }
 
-.border[data-pending="true"] {
-  box-shadow: 0 0 10px #ffc600, 0 0 20px #ffc600, 0 0 30px #ffc600, 0 0 40px #ffc600;
-  animation: none;
-  transform: scale(1.1);
-}
-
-.border[data-match="true"] {
-  box-shadow: 0 0 10px #1c6bd1, 0 0 20px #1c6bd1, 0 0 30px #1c6bd1, 0 0 40px #1c6bd1;
-  animation: none;
-  transform: scale(1.1);
-}
-
-.border[data-pending="true"],
-.border[data-match="true"] {
-  .button {
-    text-shadow: 0 0 10px #ffc600, 0 0 20px #ffc600, 0 0 30px #ffc600, 0 0 40px #ffc600;
-    animation: none;
-  }
-}
-
-.border:active {
-  transform: scale(0.95);
-
-  &::before {
-    animation: rotate 1s linear infinite;
-  }
-}
-
-.border:disabled {
-  pointer-events: none;
+.button {
+  @apply text-yellow-300;
+  @apply text-2xl;
+  animation: blink 1s linear infinite;
 }
 
 .door {
@@ -167,56 +168,61 @@
     @apply h-7;
     @apply w-8;
     position: relative;
+    transition: transform 0.3s ease;
 
-    & > span {
+    &::before {
       position: absolute;
+      content: "🕳️";
     }
-  }
 
-  & .value.active {
-    @apply text-yellow-300;
-    animation: blink 1s linear infinite;
-  }
+    &[data-area="i1"]::before {
+      top: 50%;
+      left: 20%;
+    }
 
-  & .value.match {
-    @apply text-green-500;
-  }
+    &[data-area="i2"]::before {
+      right: 10%;
+      top: 10%;
+    }
 
-  & .value[data-area="i1"] > span {
-    top: 50%;
-    left: 10%;
-  }
+    &[data-area="i8"]::before {
+      left: 20%;
+      top: 10%;
+    }
 
-  & .value[data-area="i2"] > span {
-    right: 10%;
-    top: 20%;
-  }
+    &[data-area="i5"]::before {
+      left: 70%;
+    }
 
-  & .value[data-area="i8"] > span {
-    left: 5%;
-    top: 20%;
-  }
+    &[data-area="i6"]::before {
+      right: 60%;
+    }
 
-  & .value[data-area="i5"] > span {
-    left: 60%;
-  }
+    &[data-area="i3"]::before {
+      left: 10%;
+      bottom: 20%;
+    }
 
-  & .value[data-area="i6"] span {
-    right: 60%;
-  }
+    &[data-area="i7"]::before {
+      right: 10%;
+      bottom: 20%;
+    }
 
-  & .value[data-area="i3"] > span {
-    left: 10%;
-    bottom: 20%;
-  }
+    &[data-area="i4"]::before {
+      bottom: 50%;
+      left: 20%;
+    }
 
-  & .value[data-area="i7"] > span {
-    right: 10%;
-    bottom: 20%;
-  }
+    &.active {
+      &::before {
+        transform: scale(1.1);
+      }
+    }
 
-  & .value[data-area="i4"] > span {
-    bottom: 50%;
-    left: 10%;
+    &.match {
+      &::before {
+        content: "🐰";
+      }
+    }
   }
 }
