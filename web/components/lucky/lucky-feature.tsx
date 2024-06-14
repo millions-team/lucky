@@ -12,7 +12,7 @@ export default function LuckyFeature() {
   const { programId, vaultPDA, bountyPDA } = useLuckyProgram();
 
   return publicKey ? (
-    <div>
+    <div className="mx-4 lg:max-w-4xl lg:mx-auto">
       <AppHero
         title="Lucky"
         subtitle={

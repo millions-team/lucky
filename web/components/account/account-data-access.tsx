@@ -1,12 +1,18 @@
 'use client';
 
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import {
+  createAssociatedTokenAccountInstruction,
+  getAssociatedTokenAddress,
+  TOKEN_2022_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token';
 import {
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
+  TransactionInstruction,
   TransactionMessage,
   TransactionSignature,
   VersionedTransaction,
@@ -33,6 +39,71 @@ export function useGetSignatures({ address }: { address: PublicKey }) {
   });
 }
 
+export function useCreateTokenAccount({
+  address,
+  callback,
+}: {
+  address: PublicKey;
+  callback?: () => void;
+}) {
+  const { connection } = useConnection();
+  const { wallet } = useWallet();
+  const client = useQueryClient();
+  const transactionToast = useTransactionToast();
+
+  return useMutation({
+    mutationKey: [
+      'create-token-account',
+      { endpoint: connection.rpcEndpoint, address },
+    ],
+    mutationFn: async (mint: PublicKey) => {
+      if (!wallet?.adapter) throw new Error('Wallet not connected');
+
+      const ata = await getAssociatedTokenAddress(mint, address);
+      const instruction = createAssociatedTokenAccountInstruction(
+        wallet.adapter.publicKey!, // payer
+        ata, // ata
+        address, // owner
+        mint // mint
+      );
+
+      const { transaction } = await buildTransaction({
+        payerKey: wallet.adapter.publicKey!,
+        connection,
+        instructions: [instruction],
+      });
+
+      const signature = await wallet.adapter.sendTransaction(
+        transaction,
+        connection
+      );
+
+      return { signature, mint };
+    },
+    onSuccess: async ({ signature, mint }) => {
+      if (signature) transactionToast(signature, 'Token account created');
+
+      await client.invalidateQueries({
+        queryKey: [
+          'get-token-accounts',
+          { endpoint: connection.rpcEndpoint, address },
+        ],
+      });
+      await client.invalidateQueries({
+        queryKey: [
+          'get-token-account',
+          { endpoint: connection.rpcEndpoint, address, mint },
+        ],
+      });
+
+      callback && callback();
+    },
+    onError: (error) => {
+      toast.error(`Transaction failed! ${error}`);
+    },
+  });
+}
+
 export function useGetTokenAccounts({ address }: { address: PublicKey }) {
   const { connection } = useConnection();
 
@@ -51,6 +122,29 @@ export function useGetTokenAccounts({ address }: { address: PublicKey }) {
         }),
       ]);
       return [...tokenAccounts.value, ...token2022Accounts.value];
+    },
+  });
+}
+
+export function useGetTokenAccount({
+  address,
+  mint,
+}: {
+  address: PublicKey;
+  mint: PublicKey;
+}) {
+  const { connection } = useConnection();
+
+  return useQuery({
+    queryKey: [
+      'get-token-account',
+      { endpoint: connection.rpcEndpoint, address, mint },
+    ],
+    queryFn: async () => {
+      const result = await connection.getParsedTokenAccountsByOwner(address, {
+        mint,
+      });
+      return result.value[0] ?? null;
     },
   });
 }
@@ -171,9 +265,6 @@ async function createTransaction({
   transaction: VersionedTransaction;
   latestBlockhash: { blockhash: string; lastValidBlockHeight: number };
 }> {
-  // Get the latest blockhash to use in our transaction
-  const latestBlockhash = await connection.getLatestBlockhash();
-
   // Create instructions to send, in this case a simple transfer
   const instructions = [
     SystemProgram.transfer({
@@ -184,10 +275,33 @@ async function createTransaction({
   ];
 
   // Create a new TransactionMessage with version and compile it to legacy
-  const messageLegacy = new TransactionMessage({
+  return buildTransaction({
     payerKey: publicKey,
-    recentBlockhash: latestBlockhash.blockhash,
+    connection,
     instructions,
+  });
+}
+
+async function buildTransaction({
+  payerKey,
+  connection,
+  instructions,
+}: {
+  payerKey: PublicKey;
+  connection: Connection;
+  instructions: TransactionInstruction[];
+}): Promise<{
+  transaction: VersionedTransaction;
+  latestBlockhash: { blockhash: string; lastValidBlockHeight: number };
+}> {
+  // Get the latest blockhash to use in our transaction
+  const latestBlockhash = await connection.getLatestBlockhash();
+
+  // Create a new TransactionMessage with version and compile it to legacy
+  const messageLegacy = new TransactionMessage({
+    payerKey,
+    instructions,
+    recentBlockhash: latestBlockhash.blockhash,
   }).compileToLegacyMessage();
 
   // Create a new VersionedTransaction which supports legacy and v0
