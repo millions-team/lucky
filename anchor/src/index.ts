@@ -5,3 +5,5 @@ export * from './lucky-exports';
 export * from './tiny-adventure-exports';
 
 export * from './dealer-exports';
+
+export * from './vault-exports'

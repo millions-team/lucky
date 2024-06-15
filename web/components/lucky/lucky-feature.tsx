@@ -12,33 +12,33 @@ export default function LuckyFeature() {
   const { programId, vaultPDA, bountyPDA } = useLuckyProgram();
 
   return publicKey ? (
-    <div>
+    <div className="mx-4 lg:max-w-4xl lg:mx-auto">
       <AppHero
         title="Lucky"
         subtitle={
           'Create a new account by clicking the "Create" button. The state of a account is stored on-chain and can be manipulated by calling the program\'s methods (increment, decrement, set, and close).'
         }
       >
-        <p className="flex flex-row gap-8 items-center justify-center mb-6">
-          <div className="tooltip tooltip-primary" data-tip="Program">
+        <div className="flex flex-row gap-8 items-center justify-center mb-6">
+          <p className="tooltip tooltip-primary" data-tip="Program">
             <ExplorerLink
               path={`account/${programId}`}
               label={ellipsify(programId.toString())}
             />
-          </div>
-          <div className="tooltip tooltip-secondary" data-tip="Vault">
+          </p>
+          <p className="tooltip tooltip-secondary" data-tip="Vault">
             <ExplorerLink
               path={`account/${vaultPDA}`}
               label={ellipsify(vaultPDA.toString())}
             />
-          </div>
-          <div className="tooltip tooltip-accent" data-tip="Bounty">
+          </p>
+          <p className="tooltip tooltip-accent" data-tip="Bounty">
             <ExplorerLink
               path={`account/${bountyPDA}`}
               label={ellipsify(bountyPDA.toString())}
             />
-          </div>
-        </p>
+          </p>
+        </div>
         <LuckyCreate publicKey={publicKey} />
       </AppHero>
       <LuckyList publicKey={publicKey} />

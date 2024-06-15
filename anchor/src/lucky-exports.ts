@@ -2,14 +2,13 @@
 import { Cluster, PublicKey } from '@solana/web3.js';
 import type { Lucky } from '../target/types/lucky';
 import { IDL as LuckyIDL } from '../target/types/lucky';
+import IDL from '../target/idl/lucky.json';
 
 // Re-export the generated IDL and type
 export { Lucky, LuckyIDL };
 
 // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
-export const LUCKY_PROGRAM_ID = new PublicKey(
-  '6VCjdiYiU9rAWo7TptZMa423j44GSnyzWMG2KbCCdUz8'
-);
+export const LUCKY_PROGRAM_ID = new PublicKey(IDL.metadata.address);
 
 // This is a helper function to get the program ID for the Lucky program depending on the cluster.
 export function getLuckyProgramId(cluster: Cluster) {
@@ -48,3 +47,6 @@ export type DealerOptions = {
   choices: number;
   luckyShoot: boolean;
 };
+
+export const MIN = 100000;
+export const MAX = 1000000;
