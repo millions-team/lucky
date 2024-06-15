@@ -2,13 +2,11 @@
 
 import {
   type DealerOptions,
-  LuckyIDL,
   getLuckyProgramId,
-  getLuckyPlayerPDA,
   getLuckyBountyPDA,
   getLuckyVaultPDA,
-} from '@lucky/anchor';
-import { Program } from '@coral-xyz/anchor';
+  getLuckyProgram,
+} from '@luckyland/anchor';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { Cluster, PublicKey } from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -27,7 +25,7 @@ export function useLuckyProgram(cb?: { refetch?: () => void | Promise<void> }) {
     () => getLuckyProgramId(cluster.network as Cluster),
     [cluster]
   );
-  const program = new Program(LuckyIDL, programId, provider);
+  const program = getLuckyProgram(provider);
   const bountyPDA = useMemo(() => getLuckyBountyPDA(), []);
   const vaultPDA = useMemo(() => getLuckyVaultPDA(), []);
 
@@ -39,10 +37,7 @@ export function useLuckyProgram(cb?: { refetch?: () => void | Promise<void> }) {
   const initialize = useMutation({
     mutationKey: ['lucky', 'initialize', { cluster }],
     mutationFn: (player: PublicKey) =>
-      program.methods
-        .initialize()
-        .accounts({ player: getLuckyPlayerPDA(player) })
-        .rpc(),
+      program.methods.initialize().accounts({}).rpc(),
     onSuccess: (signature) => {
       transactionToast(signature);
       cb?.refetch && cb.refetch();
@@ -78,7 +73,7 @@ export function useLuckyProgramAccount({
 
   const closeMutation = useMutation({
     mutationKey: ['lucky', 'close', { cluster, player }],
-    mutationFn: () => program.methods.close().accounts({ player }).rpc(),
+    mutationFn: () => program.methods.close().accounts({}).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       cb.refetch();
@@ -88,14 +83,7 @@ export function useLuckyProgramAccount({
   const playMutation = useMutation({
     mutationKey: ['lucky', 'set', { cluster, player }],
     mutationFn: (options: DealerOptions) =>
-      program.methods
-        .play(options)
-        .accounts({
-          player,
-          bounty: bountyPDA,
-          vault: vaultPDA,
-        })
-        .rpc(),
+      program.methods.play(options).accounts({}).rpc(),
     onSuccess: (tx) => {
       transactionToast(tx);
       return accountQuery.refetch();
