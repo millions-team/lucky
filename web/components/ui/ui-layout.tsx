@@ -14,6 +14,7 @@ import {
   ExplorerLink,
 } from '../cluster/cluster-ui';
 import toast, { Toaster } from 'react-hot-toast';
+
 export function UiLayout({
   children,
   links,
@@ -54,11 +55,7 @@ export function UiLayout({
           </div>
           <div className="flex-1">
             <Link className="btn btn-ghost normal-case text-xl" href="/">
-              <img
-                className="h-4 md:h-6"
-                alt="Solana Logo"
-                src="/solana-logo.png"
-              />
+              <img className="h-4 md:h-6" alt="Logo" src="/logo.png" />
             </Link>
           </div>
           <div className="flex-none hidden lg:block">

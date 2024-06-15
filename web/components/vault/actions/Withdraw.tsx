@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useOwnedToken } from '@/hooks';
 
-import type { ActionsProps } from './actions.d';
+import type { ActionsProps } from './actions';
 import { useVaultProgram } from '../vault-data-access';
 
 export function Withdraw({

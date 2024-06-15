@@ -6,7 +6,7 @@ import {
   fetchDigitalAsset,
   mplTokenMetadata,
 } from '@metaplex-foundation/mpl-token-metadata';
-import { useGetTokenAccount } from '@/components/account/account-data-access';
+import { useGetTokenAccount } from './use-get-account';
 import type { Token } from './splt-token.d';
 
 export function useOwnedToken(address: PublicKey, mint: PublicKey) {

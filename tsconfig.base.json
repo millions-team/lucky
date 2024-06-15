@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./web/*"],
-      "@lucky/anchor": ["anchor/src/index.ts"]
+      "@luckyland/anchor": ["anchor/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

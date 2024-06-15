@@ -1,12 +1,11 @@
 import { useEffect, useMemo } from 'react';
-import { useOwnedToken } from '@/hooks';
-import { getTokenVaultPDA } from '@lucky/anchor';
+import { useCreateTokenAccount, useOwnedToken } from '@/hooks';
+import { getTokenVaultPDA } from '@luckyland/anchor';
 
-import { useCreateTokenAccount } from '@/components/account/account-data-access';
 import { ExplorerLink } from '@/components/cluster/cluster-ui';
 import { ellipsify } from '@/components/ui/ui-layout';
 
-import type { AccountsProps } from './actions.d';
+import type { AccountsProps } from './actions';
 
 export function Accounts({
   token: { mint },

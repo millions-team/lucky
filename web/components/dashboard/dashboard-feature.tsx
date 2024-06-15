@@ -7,10 +7,10 @@ export default function DashboardFeature() {
     <div className="hero min-h-full bg-base-200">
       <div className="hero-content text-center">
         <div className="max-w-md">
-          <h1 className="text-5xl font-bold">Hello there</h1>
-          <p className="py-6">
+          <h1 className="text-7xl font-bold">Hello there</h1>
+          <p className="text-3xl py-6 mb-8">
             Wanna try your luck?
-            <span className="font-bold block">Feed a rabbit</span>
+            <span className="text-2xl font-bold block">Feed a rabbit</span>
           </p>
           <PlayButton />
         </div>

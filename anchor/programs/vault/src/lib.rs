@@ -3,7 +3,7 @@ use anchor_spl::token::{Mint, Token, TokenAccount, Transfer};
 
 // This is your program's public key and it will update
 // automatically when you build the project.
-declare_id!("JDJAXMHsKerAzzCyEjAd7WHqrks1QjVbG3oagZ9E14Qu");
+declare_id!("EJkF6ZLAq9WtmeoSnM2BEuVygS7WUjbq1KQP5xWW7Sgb");
 
 #[program]
 mod vault {

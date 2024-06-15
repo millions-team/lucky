@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useOwnedToken } from '@/hooks';
-import { getVaultAccountOwnerPDA } from '@lucky/anchor';
+import { getVaultAccountOwnerPDA } from '@luckyland/anchor';
 
-import type { BaseProps } from './actions.d';
+import type { BaseProps } from './actions';
 
 import { Create } from './Create';
 import { Accounts } from './Accounts';

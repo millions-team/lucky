@@ -1,13 +1,14 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { ExplorerLink } from '../cluster/cluster-ui';
+import { getVaultAccountOwnerPDA } from '@luckyland/anchor';
+
 import { WalletButton } from '../solana/solana-provider';
 import { AppHero, ellipsify } from '../ui/ui-layout';
+import { ExplorerLink } from '../cluster/cluster-ui';
 import { useVaultProgram } from './vault-data-access';
 import { VaultProgram } from './vault-ui';
-import { useMemo } from 'react';
-import { getVaultAccountOwnerPDA } from '@lucky/anchor';
 
 export default function VaultFeature() {
   const { publicKey } = useWallet();
@@ -46,5 +47,4 @@ export default function VaultFeature() {
       </div>
     </div>
   );
-  ``;
 }

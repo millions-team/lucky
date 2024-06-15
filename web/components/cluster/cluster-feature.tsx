@@ -9,7 +9,7 @@ export default function ClusterFeature() {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="mx-4 lg:max-w-4xl lg:mx-auto">
+    <div>
       <AppHero
         title="Clusters"
         subtitle="Manage and select your Solana clusters"

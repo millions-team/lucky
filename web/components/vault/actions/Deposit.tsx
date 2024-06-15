@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useOwnedToken } from '@/hooks';
 
 import { useVaultProgram } from '../vault-data-access';
-import type { ActionsProps } from './actions.d';
+import type { ActionsProps } from './actions';
 
 export function Deposit({ token, player, balance, onCompleted }: ActionsProps) {
   const { token: OwnedToken, refresh } = useOwnedToken(player, token.mint);

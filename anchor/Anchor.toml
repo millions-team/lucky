@@ -5,10 +5,8 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
+vault = "EJkF6ZLAq9WtmeoSnM2BEuVygS7WUjbq1KQP5xWW7Sgb"
 lucky = "6VCjdiYiU9rAWo7TptZMa423j44GSnyzWMG2KbCCdUz8"
-dealer = "GtzLtimeFCuttdgxHz9QgHtyt4ZFfvkWKTRkQqS6yCqZ"
-tiny_adventure = "3hjhpnRWrcTYpmcygPjKnJRnJ3udVSzXYaChbrhgBWqC"
-vault = "JDJAXMHsKerAzzCyEjAd7WHqrks1QjVbG3oagZ9E14Qu"
 
 [registry]
 url = "https://api.apr.dev"
