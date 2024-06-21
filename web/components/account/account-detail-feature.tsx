@@ -31,7 +31,7 @@ export default function AccountDetailFeature() {
   }
 
   return (
-    <div>
+    <div className="mx-4 lg:max-w-4xl lg:mx-auto">
       <AppHero
         title={<AccountBalance address={address} />}
         subtitle={

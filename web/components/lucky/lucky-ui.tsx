@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import { ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { useLuckyProgram, useLuckyProgramAccount } from './lucky-data-access';
-import { DealerOptions, getLuckyPlayerPDA } from '@lucky/anchor';
+import { DealerOptions, getLuckyPlayerPDA } from '@luckyland/anchor';
 import { IconCashBanknote, IconSparkles } from '@tabler/icons-react';
 
 const BOUNTY = 20000;

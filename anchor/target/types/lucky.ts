@@ -1,85 +1,319 @@
+/**
+ * Program IDL in camelCase format in order to be used in JS/TS.
+ *
+ * Note that this is only a type helper and is not the actual IDL. The original
+ * IDL can be found at `target/idl/lucky.json`.
+ */
 export type Lucky = {
-  "version": "0.1.0",
-  "name": "lucky",
+  "address": "6VCjdiYiU9rAWo7TptZMa423j44GSnyzWMG2KbCCdUz8",
+  "metadata": {
+    "name": "lucky",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
   "instructions": [
     {
-      "name": "initialize",
+      "name": "close",
+      "discriminator": [
+        98,
+        165,
+        201,
+        177,
+        108,
+        65,
+        206,
+        96
+      ],
       "accounts": [
         {
           "name": "payer",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "player",
-          "isMut": true,
-          "isSigner": false
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "player",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              }
+            ]
+          }
         },
         {
           "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
     },
     {
       "name": "play",
+      "discriminator": [
+        213,
+        157,
+        193,
+        142,
+        228,
+        56,
+        248,
+        150
+      ],
       "accounts": [
         {
           "name": "payer",
-          "isMut": true,
-          "isSigner": true
+          "writable": true,
+          "signer": true
         },
         {
           "name": "player",
-          "isMut": true,
-          "isSigner": false
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              }
+            ]
+          }
         },
         {
           "name": "bounty",
-          "isMut": true,
-          "isSigner": false
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  66,
+                  79,
+                  85,
+                  78,
+                  84,
+                  89
+                ]
+              }
+            ]
+          }
         },
         {
           "name": "vault",
-          "isMut": true,
-          "isSigner": false
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  86,
+                  65,
+                  85,
+                  76,
+                  84
+                ]
+              }
+            ]
+          }
         },
         {
           "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": [
         {
           "name": "options",
           "type": {
-            "defined": "DealerOptions"
+            "defined": {
+              "name": "dealerOptions"
+            }
           }
         }
       ],
       "returns": "u32"
-    },
-    {
-      "name": "close",
-      "accounts": [
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "player",
-          "isMut": true,
-          "isSigner": false
-        }
-      ],
-      "args": []
     }
   ],
   "accounts": [
+    {
+      "name": "lucky",
+      "discriminator": [
+        87,
+        59,
+        220,
+        142,
+        18,
+        5,
+        15,
+        33
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "luckyGameEvent",
+      "discriminator": [
+        184,
+        179,
+        87,
+        102,
+        8,
+        140,
+        72,
+        0
+      ]
+    },
+    {
+      "name": "luckyWinnerEvent",
+      "discriminator": [
+        95,
+        168,
+        148,
+        37,
+        153,
+        88,
+        114,
+        234
+      ]
+    },
+    {
+      "name": "signupEvent",
+      "discriminator": [
+        145,
+        41,
+        68,
+        121,
+        154,
+        168,
+        28,
+        204
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6100,
+      "name": "pseudoRandomError",
+      "msg": "PseudoRandom error"
+    },
+    {
+      "code": 6200,
+      "name": "vrfError",
+      "msg": "Vrf error"
+    }
+  ],
+  "types": [
+    {
+      "name": "dealerOptions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "slots",
+            "type": "u32"
+          },
+          {
+            "name": "choices",
+            "type": "u8"
+          },
+          {
+            "name": "luckyShoot",
+            "type": "bool"
+          }
+        ]
+      }
+    },
     {
       "name": "lucky",
       "type": {
@@ -104,19 +338,23 @@ export type Lucky = {
           {
             "name": "strategy",
             "type": {
-              "defined": "Strategy"
+              "defined": {
+                "name": "strategy"
+              }
             }
           }
         ]
       }
-    }
-  ],
-  "types": [
+    },
     {
-      "name": "DealerOptions",
+      "name": "luckyGameEvent",
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "player",
+            "type": "pubkey"
+          },
           {
             "name": "slots",
             "type": "u32"
@@ -133,351 +371,57 @@ export type Lucky = {
       }
     },
     {
-      "name": "Strategy",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "PseudoRandom"
-          },
-          {
-            "name": "Vrf"
-          }
-        ]
-      }
-    },
-    {
-      "name": "LuckyError",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "InvalidSeed"
-          },
-          {
-            "name": "TwoEqualConsecutiveValues"
-          },
-          {
-            "name": "InvalidRoll"
-          }
-        ]
-      }
-    }
-  ],
-  "events": [
-    {
-      "name": "SignupEvent",
-      "fields": [
-        {
-          "name": "owner",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "player",
-          "type": "publicKey",
-          "index": false
-        }
-      ]
-    },
-    {
-      "name": "LuckyWinnerEvent",
-      "fields": [
-        {
-          "name": "player",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "value",
-          "type": "u64",
-          "index": false
-        },
-        {
-          "name": "winningCount",
-          "type": "u32",
-          "index": false
-        }
-      ]
-    },
-    {
-      "name": "LuckyGameEvent",
-      "fields": [
-        {
-          "name": "player",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "slots",
-          "type": "u32",
-          "index": false
-        },
-        {
-          "name": "choices",
-          "type": "u8",
-          "index": false
-        },
-        {
-          "name": "luckyShoot",
-          "type": "bool",
-          "index": false
-        }
-      ]
-    }
-  ],
-  "errors": [
-    {
-      "code": 6100,
-      "name": "PseudoRandomError",
-      "msg": "PseudoRandom error"
-    },
-    {
-      "code": 6200,
-      "name": "VrfError",
-      "msg": "Vrf error"
-    }
-  ]
-};
-
-export const IDL: Lucky = {
-  "version": "0.1.0",
-  "name": "lucky",
-  "instructions": [
-    {
-      "name": "initialize",
-      "accounts": [
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "player",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "play",
-      "accounts": [
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "player",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "bounty",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "vault",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "options",
-          "type": {
-            "defined": "DealerOptions"
-          }
-        }
-      ],
-      "returns": "u32"
-    },
-    {
-      "name": "close",
-      "accounts": [
-        {
-          "name": "payer",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "player",
-          "isMut": true,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    }
-  ],
-  "accounts": [
-    {
-      "name": "lucky",
+      "name": "luckyWinnerEvent",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "count",
-            "type": "u32"
+            "name": "player",
+            "type": "pubkey"
           },
           {
-            "name": "lastValue",
-            "type": "u32"
+            "name": "value",
+            "type": "u64"
           },
           {
             "name": "winningCount",
             "type": "u32"
-          },
-          {
-            "name": "winner",
-            "type": "bool"
-          },
-          {
-            "name": "strategy",
-            "type": {
-              "defined": "Strategy"
-            }
           }
         ]
       }
-    }
-  ],
-  "types": [
+    },
     {
-      "name": "DealerOptions",
+      "name": "signupEvent",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "slots",
-            "type": "u32"
+            "name": "owner",
+            "type": "pubkey"
           },
           {
-            "name": "choices",
-            "type": "u8"
-          },
-          {
-            "name": "luckyShoot",
-            "type": "bool"
+            "name": "player",
+            "type": "pubkey"
           }
         ]
       }
     },
     {
-      "name": "Strategy",
+      "name": "strategy",
+      "repr": {
+        "kind": "c"
+      },
       "type": {
         "kind": "enum",
         "variants": [
           {
-            "name": "PseudoRandom"
+            "name": "pseudoRandom"
           },
           {
-            "name": "Vrf"
+            "name": "vrf"
           }
         ]
       }
-    },
-    {
-      "name": "LuckyError",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "InvalidSeed"
-          },
-          {
-            "name": "TwoEqualConsecutiveValues"
-          },
-          {
-            "name": "InvalidRoll"
-          }
-        ]
-      }
-    }
-  ],
-  "events": [
-    {
-      "name": "SignupEvent",
-      "fields": [
-        {
-          "name": "owner",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "player",
-          "type": "publicKey",
-          "index": false
-        }
-      ]
-    },
-    {
-      "name": "LuckyWinnerEvent",
-      "fields": [
-        {
-          "name": "player",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "value",
-          "type": "u64",
-          "index": false
-        },
-        {
-          "name": "winningCount",
-          "type": "u32",
-          "index": false
-        }
-      ]
-    },
-    {
-      "name": "LuckyGameEvent",
-      "fields": [
-        {
-          "name": "player",
-          "type": "publicKey",
-          "index": false
-        },
-        {
-          "name": "slots",
-          "type": "u32",
-          "index": false
-        },
-        {
-          "name": "choices",
-          "type": "u8",
-          "index": false
-        },
-        {
-          "name": "luckyShoot",
-          "type": "bool",
-          "index": false
-        }
-      ]
-    }
-  ],
-  "errors": [
-    {
-      "code": 6100,
-      "name": "PseudoRandomError",
-      "msg": "PseudoRandom error"
-    },
-    {
-      "code": 6200,
-      "name": "VrfError",
-      "msg": "Vrf error"
     }
   ]
 };
