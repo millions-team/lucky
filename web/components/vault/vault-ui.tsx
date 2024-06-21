@@ -5,7 +5,7 @@ import { PublicKey } from '@solana/web3.js';
 
 import { useVaultProgram } from './vault-data-access';
 
-import { type Token, useOwnedTokens } from '@/hooks';
+import { type TokenAccount, useOwnedTokens } from '@/hooks';
 import { ExplorerLink } from '@/components/cluster/cluster-ui';
 import { ellipsify } from '@/components/ui/ui-layout';
 import { VaultActions } from './actions';
@@ -19,7 +19,9 @@ const TOKENS_OWNER = new PublicKey(NEXT_PUBLIC_OWNER);
 export function VaultProgram({ player }: { player: PublicKey }) {
   const { getProgramAccount } = useVaultProgram();
   const { tokens } = useOwnedTokens(TOKENS_OWNER);
-  const [token, setToken] = useState<Token>(tokens[0] || { address: '_label' });
+  const [token, setToken] = useState<TokenAccount>(
+    tokens[0] || { address: '_label' }
+  );
 
   useEffect(() => {
     if (!tokens.length || token.address === '_label') return;
@@ -28,7 +30,7 @@ export function VaultProgram({ player }: { player: PublicKey }) {
       ({ address }) => address === token.address
     ) || { address: '_label' };
 
-    setToken(selected as Token);
+    setToken(selected as TokenAccount);
   }, [tokens]);
 
   if (getProgramAccount.isLoading) {

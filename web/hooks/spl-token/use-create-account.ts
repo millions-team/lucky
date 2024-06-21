@@ -53,18 +53,16 @@ export function useCreateTokenAccount({
     },
     onSuccess: async ({ signature, mint }) => {
       if (signature) transactionToast(signature, 'Token account created');
+      const endpoint = connection.rpcEndpoint;
 
       await client.invalidateQueries({
-        queryKey: [
-          'get-token-accounts',
-          { endpoint: connection.rpcEndpoint, address },
-        ],
+        queryKey: ['get-token-account', { endpoint, address }],
       });
       await client.invalidateQueries({
-        queryKey: [
-          'get-token-account',
-          { endpoint: connection.rpcEndpoint, address, mint },
-        ],
+        queryKey: ['get-token-accounts', { endpoint, address }],
+      });
+      await client.invalidateQueries({
+        queryKey: ['get-owned-token-account', { endpoint, address, mint }],
       });
 
       callback && callback();

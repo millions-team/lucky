@@ -1,8 +1,8 @@
-import { Token } from '@/hooks';
+import type { TokenAccount } from '@/hooks';
 import { PublicKey } from '@solana/web3.js';
 
 export type BaseProps = {
-  token: Token;
+  token: TokenAccount;
   player: PublicKey;
 };
 
