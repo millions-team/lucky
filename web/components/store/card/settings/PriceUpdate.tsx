@@ -10,7 +10,7 @@ export function PriceUpdate({ storePda }: BaseProps) {
   });
   const price = useMemo(() => {
     if (!storeQuery.data?.price) return 0;
-    return storeQuery.data.price / 10 ** DECIMALS;
+    return storeQuery.data.price.toNumber() / 10 ** DECIMALS;
   }, [storeQuery.data?.price]);
 
   return (

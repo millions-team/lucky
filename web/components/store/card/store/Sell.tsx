@@ -12,6 +12,8 @@ import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 export function Sell({ storePda }: BaseProps) {
   const { publicKey } = useWallet();
+  if (!publicKey) throw new Error('Wallet not connected');
+
   const balance = useGetBalance({ address: publicKey });
   const { sell, token, storeQuery, vaultQuery } = useStoreProgramAccount({
     storePda,
@@ -21,7 +23,7 @@ export function Sell({ storePda }: BaseProps) {
 
   const dataFeed = useDataFeed();
   const gas = useMemo(
-    () => (dataFeed?.answer ? 1 / (dataFeed.answer / DECIMALS) : 0),
+    () => (dataFeed?.answer ? 1 / (dataFeed.answer.toNumber() / DECIMALS) : 0),
     [dataFeed?.answer]
   );
 
@@ -30,7 +32,7 @@ export function Sell({ storePda }: BaseProps) {
       <label className="form-control w-full max-w-xs">
         <div className="label">
           <span className="label-text">Buy</span>
-          {balance.isPending ? (
+          {balance.isPending || !balance.data ? (
             <span className="loading loading-ball loading-xs"></span>
           ) : (
             <span
@@ -39,10 +41,12 @@ export function Sell({ storePda }: BaseProps) {
                 if (
                   !dataFeed?.answer ||
                   !storeQuery.data?.price ||
-                  !vaultQuery.data?.amount
+                  !vaultQuery.data?.amount ||
+                  !balance.data
                 )
                   return;
-                const rate = storeQuery.data.price / dataFeed.answer;
+                const rate =
+                  storeQuery.data.price.toNumber() / dataFeed.answer.toNumber();
                 const amount = balance.data / LAMPORTS_PER_SOL - gas;
                 const max = amount / rate;
                 const { amount: vaultBalance } = vaultQuery.data;

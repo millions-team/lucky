@@ -19,7 +19,7 @@ export const DECIMALS = 8; // All Chainlink feeds have 8 decimals
 const DataFeedContext = React.createContext<Round | null>(null);
 export const useDataFeed = () => React.useContext(DataFeedContext) as Round;
 export const DataFeedProvider: React.FC<
-  React.PropsWithChildren<{ feedAddress: PublicKey }>
+  React.PropsWithChildren<{ feedAddress?: PublicKey }>
 > = ({ feedAddress = USD_SOL_FEED_ADDRESS, children }) => {
   const provider = useAnchorProvider();
   const [dataFeed, setDataFeed] = React.useState<OCR2Feed | null>(null);

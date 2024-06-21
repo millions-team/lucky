@@ -11,8 +11,9 @@ import { useWallet } from '@solana/wallet-adapter-react';
 
 export function Withdraw({ storePda }: BaseProps) {
   const { publicKey } = useWallet();
-  const balance = useGetBalance({ address: publicKey });
+  if (!publicKey) throw new Error('Wallet not connected');
 
+  const balance = useGetBalance({ address: publicKey });
   const { withdraw, balanceQuery } = useStoreProgramAccount({
     storePda,
     callback: () => balance.refetch(),
@@ -24,7 +25,7 @@ export function Withdraw({ storePda }: BaseProps) {
     <label className="form-control w-full max-w-xs">
       <div className="label">
         <span className="label-text">Available</span>
-        {balanceQuery.isLoading ? (
+        {balanceQuery.isLoading || !balanceQuery.data ? (
           <span className="loading loading-ring loading-sm"></span>
         ) : (
           <span
@@ -57,7 +58,7 @@ export function Withdraw({ storePda }: BaseProps) {
       </label>
       <div className="label">
         <span className="label-text-alt">Balance</span>
-        {balance.isLoading ? (
+        {balance.isLoading || !balance.data ? (
           <span className="loading loading-ring loading-sm"></span>
         ) : (
           <span className="label-text-alt">

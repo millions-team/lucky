@@ -16,7 +16,7 @@ export function getStoreProgram(provider: AnchorProvider) {
 }
 
 // This is a helper function to get the program ID for the Store program depending on the cluster.
-export function getStoreProgramId(cluster: Cluster) {
+export function getStoreProgramId(cluster?: Cluster) {
   switch (cluster) {
     case 'devnet':
     case 'testnet':
