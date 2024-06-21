@@ -8,6 +8,7 @@ declare_id!("EJkF6ZLAq9WtmeoSnM2BEuVygS7WUjbq1KQP5xWW7Sgb");
 #[program]
 mod vault {
     use super::*;
+
     pub fn initialize(_ctx: Context<Initialize>) -> Result<()> {
         Ok(())
     }
@@ -49,7 +50,7 @@ mod vault {
         let cpi_ctx = CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
             transfer_instruction,
-            signer
+            signer,
         );
 
         anchor_spl::token::transfer(cpi_ctx, amount)?;
@@ -65,7 +66,7 @@ pub struct Initialize<'info> {
     #[account(
         init_if_needed,
         payer = signer,
-        seeds=[b"token_account_owner_pda"],
+        seeds = [b"token_account_owner_pda"],
         bump,
         space = 8 + 1
     )]
@@ -74,9 +75,9 @@ pub struct Initialize<'info> {
     #[account(
         init_if_needed,
         payer = signer,
-        seeds=[b"token_vault", mint_of_token_being_sent.key().as_ref()],
-        token::mint=mint_of_token_being_sent,
-        token::authority=token_account_owner_pda,
+        seeds = [b"token_vault", mint_of_token_being_sent.key().as_ref()],
+        token::mint = mint_of_token_being_sent,
+        token::authority = token_account_owner_pda,
         bump
     )]
     vault_token_account: Account<'info, TokenAccount>,
@@ -94,17 +95,19 @@ pub struct Initialize<'info> {
 pub struct TransferAccounts<'info> {
     // Derived PDAs
     /// CHECK: This is currently DANGER because anyone can transfer out tokens.
-    #[account(mut,
-    seeds=[b"token_account_owner_pda"],
-    bump
+    #[account(
+        mut,
+        seeds = [b"token_account_owner_pda"],
+        bump
     )]
     token_account_owner_pda: AccountInfo<'info>,
 
-    #[account(mut,
-    seeds=[b"token_vault", mint_of_token_being_sent.key().as_ref()],
-    bump,
-    token::mint=mint_of_token_being_sent,
-    token::authority=token_account_owner_pda,
+    #[account(
+        mut,
+        seeds = [b"token_vault", mint_of_token_being_sent.key().as_ref()],
+        bump,
+        token::mint = mint_of_token_being_sent,
+        token::authority = token_account_owner_pda,
     )]
     vault_token_account: Account<'info, TokenAccount>,
 
