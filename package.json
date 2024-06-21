@@ -1,6 +1,6 @@
 {
   "name": "@luckyland/source",
-  "version": "0.0.0",
+  "version": "0.1.1",
   "license": "MIT",
   "scripts": {
     "anchor": "nx run anchor:anchor",
@@ -10,7 +10,8 @@
     "feature": "nx generate @solana-developers/preset-react:feature",
     "build": "nx build web",
     "dev": "nx serve web",
-    "start": "next start ./dist/web"
+    "start": "next start ./dist/web",
+    "release": "standard-version"
   },
   "private": true,
   "dependencies": {
@@ -74,6 +75,7 @@
     "nx": "19.0.0",
     "postcss": "8.4.21",
     "prettier": "^2.6.2",
+    "standard-version": "^9.5.0",
     "tailwindcss": "3.2.7",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
