@@ -1,6 +1,6 @@
 'use client';
 
-import { WalletButton } from '../solana/solana-provider';
+import { WalletButton } from '@/providers';
 import * as React from 'react';
 import { ReactNode, Suspense, useEffect, useRef } from 'react';
 

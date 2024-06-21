@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { getVaultAccountOwnerPDA } from '@luckyland/anchor';
 
-import { WalletButton } from '../solana/solana-provider';
+import { WalletButton } from '@/providers';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';
 import { useVaultProgram } from './vault-data-access';

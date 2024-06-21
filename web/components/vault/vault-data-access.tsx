@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 import { getVaultProgramId, getVaultProgram } from '@luckyland/anchor';
 
 import { useCluster } from '../cluster/cluster-data-access';
-import { useAnchorProvider } from '../solana/solana-provider';
+import { useAnchorProvider } from '@/providers';
 import { useTransactionToast } from '../ui/ui-layout';
 
 export function useVaultProgram({ callback }: { callback?: () => void } = {}) {
@@ -58,7 +58,7 @@ export function useVaultProgram({ callback }: { callback?: () => void } = {}) {
       const senderTokenAccount = await getAssociatedTokenAddress(mint, sender);
 
       return program.methods
-        .transferIn(new BN(amount))
+        .transferIn(new BN(amount.toString()))
         .accounts({ mintOfTokenBeingSent: mint, senderTokenAccount })
         .rpc();
     },
@@ -83,7 +83,7 @@ export function useVaultProgram({ callback }: { callback?: () => void } = {}) {
       const senderTokenAccount = await getAssociatedTokenAddress(mint, sender);
 
       return program.methods
-        .transferOut(new BN(amount))
+        .transferOut(new BN(amount.toString()))
         .accounts({ mintOfTokenBeingSent: mint, senderTokenAccount })
         .rpc();
     },

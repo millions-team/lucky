@@ -1,8 +1,12 @@
 import './global.css';
+
+import {
+  ReactQueryProvider,
+  ClusterProvider,
+  SolanaProvider,
+  DataFeedProvider,
+} from '@/providers';
 import { UiLayout } from '@/components/ui/ui-layout';
-import { ClusterProvider } from '@/components/cluster/cluster-data-access';
-import { SolanaProvider } from '@/components/solana/solana-provider';
-import { ReactQueryProvider } from './react-query-provider';
 import { Analytics } from '@vercel/analytics/next';
 
 const { NEXT_PUBLIC_VERCEL_ENV = 'development' } = process.env;
@@ -31,9 +35,11 @@ export default function RootLayout({
         <ReactQueryProvider>
           <ClusterProvider>
             <SolanaProvider>
-              <UiLayout links={links} env={NEXT_PUBLIC_VERCEL_ENV}>
-                {children}
-              </UiLayout>
+              <DataFeedProvider>
+                <UiLayout links={links} env={NEXT_PUBLIC_VERCEL_ENV}>
+                  {children}
+                </UiLayout>
+              </DataFeedProvider>
             </SolanaProvider>
           </ClusterProvider>
         </ReactQueryProvider>
