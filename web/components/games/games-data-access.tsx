@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 
 import { useAnchorProvider } from '@/providers';
 import {
-  type GameSettings,
+  type GameMode,
   getGamePDA,
   getGamesProgram,
   getGamesProgramId,
@@ -33,7 +33,7 @@ export function useGamesProgram({ callback }: { callback?: () => void }) {
 
   const games = useQuery({
     queryKey: ['games', 'all', { cluster }],
-    queryFn: () => program.account.game.all(),
+    queryFn: () => program.account.gameMode.all(),
   });
 
   const getProgramAccount = useQuery({
@@ -43,7 +43,7 @@ export function useGamesProgram({ callback }: { callback?: () => void }) {
 
   const createGame = useMutation({
     mutationKey: ['games', 'create-game', { cluster }],
-    mutationFn: async (settings: GameSettings) => {
+    mutationFn: async (settings: GameMode) => {
       const secret = Keypair.generate();
       return {
         signature: await program.methods
@@ -85,12 +85,12 @@ export function useGamesProgramAccount({ game }: { game: PublicKey }) {
 
   const gameQuery = useQuery({
     queryKey: ['games', 'fetch', { cluster, game }],
-    queryFn: () => program.account.game.fetch(game),
+    queryFn: () => program.account.gameMode.fetch(game),
   });
 
   const update = useMutation({
     mutationKey: ['games', 'update', { cluster, game }],
-    mutationFn: (settings: GameSettings) => {
+    mutationFn: (settings: GameMode) => {
       const { secret } = getGame(game);
       return program.methods.updateGame(settings).accounts({ secret }).rpc();
     },

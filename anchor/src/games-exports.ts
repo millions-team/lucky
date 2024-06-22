@@ -48,11 +48,16 @@ export function decodeName(name: number[]) {
 
 const GAME_SEED = 'GAME_CONFIG';
 
-export type GameSettings = {
-  name: Array<number>;
+export type GameMode = {
   slots: number;
   digits: number;
   choices: number;
   winnerChoice: number;
   pickWinner: boolean;
 };
+
+export const MIN_SLOTS = 1;
+export const MAX_SLOTS = 16;
+export const MIN_DIGITS = 1;
+export const MAX_DIGITS = 8;
+export const MIN_CHOICES = 2;

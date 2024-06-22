@@ -1,23 +1,22 @@
 import { useState } from 'react';
 
-import { type GameSettings, decodeName, encodeName } from '@luckyland/anchor';
+import { type GameMode } from '@luckyland/anchor';
 
 export function SettingsForm({
-  settings: _init = { pickWinner: false } as GameSettings,
+  settings: _init = { pickWinner: false } as GameMode,
   title = 'Game Settings',
   className,
   onSubmit,
   onCancel,
 }: {
   title?: string;
-  settings?: GameSettings;
+  settings?: GameMode;
   className?: string;
-  onSubmit: (settings: GameSettings) => Promise<void>;
+  onSubmit: (settings: GameMode) => Promise<void>;
   onCancel: () => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [settings, setSettings] = useState(_init);
-  const [name, setName] = useState(decodeName(_init.name || []));
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +24,6 @@ export function SettingsForm({
 
     setSubmitting(true);
     try {
-      settings.name = encodeName(name);
       settings.pickWinner =
         settings.winnerChoice === 0 ? false : settings.pickWinner;
 
@@ -38,33 +36,16 @@ export function SettingsForm({
 
   const reset = (success?: boolean) => {
     setSubmitting(false);
-    if (success) {
-      setName('');
-      setSettings({} as GameSettings);
-    }
+    if (success) setSettings({} as GameMode);
   };
 
   return (
     <div className={`card w-full max-w-md glass ${className}`}>
       <div className="card-body">
-        <h2 className="card-title justify-end">{title}</h2>
+        <h2 className="card-title justify-center text-3xl">{title}</h2>
 
         <form onSubmit={submit}>
           <div className="form-control">
-            <label className="label">
-              <span className="label-text">Name</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Name"
-              required
-              className="input input-bordered input-primary"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div className="form-control border-t-2 mt-4">
             <label className="label">
               <span className="label-text text-xl">Slots</span>
             </label>

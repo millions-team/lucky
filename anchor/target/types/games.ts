@@ -88,7 +88,7 @@ export type Games = {
           "signer": true
         },
         {
-          "name": "game",
+          "name": "mode",
           "writable": true,
           "pda": {
             "seeds": [
@@ -132,7 +132,7 @@ export type Games = {
           "name": "settings",
           "type": {
             "defined": {
-              "name": "game"
+              "name": "gameMode"
             }
           }
         }
@@ -157,7 +157,7 @@ export type Games = {
           "signer": true
         },
         {
-          "name": "game",
+          "name": "mode",
           "writable": true,
           "pda": {
             "seeds": [
@@ -197,7 +197,7 @@ export type Games = {
           "name": "settings",
           "type": {
             "defined": {
-              "name": "game"
+              "name": "gameMode"
             }
           }
         }
@@ -206,16 +206,16 @@ export type Games = {
   ],
   "accounts": [
     {
-      "name": "game",
+      "name": "gameMode",
       "discriminator": [
-        27,
-        90,
-        166,
-        125,
-        74,
-        100,
-        121,
-        18
+        2,
+        175,
+        72,
+        45,
+        105,
+        253,
+        104,
+        137
       ]
     }
   ],
@@ -258,19 +258,10 @@ export type Games = {
   ],
   "types": [
     {
-      "name": "game",
+      "name": "gameMode",
       "type": {
         "kind": "struct",
         "fields": [
-          {
-            "name": "name",
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
           {
             "name": "slots",
             "type": "u8"

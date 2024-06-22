@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { PublicKey } from '@solana/web3.js';
 
-import { decodeName } from '@luckyland/anchor';
 import { ExplorerLink } from '@/components/cluster/cluster-ui';
 import { ellipsify } from '@/components/ui/ui-layout';
 
@@ -15,10 +14,6 @@ export function GamesCard({ account }: { account: PublicKey }) {
   const [enableForm, setEnableForm] = useState(false);
 
   const data = useMemo(() => gameQuery.data, [gameQuery.data]);
-  const name = useMemo(
-    () => (data?.name ? decodeName(data.name) : 'Game Settings'),
-    [data?.name]
-  );
 
   return gameQuery.isPending || !data ? (
     <span className="loading loading-spinner loading-lg"></span>
@@ -43,7 +38,7 @@ export function GamesCard({ account }: { account: PublicKey }) {
             {gameQuery.isLoading ? (
               <span className="loading loading-dots loading-lg"></span>
             ) : (
-              name
+              'Game Settings'
             )}
           </h2>
 

@@ -1,8 +1,16 @@
 import * as anchor from '@coral-xyz/anchor';
 import { Program } from '@coral-xyz/anchor';
 import { Keypair } from '@solana/web3.js';
+
 import { Games } from '../target/types/games';
-import { DealerOptions, encodeName, getGamePDA } from '../src';
+import {
+  getGamePDA,
+  MAX_DIGITS,
+  MAX_SLOTS,
+  MIN_CHOICES,
+  MIN_DIGITS,
+  MIN_SLOTS,
+} from '../src/games-exports';
 
 describe('games', () => {
   // Configure the client to use the local cluster.
@@ -12,7 +20,7 @@ describe('games', () => {
 
   const program = anchor.workspace.Games as Program<Games>;
   type GameAccount = ReturnType<
-    typeof program.account.game.fetch
+    typeof program.account.gameMode.fetch
   > extends Promise<infer T>
     ? T
     : never;
@@ -20,10 +28,8 @@ describe('games', () => {
   const { payer: gamesKeypair } = payer;
 
   describe('Valid Game Settings', () => {
-    const name = (i) => encodeName(`valid-${i}`);
     const VALID_GAMES: GameAccount[] = [
       {
-        name: name(1),
         slots: 1,
         digits: 1,
         choices: 2,
@@ -31,7 +37,6 @@ describe('games', () => {
         pickWinner: true,
       },
       {
-        name: name(2),
         slots: 1,
         digits: 8,
         choices: 99999999,
@@ -39,7 +44,6 @@ describe('games', () => {
         pickWinner: false,
       },
       {
-        name: name(3),
         slots: 16,
         digits: 1,
         choices: 2,
@@ -47,7 +51,6 @@ describe('games', () => {
         pickWinner: false,
       },
       {
-        name: name(4),
         slots: 16,
         digits: 1,
         choices: 2,
@@ -55,7 +58,6 @@ describe('games', () => {
         pickWinner: true,
       },
       {
-        name: name(5),
         slots: 16,
         digits: 8,
         choices: 99999999,
@@ -63,7 +65,6 @@ describe('games', () => {
         pickWinner: false,
       },
       {
-        name: name(6),
         slots: 16,
         digits: 8,
         choices: 99999999,
@@ -72,7 +73,6 @@ describe('games', () => {
       },
     ];
     const INVALID_GAME: GameAccount = {
-      name: name('invalid'),
       slots: 1,
       digits: 1,
       choices: 2,
@@ -92,7 +92,7 @@ describe('games', () => {
             .signers([gamesKeypair])
             .rpc();
 
-          const game = await program.account.game.fetch(gamePDA);
+          const game = await program.account.gameMode.fetch(gamePDA);
 
           expect(game.slots).toEqual(settings.slots);
           expect(game.digits).toEqual(settings.digits);
@@ -110,7 +110,7 @@ describe('games', () => {
               .accounts({ secret: secret.publicKey })
               .rpc();
 
-            const game = await program.account.game.fetch(gamePDA);
+            const game = await program.account.gameMode.fetch(gamePDA);
 
             expect(game.slots).toEqual(newSettings.slots);
             expect(game.digits).toEqual(newSettings.digits);
@@ -135,7 +135,7 @@ describe('games', () => {
             .rpc();
 
           // The account should no longer exist, returning null.
-          const game = await program.account.game.fetchNullable(gamePDA);
+          const game = await program.account.gameMode.fetchNullable(gamePDA);
           expect(game).toBeNull();
         });
       });
@@ -144,48 +144,115 @@ describe('games', () => {
 
   describe('Invalid Game Settings', () => {
     // Invalid game set tests. The goal is to reach all the branches of the verify function.
-    const name = encodeName('invalid');
-    const INVALID_GAMES: Partial<GameAccount>[] = [
-      { name, slots: 0 },
-      { name, slots: 17 },
-      { name, slots: 1, digits: 0 },
-      { name, slots: 1, digits: 9 },
-      { name, slots: 1, digits: 1, choices: 1 },
-      { name, slots: 1, digits: 1, choices: 10 },
-      { name, slots: 1, digits: 8, choices: 100000000 },
-      { name, slots: 1, digits: 1, choices: 2, winnerChoice: 0 },
-      { name, slots: 1, digits: 1, choices: 9, winnerChoice: 10 },
-      { name, slots: 2, digits: 1, choices: 2, winnerChoice: 3 },
-      { name, slots: 1, digits: 8, choices: 99999999, winnerChoice: 100000000 },
-      { name, slots: 2, digits: 1, choices: 2, winnerChoice: -1 },
+    const INVALID_GAMES: Partial<GameAccount & { reason: string }>[] = [
       {
-        name,
+        slots: 0,
+        digits: 1,
+        choices: 2,
+        winnerChoice: 1,
+        pickWinner: false,
+        reason: `Slots < ${MIN_SLOTS}`,
+      },
+      {
+        slots: 17,
+        digits: 1,
+        choices: 2,
+        winnerChoice: 1,
+        pickWinner: false,
+        reason: `Slots > ${MAX_SLOTS}`,
+      },
+      {
+        slots: 1,
+        digits: 0,
+        choices: 2,
+        winnerChoice: 1,
+        pickWinner: false,
+        reason: `Digits < ${MIN_DIGITS}`,
+      },
+      {
+        slots: 1,
+        digits: 9,
+        choices: 2,
+        winnerChoice: 1,
+        pickWinner: false,
+        reason: `Digits > ${MAX_DIGITS}`,
+      },
+      {
+        slots: 1,
+        digits: 1,
+        choices: 1,
+        winnerChoice: 1,
+        pickWinner: false,
+        reason: `Choices < ${MIN_CHOICES}`,
+      },
+      {
+        slots: 1,
+        digits: 1,
+        choices: 10,
+        winnerChoice: 1,
+        pickWinner: false,
+        reason: `Choices > (10 ^ digits) - 1`,
+      },
+      {
+        slots: 1,
+        digits: 8,
+        choices: 100000000,
+        winnerChoice: 1,
+        pickWinner: false,
+        reason: 'Choices > (10 ^ digits) - 1',
+      },
+      {
+        slots: 1,
+        digits: 1,
+        choices: 2,
+        winnerChoice: 0,
+        pickWinner: false,
+        reason: 'Winner choice 0 on single slot game',
+      },
+      {
+        slots: 1,
+        digits: 1,
+        choices: 9,
+        winnerChoice: 10,
+        pickWinner: false,
+        reason: 'Winner choice > choices',
+      },
+      {
+        slots: 2,
+        digits: 1,
+        choices: 2,
+        winnerChoice: 3,
+        pickWinner: false,
+        reason: 'Winner choice > choices',
+      },
+      {
+        slots: 1,
+        digits: 8,
+        choices: 99999999,
+        winnerChoice: 100000000,
+        pickWinner: false,
+        reason: 'Winner choice > choices',
+      },
+      {
+        slots: 2,
+        digits: 1,
+        choices: 2,
+        winnerChoice: -1,
+        pickWinner: false,
+        reason: 'Winner choice < 0',
+      },
+      {
         slots: 2,
         digits: 1,
         choices: 2,
         winnerChoice: 0,
         pickWinner: true,
-      },
-      {
-        name: encodeName('1'),
-        slots: 1,
-        digits: 1,
-        choices: 2,
-        winnerChoice: 1,
-        pickWinner: true,
-      },
-      {
-        name: encodeName('11'),
-        slots: 1,
-        digits: 1,
-        choices: 2,
-        winnerChoice: 1,
-        pickWinner: true,
+        reason: 'Pick winner true on winner choice 0',
       },
     ];
 
-    INVALID_GAMES.forEach((settings) => {
-      describe(`Invalid game with ${JSON.stringify(settings)}`, () => {
+    INVALID_GAMES.forEach(({ reason, ...settings }) => {
+      describe(`Invalid game with ${reason}`, () => {
         const secret = Keypair.generate();
         const gamePDA = getGamePDA(gamesKeypair.publicKey, secret.publicKey);
 
