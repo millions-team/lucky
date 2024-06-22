@@ -31,23 +31,23 @@ export function useGamesProgram({ callback }: { callback?: () => void }) {
   );
   const program = getGamesProgram(provider);
 
-  const accounts = useQuery({
+  const games = useQuery({
     queryKey: ['games', 'all', { cluster }],
     queryFn: () => program.account.game.all(),
   });
 
   const getProgramAccount = useQuery({
-    queryKey: ['get-program-account', { cluster }],
+    queryKey: ['get-program-account', { cluster, programId }],
     queryFn: () => connection.getParsedAccountInfo(programId),
   });
 
-  const initialize = useMutation({
-    mutationKey: ['games', 'initialize', { cluster }],
+  const createGame = useMutation({
+    mutationKey: ['games', 'create-game', { cluster }],
     mutationFn: async (settings: GameSettings) => {
       const secret = Keypair.generate();
       return {
         signature: await program.methods
-          .initialize(settings)
+          .createGame(settings)
           .accounts({ secret: secret.publicKey })
           .rpc(),
         secret: secret.publicKey,
@@ -60,20 +60,20 @@ export function useGamesProgram({ callback }: { callback?: () => void }) {
       const gamePDA = getGamePDA(owner, secret, cluster.network as Cluster);
       addGame(gamePDA, { owner, secret });
 
-      return accounts.refetch().then(() => callback?.());
+      return games.refetch().then(() => callback?.());
     },
     onError: (error, variables, context) => {
-      console.log('Failed to initialize account', error, variables, context);
-      toast.error('Failed to initialize account');
+      console.log('Failed to createGame account', error, variables, context);
+      toast.error('Failed to createGame account');
     },
   });
 
   return {
     program,
     programId,
-    accounts,
+    games,
     getProgramAccount,
-    initialize,
+    createGame,
   };
 }
 
@@ -81,7 +81,7 @@ export function useGamesProgramAccount({ game }: { game: PublicKey }) {
   const { cluster } = useCluster();
   const { getGame, deleteGame } = useGames();
   const transactionToast = useTransactionToast();
-  const { program, accounts } = useGamesProgram({});
+  const { program, games } = useGamesProgram({});
 
   const gameQuery = useQuery({
     queryKey: ['games', 'fetch', { cluster, game }],
@@ -92,7 +92,7 @@ export function useGamesProgramAccount({ game }: { game: PublicKey }) {
     mutationKey: ['games', 'update', { cluster, game }],
     mutationFn: (settings: GameSettings) => {
       const { secret } = getGame(game);
-      return program.methods.update(settings).accounts({ secret }).rpc();
+      return program.methods.updateGame(settings).accounts({ secret }).rpc();
     },
     onSuccess: (tx) => {
       transactionToast(tx);
@@ -104,12 +104,12 @@ export function useGamesProgramAccount({ game }: { game: PublicKey }) {
     mutationKey: ['games', 'close', { cluster, game }],
     mutationFn: () => {
       const { secret } = getGame(game);
-      return program.methods.close().accounts({ secret }).rpc();
+      return program.methods.closeGame().accounts({ secret }).rpc();
     },
     onSuccess: (tx) => {
       transactionToast(tx);
       deleteGame(game);
-      return accounts.refetch();
+      return games.refetch();
     },
   });
 

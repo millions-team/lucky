@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 
-import { useGamesProgram, useGamesProgramAccount } from './games-data-access';
+import { useGamesProgram } from './games-data-access';
 import { GamesCard, SettingsForm } from './game';
 
 export function GamesCreate() {
   const [create, setCreate] = useState(false);
-  const { initialize } = useGamesProgram({
+  const { createGame } = useGamesProgram({
     callback: () => setCreate(false),
   });
 
@@ -17,7 +17,7 @@ export function GamesCreate() {
         <SettingsForm
           title="Create Game"
           onSubmit={async (settings) => {
-            await initialize.mutateAsync(settings);
+            await createGame.mutateAsync(settings);
           }}
           onCancel={() => setCreate(false)}
         />
@@ -31,7 +31,7 @@ export function GamesCreate() {
 }
 
 export function GamesList() {
-  const { accounts, getProgramAccount } = useGamesProgram({});
+  const { games, getProgramAccount } = useGamesProgram({});
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;
@@ -48,11 +48,11 @@ export function GamesList() {
   }
   return (
     <div className={'space-y-6'}>
-      {accounts.isLoading ? (
+      {games.isLoading ? (
         <span className="loading loading-spinner loading-lg"></span>
-      ) : accounts.data?.length ? (
+      ) : games.data?.length ? (
         <div className="grid md:grid-cols-2 gap-4">
-          {accounts.data?.map((account) => (
+          {games.data?.map((account) => (
             <GamesCard
               key={account.publicKey.toString()}
               account={account.publicKey}

@@ -14,16 +14,16 @@ export type Games = {
   },
   "instructions": [
     {
-      "name": "close",
+      "name": "closeGame",
       "discriminator": [
-        98,
-        165,
+        237,
+        236,
+        157,
         201,
-        177,
-        108,
-        65,
-        206,
-        96
+        253,
+        20,
+        248,
+        67
       ],
       "accounts": [
         {
@@ -70,16 +70,16 @@ export type Games = {
       "args": []
     },
     {
-      "name": "initialize",
+      "name": "createGame",
       "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
+        124,
+        69,
+        75,
+        66,
+        184,
+        220,
+        72,
+        206
       ],
       "accounts": [
         {
@@ -139,16 +139,16 @@ export type Games = {
       ]
     },
     {
-      "name": "update",
+      "name": "updateGame",
       "discriminator": [
-        219,
-        200,
-        88,
-        176,
-        158,
-        63,
-        253,
-        127
+        159,
+        61,
+        132,
+        131,
+        3,
+        234,
+        209,
+        220
       ],
       "accounts": [
         {

@@ -34,7 +34,7 @@ pub struct Game {
 }
 
 #[error_code]
-pub enum ErrorCode {
+pub enum GameSettingsErrorCode {
     #[msg("Name must be between 3 and 32 characters")]
     InvalidName,
 
@@ -58,8 +58,6 @@ pub enum ErrorCode {
 }
 
 impl Game {
-    // pub const INIT_SPACE: usize = 32 + 1 + 1 + 1 + 1;
-
     pub fn new(name: [u8; 32], slots: u8, digits: u8, choices: u32, winner_choice: u32, pick_winner: bool) -> Self {
         Self {
             name,
@@ -73,37 +71,37 @@ impl Game {
 
     fn verify_game_name(name: &[u8; 32]) -> Result<()> {
         // verify the first 3 characters are not 0
-        if !(name[0] != 0 && name[1] != 0 && name[2] != 0) { return Err(ErrorCode::InvalidName.into()); }
+        if !(name[0] != 0 && name[1] != 0 && name[2] != 0) { return Err(GameSettingsErrorCode::InvalidName.into()); }
         Ok(())
     }
 
     fn verify_game_slots(slots: u8) -> Result<()> {
-        if slots < 1 || slots > 16 { return Err(ErrorCode::InvalidSlots.into()); }
+        if slots < 1 || slots > 16 { return Err(GameSettingsErrorCode::InvalidSlots.into()); }
         Ok(())
     }
 
     fn verify_game_digits(digits: u8) -> Result<()> {
-        if digits < 1 || digits > 8 { return Err(ErrorCode::InvalidDigits.into()); }
+        if digits < 1 || digits > 8 { return Err(GameSettingsErrorCode::InvalidDigits.into()); }
         Ok(())
     }
 
     fn verify_game_choices(choices: u32, digits: u8) -> Result<()> {
         let max_choices = 10u32.pow(digits as u32) - 1;
-        if choices < 2 || choices > max_choices { return Err(ErrorCode::InvalidChoices.into()); }
+        if choices < 2 || choices > max_choices { return Err(GameSettingsErrorCode::InvalidChoices.into()); }
         Ok(())
     }
 
     fn verify_game_winner_choice(winner_choice: u32, slots: u8, choices: u32) -> Result<()> {
         if slots == 1 {
-            if winner_choice < 1 || winner_choice > choices { return Err(ErrorCode::InvalidWinnerSingleChoice.into()); }
+            if winner_choice < 1 || winner_choice > choices { return Err(GameSettingsErrorCode::InvalidWinnerSingleChoice.into()); }
         } else {
-            if winner_choice > choices { return Err(ErrorCode::InvalidWinnerChoice.into()); }
+            if winner_choice > choices { return Err(GameSettingsErrorCode::InvalidWinnerChoice.into()); }
         }
         Ok(())
     }
 
     fn verify_game_pick_winner(pick_winner: bool, winner_choice: u32) -> Result<()> {
-        if pick_winner && winner_choice == 0 { return Err(ErrorCode::InvalidPickWinner.into()); }
+        if pick_winner && winner_choice == 0 { return Err(GameSettingsErrorCode::InvalidPickWinner.into()); }
         Ok(())
     }
 
@@ -135,18 +133,18 @@ fn verify_and_update_game(game: &mut Game, settings: Game) -> Result<()> {
 pub mod games {
     use super::*;
 
-    pub fn initialize(ctx: Context<InitializeGame>, settings: Game) -> Result<()> {
+    pub fn create_game(ctx: Context<InitializeGame>, settings: Game) -> Result<()> {
         verify_and_update_game(&mut ctx.accounts.game, settings)?;
         Ok(())
     }
 
-    pub fn update(ctx: Context<Update>, settings: Game) -> Result<()> {
+    pub fn update_game(ctx: Context<UpdateGame>, settings: Game) -> Result<()> {
         // TODO: Name is not being updated.
         verify_and_update_game(&mut ctx.accounts.game, settings)?;
         Ok(())
     }
 
-    pub fn close(_ctx: Context<CloseGame>) -> Result<()> { Ok(()) }
+    pub fn close_game(_ctx: Context<CloseGame>) -> Result<()> { Ok(()) }
 }
 
 #[derive(Accounts)]
@@ -169,7 +167,7 @@ pub struct InitializeGame<'info> {
 }
 
 #[derive(Accounts)]
-pub struct Update<'info> {
+pub struct UpdateGame<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 

@@ -71,6 +71,14 @@ describe('games', () => {
         pickWinner: true,
       },
     ];
+    const INVALID_GAME: GameAccount = {
+      name: name('invalid'),
+      slots: 1,
+      digits: 1,
+      choices: 2,
+      winnerChoice: 0, // not allowed when slots == 1
+      pickWinner: false,
+    };
 
     VALID_GAMES.forEach((settings, i) => {
       describe(`Game with ${JSON.stringify(settings)}`, () => {
@@ -79,7 +87,7 @@ describe('games', () => {
 
         it(`Should initialize the game with the correct settings`, async () => {
           await program.methods
-            .initialize(settings)
+            .createGame(settings)
             .accounts({ secret: secret.publicKey })
             .signers([gamesKeypair])
             .rpc();
@@ -98,7 +106,7 @@ describe('games', () => {
             const newSettings = VALID_GAMES[i + 1];
 
             await program.methods
-              .update(newSettings)
+              .updateGame(newSettings)
               .accounts({ secret: secret.publicKey })
               .rpc();
 
@@ -110,10 +118,19 @@ describe('games', () => {
             expect(game.winnerChoice).toEqual(newSettings.winnerChoice);
             expect(game.pickWinner).toEqual(newSettings.pickWinner);
           });
+        else
+          it(`Should fail to update the game settings`, async () => {
+            await expect(
+              program.methods
+                .updateGame(INVALID_GAME)
+                .accounts({ secret: secret.publicKey })
+                .rpc()
+            ).rejects.toThrow();
+          });
 
         it('Should close the game account', async () => {
           await program.methods
-            .close()
+            .closeGame()
             .accounts({ secret: secret.publicKey })
             .rpc();
 
@@ -175,7 +192,7 @@ describe('games', () => {
         it(`Should fail to initialize the game with the invalid settings`, async () => {
           await expect(
             program.methods
-              .initialize(settings as any)
+              .createGame(settings as any)
               .accounts({ secret: secret.publicKey })
               .signers([gamesKeypair])
               .rpc()
