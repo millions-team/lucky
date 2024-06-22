@@ -1,0 +1,283 @@
+{
+  "address": "74arRDDazQJzSQRhm7VonhyhRnNrwBGZE4dyhNva5z8p",
+  "metadata": {
+    "name": "games",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "close",
+      "discriminator": [
+        98,
+        165,
+        201,
+        177,
+        108,
+        65,
+        206,
+        96
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  71,
+                  65,
+                  77,
+                  69,
+                  95,
+                  67,
+                  79,
+                  78,
+                  70,
+                  73,
+                  71
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  71,
+                  65,
+                  77,
+                  69,
+                  95,
+                  67,
+                  79,
+                  78,
+                  70,
+                  73,
+                  71
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "settings",
+          "type": {
+            "defined": {
+              "name": "Game"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update",
+      "discriminator": [
+        219,
+        200,
+        88,
+        176,
+        158,
+        63,
+        253,
+        127
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  71,
+                  65,
+                  77,
+                  69,
+                  95,
+                  67,
+                  79,
+                  78,
+                  70,
+                  73,
+                  71
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": [
+        {
+          "name": "settings",
+          "type": {
+            "defined": {
+              "name": "Game"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Game",
+      "discriminator": [
+        27,
+        90,
+        166,
+        125,
+        74,
+        100,
+        121,
+        18
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidName",
+      "msg": "Name must be between 3 and 32 characters"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidSlots",
+      "msg": "Slots must be between 1 and 16"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidDigits",
+      "msg": "Digits must be between 1 and 8"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidChoices",
+      "msg": "Choices must be between 2 and max value of digits"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidWinnerSingleChoice",
+      "msg": "Winner choice must be between 1 and choices"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidWinnerChoice",
+      "msg": "Winner choice must be between 0 and choices"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidPickWinner",
+      "msg": "Pick winner is true but winner choice is 0"
+    }
+  ],
+  "types": [
+    {
+      "name": "Game",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "slots",
+            "type": "u8"
+          },
+          {
+            "name": "digits",
+            "type": "u8"
+          },
+          {
+            "name": "choices",
+            "type": "u32"
+          },
+          {
+            "name": "winner_choice",
+            "type": "u32"
+          },
+          {
+            "name": "pick_winner",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ]
+}
