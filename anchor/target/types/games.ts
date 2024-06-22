@@ -263,6 +263,15 @@ export type Games = {
         "kind": "struct",
         "fields": [
           {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
             "name": "slots",
             "type": "u8"
           },

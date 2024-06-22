@@ -9,7 +9,7 @@ const GAME_SEED: &[u8] = b"GAME_CONFIG";
 #[account]
 #[derive(InitSpace)]
 pub struct Game {
-    // pub name: [u8; 32],      // The name of the game. Max 32 characters.
+    pub name: [u8; 32],      // The name of the game. Max 32 characters.
 
     pub slots: u8,          // Number of slots in the game.
     // 1 <= slots <= 16.
@@ -60,10 +60,9 @@ pub enum ErrorCode {
 impl Game {
     // pub const INIT_SPACE: usize = 32 + 1 + 1 + 1 + 1;
 
-    // pub fn new(name: [u8; 32], slots: u8, digits: u8, choices: u32, winner_choice: u32) -> Self {
-    pub fn new(slots: u8, digits: u8, choices: u32, winner_choice: u32, pick_winner: bool) -> Self {
+    pub fn new(name: [u8; 32], slots: u8, digits: u8, choices: u32, winner_choice: u32, pick_winner: bool) -> Self {
         Self {
-            // name,
+            name,
             slots,
             digits,
             choices,
@@ -72,11 +71,11 @@ impl Game {
         }
     }
 
-    // fn verify_game_name(name: &[u8; 32]) -> Result<()> {
-    //     // verify the first 3 characters are not 0
-    //     if name[0] == 0 && name[1] == 0 && name[2] == 0 { return Err(ErrorCode::InvalidName.into()); }
-    //     Ok(())
-    // }
+    fn verify_game_name(name: &[u8; 32]) -> Result<()> {
+        // verify the first 3 characters are not 0
+        if !(name[0] != 0 && name[1] != 0 && name[2] != 0) { return Err(ErrorCode::InvalidName.into()); }
+        Ok(())
+    }
 
     fn verify_game_slots(slots: u8) -> Result<()> {
         if slots < 1 || slots > 16 { return Err(ErrorCode::InvalidSlots.into()); }
@@ -109,7 +108,7 @@ impl Game {
     }
 
     fn verify(game: Game) -> Result<()> {
-        // Game::verify_game_name(&game.name)?;
+        Game::verify_game_name(&game.name)?;
         Game::verify_game_slots(game.slots)?;
         Game::verify_game_digits(game.digits)?;
         Game::verify_game_choices(game.choices, game.digits)?;
@@ -121,7 +120,7 @@ impl Game {
 }
 
 fn verify_and_update_game(game: &mut Game, settings: Game) -> Result<()> {
-    // game.name = settings.name.clone();
+    game.name = settings.name.clone(); // CHECK: This is not being updated. it works correct on initialize.
     game.slots = settings.slots.clone();
     game.digits = settings.digits.clone();
     game.choices = settings.choices.clone();
@@ -142,6 +141,7 @@ pub mod games {
     }
 
     pub fn update(ctx: Context<Update>, settings: Game) -> Result<()> {
+        // TODO: Name is not being updated.
         verify_and_update_game(&mut ctx.accounts.game, settings)?;
         Ok(())
     }
