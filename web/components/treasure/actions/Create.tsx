@@ -1,13 +1,13 @@
 import { PublicKey } from '@solana/web3.js';
 
-import { useVaultProgram } from '../vault-data-access';
+import { useTreasureProgram } from '../treasure-data-access';
 type CreateProps = {
   mint: PublicKey;
   onCompleted?: () => void;
 };
 
 export function Create({ mint, onCompleted }: CreateProps) {
-  const { initialize } = useVaultProgram({ callback: onCompleted });
+  const { initialize } = useTreasureProgram({ callback: onCompleted });
 
   return (
     <button

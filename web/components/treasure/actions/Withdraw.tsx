@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { useOwnedToken } from '@/hooks';
 
-import { useVaultProgram } from '../vault-data-access';
 import type { ActionsProps } from './actions';
+import { useTreasureProgram } from '../treasure-data-access';
 
-export function Deposit({ token, player, balance, onCompleted }: ActionsProps) {
+export function Withdraw({
+  token,
+  player,
+  balance,
+  onCompleted,
+}: ActionsProps) {
   const { token: OwnedToken, refresh } = useOwnedToken(player, token.mint);
-  const { deposit } = useVaultProgram({
+  const { withdraw } = useTreasureProgram({
     callback: () => refresh().then(onCompleted),
   });
   const [amount, setAmount] = useState(0);
@@ -14,15 +19,9 @@ export function Deposit({ token, player, balance, onCompleted }: ActionsProps) {
 
   return (
     <div className="card lg:card-side bg-base-200 shadow-xl my-8">
-      <figure className="bg-base-300 relative lg:w-36">
-        <img src={image} alt="Album" className="w-16" />
-        <span className="absolute h-6 w-full right-0 bottom-2 text-accent font-bold text-end pr-2">
-          {Intl.NumberFormat('en-US', {}).format(balance)}
-        </span>
-      </figure>
       <div className="card-body">
-        <h2 className="card-title">Storing {token.name}</h2>
-        <p>Transfer {token.name} into the vault</p>
+        <h2 className="card-title">Withdrawing {token.name}</h2>
+        <p>Transfer {token.name} out of the stronghold</p>
 
         <form action="">
           <div className="form-control">
@@ -39,7 +38,7 @@ export function Deposit({ token, player, balance, onCompleted }: ActionsProps) {
             </label>
             <input
               type="number"
-              placeholder="Amount to store"
+              placeholder="Amount to withdraw"
               className="input input-bordered input-info"
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
@@ -51,17 +50,23 @@ export function Deposit({ token, player, balance, onCompleted }: ActionsProps) {
           <button
             className="btn btn-primary"
             onClick={() =>
-              deposit.mutateAsync({
+              withdraw.mutateAsync({
                 mint: token.mint,
                 amount: BigInt(amount) * BigInt(10 ** token.decimals),
                 sender: player,
               })
             }
           >
-            Transfer
+            Retrieve
           </button>
         </div>
       </div>
+      <figure className="bg-base-300 relative lg:w-36">
+        <img src={image} alt="Album" className="w-16" />
+        <div className="absolute w-full h-6 right-0 top-2 text-accent font-bold pr-2 text-end">
+          {Intl.NumberFormat('en-US', {}).format(balance)}
+        </div>
+      </figure>
     </div>
   );
 }

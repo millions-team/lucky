@@ -2,26 +2,27 @@
 
 import { useMemo } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { getVaultAccountOwnerPDA } from '@luckyland/anchor';
+import { getKeeperPDA } from '@luckyland/anchor';
 
 import { WalletButton } from '@/providers';
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';
-import { useVaultProgram } from './vault-data-access';
-import { VaultProgram } from './vault-ui';
+import { useTreasureProgram } from './treasure-data-access';
+import { TreasureProgram } from './treasure-ui';
 
-export default function VaultFeature() {
+export default function TreasureFeature() {
   const { publicKey } = useWallet();
-  const { programId } = useVaultProgram();
-  const ownerPDA = useMemo(() => getVaultAccountOwnerPDA(), []);
+  const { programId } = useTreasureProgram();
+  const ownerPDA = useMemo(() => getKeeperPDA(), []);
 
   return publicKey ? (
     <div>
       <AppHero
-        title="Vault"
-        subtitle={'Run the program by clicking the "Run program" button.'}
+        title="Treasury"
+        subtitle={`Here you can safely store your treasures.
+          So they could be redeemed as loots by the lucky adventurers.`}
       >
-        <div className="flex flex-row gap-8 items-center justify-center mb-6">
+        <div className="flex flex-row gap-8 items-center justify-center">
           <p className="tooltip tooltip-primary" data-tip="Program">
             <ExplorerLink
               path={`account/${programId}`}
@@ -36,7 +37,7 @@ export default function VaultFeature() {
           </p>
         </div>
       </AppHero>
-      <VaultProgram player={publicKey} />
+      <TreasureProgram player={publicKey} />
     </div>
   ) : (
     <div className="max-w-4xl mx-auto">

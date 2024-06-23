@@ -17,10 +17,10 @@ export const metadata = {
 
 const links: { label: string; path: string; program?: boolean }[] = [
   { label: 'Account', path: '/account' },
-  { label: 'Vault', path: '/vault', program: true },
+  { label: 'Treasury', path: '/treasure', program: true },
+  { label: 'Games', path: '/games', program: true },
   { label: 'Lucky', path: '/lucky', program: true },
   { label: 'Store', path: '/store', program: true },
-  { label: 'Games', path: '/games', program: true },
 ];
 
 if (NEXT_PUBLIC_VERCEL_ENV !== 'production')

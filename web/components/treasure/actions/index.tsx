@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useOwnedToken } from '@/hooks';
-import { getVaultAccountOwnerPDA } from '@luckyland/anchor';
+import { getKeeperPDA } from '@luckyland/anchor';
 
 import type { BaseProps } from './actions';
 
@@ -13,7 +13,7 @@ export function VaultActions(props: BaseProps) {
   const {
     token: { mint },
   } = props;
-  const ownerPDA = useMemo(() => getVaultAccountOwnerPDA(), []);
+  const ownerPDA = useMemo(() => getKeeperPDA(), []);
   const { token: ownedToken, refresh } = useOwnedToken(ownerPDA, mint);
 
   const vaultBalance = ownedToken?.amount || 0;
