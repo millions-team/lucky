@@ -4,7 +4,9 @@ import { Keypair } from '@solana/web3.js';
 
 import { Games } from '../target/types/games';
 import {
+  encodeName,
   getGameModePDA,
+  getGamePDA,
   MAX_DIGITS,
   MAX_SLOTS,
   MIN_CHOICES,
@@ -20,12 +22,26 @@ describe('Game Mode', () => {
 
   const program = anchor.workspace.Games as Program<Games>;
 
-  type GameMode = ReturnType<
-    typeof program.account.gameMode.fetch
-  > extends Promise<infer T>
-    ? T
-    : never;
+  type GameMode = Omit<
+    ReturnType<typeof program.account.gameMode.fetch> extends Promise<infer T>
+      ? T
+      : never,
+    'game'
+  >;
+
   const { payer: gamesKeypair } = payer;
+  const secret = Keypair.generate();
+  const gamePDA = getGamePDA(gamesKeypair.publicKey, secret.publicKey);
+
+  beforeAll(async () => {
+    const name = encodeName('Awesome Game Modes');
+
+    await program.methods
+      .createGame(name)
+      .accounts({ secret: secret.publicKey })
+      .signers([gamesKeypair])
+      .rpc();
+  });
 
   describe('Valid Settings', () => {
     const VALID_GAMES: GameMode[] = [
@@ -82,26 +98,24 @@ describe('Game Mode', () => {
 
     VALID_GAMES.forEach((settings, i) => {
       describe(`Game with ${JSON.stringify(settings)}`, () => {
-        const secret = Keypair.generate();
-        const gamePDA = getGameModePDA(
-          gamesKeypair.publicKey,
-          secret.publicKey
-        );
+        const seed = `game-${i}`;
+        const gameModePDA = getGameModePDA(gamePDA, seed);
 
         it(`Should initialize the game with the correct settings`, async () => {
           await program.methods
-            .addGameMode(settings)
+            .addGameMode(seed, settings)
             .accounts({ secret: secret.publicKey })
             .signers([gamesKeypair])
             .rpc();
 
-          const game = await program.account.gameMode.fetch(gamePDA);
+          const gameMode = await program.account.gameMode.fetch(gameModePDA);
 
-          expect(game.slots).toEqual(settings.slots);
-          expect(game.digits).toEqual(settings.digits);
-          expect(game.choices).toEqual(settings.choices);
-          expect(game.winnerChoice).toEqual(settings.winnerChoice);
-          expect(game.pickWinner).toEqual(settings.pickWinner);
+          expect(gameMode.game).toEqual(gamePDA);
+          expect(gameMode.slots).toEqual(settings.slots);
+          expect(gameMode.digits).toEqual(settings.digits);
+          expect(gameMode.choices).toEqual(settings.choices);
+          expect(gameMode.winnerChoice).toEqual(settings.winnerChoice);
+          expect(gameMode.pickWinner).toEqual(settings.pickWinner);
         });
 
         if (i < VALID_GAMES.length - 1)
@@ -109,23 +123,23 @@ describe('Game Mode', () => {
             const newSettings = VALID_GAMES[i + 1];
 
             await program.methods
-              .updateGameMode(newSettings)
+              .updateGameMode(seed, newSettings)
               .accounts({ secret: secret.publicKey })
               .rpc();
 
-            const game = await program.account.gameMode.fetch(gamePDA);
+            const gameMode = await program.account.gameMode.fetch(gameModePDA);
 
-            expect(game.slots).toEqual(newSettings.slots);
-            expect(game.digits).toEqual(newSettings.digits);
-            expect(game.choices).toEqual(newSettings.choices);
-            expect(game.winnerChoice).toEqual(newSettings.winnerChoice);
-            expect(game.pickWinner).toEqual(newSettings.pickWinner);
+            expect(gameMode.slots).toEqual(newSettings.slots);
+            expect(gameMode.digits).toEqual(newSettings.digits);
+            expect(gameMode.choices).toEqual(newSettings.choices);
+            expect(gameMode.winnerChoice).toEqual(newSettings.winnerChoice);
+            expect(gameMode.pickWinner).toEqual(newSettings.pickWinner);
           });
         else
           it(`Should fail to update the game settings`, async () => {
             await expect(
               program.methods
-                .updateGameMode(INVALID_GAME)
+                .updateGameMode(seed, INVALID_GAME)
                 .accounts({ secret: secret.publicKey })
                 .rpc()
             ).rejects.toThrow();
@@ -133,13 +147,15 @@ describe('Game Mode', () => {
 
         it('Should close the game account', async () => {
           await program.methods
-            .closeGameMode()
+            .closeGameMode(seed)
             .accounts({ secret: secret.publicKey })
             .rpc();
 
           // The account should no longer exist, returning null.
-          const game = await program.account.gameMode.fetchNullable(gamePDA);
-          expect(game).toBeNull();
+          const gameMode = await program.account.gameMode.fetchNullable(
+            gameModePDA
+          );
+          expect(gameMode).toBeNull();
         });
       });
     });
@@ -254,14 +270,14 @@ describe('Game Mode', () => {
       },
     ];
 
-    INVALID_GAMES.forEach(({ reason, ...settings }) => {
+    INVALID_GAMES.forEach(({ reason, ...settings }, i) => {
       describe(reason, () => {
-        const secret = Keypair.generate();
+        const seed = `game-${i}`;
 
         it(`Should fail to initialize the game with the invalid settings`, async () => {
           await expect(
             program.methods
-              .addGameMode(settings as any)
+              .addGameMode(seed, settings)
               .accounts({ secret: secret.publicKey })
               .signers([gamesKeypair])
               .rpc()
