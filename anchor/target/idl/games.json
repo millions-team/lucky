@@ -81,6 +81,36 @@
           "signer": true
         },
         {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
           "name": "mode",
           "writable": true,
           "pda": {
@@ -101,11 +131,11 @@
               },
               {
                 "kind": "account",
-                "path": "owner"
+                "path": "game"
               },
               {
-                "kind": "account",
-                "path": "secret"
+                "kind": "arg",
+                "path": "mode_seed"
               }
             ]
           }
@@ -119,6 +149,10 @@
         }
       ],
       "args": [
+        {
+          "name": "_mode_seed",
+          "type": "string"
+        },
         {
           "name": "settings",
           "type": {
@@ -149,6 +183,36 @@
         },
         {
           "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mode",
           "writable": true,
           "pda": {
             "seeds": [
@@ -168,11 +232,11 @@
               },
               {
                 "kind": "account",
-                "path": "owner"
+                "path": "game"
               },
               {
-                "kind": "account",
-                "path": "secret"
+                "kind": "arg",
+                "path": "mode_seed"
               }
             ]
           }
@@ -181,7 +245,12 @@
           "name": "secret"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "_mode_seed",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "create_game",
@@ -748,6 +817,36 @@
           "signer": true
         },
         {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
           "name": "mode",
           "writable": true,
           "pda": {
@@ -768,11 +867,11 @@
               },
               {
                 "kind": "account",
-                "path": "owner"
+                "path": "game"
               },
               {
-                "kind": "account",
-                "path": "secret"
+                "kind": "arg",
+                "path": "mode_seed"
               }
             ]
           }
@@ -782,6 +881,10 @@
         }
       ],
       "args": [
+        {
+          "name": "_mode_seed",
+          "type": "string"
+        },
         {
           "name": "settings",
           "type": {
@@ -884,6 +987,10 @@
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "game",
+            "type": "pubkey"
+          },
           {
             "name": "slots",
             "type": "u8"

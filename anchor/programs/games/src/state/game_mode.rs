@@ -5,6 +5,8 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct GameMode {
+    pub game: Pubkey,       // The game account.
+
     pub slots: u8,          // Number of slots in the game.
     // 1 <= slots <= 16.
 
@@ -28,8 +30,9 @@ pub struct GameMode {
 }
 
 impl GameMode {
-    pub fn new(slots: u8, digits: u8, choices: u32, winner_choice: u32, pick_winner: bool) -> Self {
+    pub fn new(game: Pubkey, slots: u8, digits: u8, choices: u32, winner_choice: u32, pick_winner: bool) -> Self {
         Self {
+            game,
             slots,
             digits,
             choices,

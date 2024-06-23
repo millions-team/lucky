@@ -87,6 +87,36 @@ export type Games = {
           "signer": true
         },
         {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
           "name": "mode",
           "writable": true,
           "pda": {
@@ -107,11 +137,11 @@ export type Games = {
               },
               {
                 "kind": "account",
-                "path": "owner"
+                "path": "game"
               },
               {
-                "kind": "account",
-                "path": "secret"
+                "kind": "arg",
+                "path": "modeSeed"
               }
             ]
           }
@@ -125,6 +155,10 @@ export type Games = {
         }
       ],
       "args": [
+        {
+          "name": "modeSeed",
+          "type": "string"
+        },
         {
           "name": "settings",
           "type": {
@@ -155,6 +189,36 @@ export type Games = {
         },
         {
           "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mode",
           "writable": true,
           "pda": {
             "seeds": [
@@ -174,11 +238,11 @@ export type Games = {
               },
               {
                 "kind": "account",
-                "path": "owner"
+                "path": "game"
               },
               {
-                "kind": "account",
-                "path": "secret"
+                "kind": "arg",
+                "path": "modeSeed"
               }
             ]
           }
@@ -187,7 +251,12 @@ export type Games = {
           "name": "secret"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "modeSeed",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "createGame",
@@ -754,6 +823,36 @@ export type Games = {
           "signer": true
         },
         {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
           "name": "mode",
           "writable": true,
           "pda": {
@@ -774,11 +873,11 @@ export type Games = {
               },
               {
                 "kind": "account",
-                "path": "owner"
+                "path": "game"
               },
               {
-                "kind": "account",
-                "path": "secret"
+                "kind": "arg",
+                "path": "modeSeed"
               }
             ]
           }
@@ -788,6 +887,10 @@ export type Games = {
         }
       ],
       "args": [
+        {
+          "name": "modeSeed",
+          "type": "string"
+        },
         {
           "name": "settings",
           "type": {
@@ -890,6 +993,10 @@ export type Games = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "game",
+            "type": "pubkey"
+          },
           {
             "name": "slots",
             "type": "u8"

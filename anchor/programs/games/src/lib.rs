@@ -1,5 +1,7 @@
 #![allow(clippy::result_large_err)]
+
 use anchor_lang::prelude::*;
+
 pub mod constants;
 pub mod errors;
 pub mod instructions;
@@ -46,15 +48,16 @@ pub mod games {
     }
 
     // ------------------------ GAME_MODE ------------------------
-    pub fn add_game_mode(ctx: Context<InitializeGameMode>, settings: GameMode) -> Result<()> {
+    pub fn add_game_mode(ctx: Context<InitializeGameMode>, _mode_seed: String, settings: GameMode) -> Result<()> {
+        ctx.accounts.mode.game = ctx.accounts.game.key();
         game_mode::upsert::verify_and_set(&mut ctx.accounts.mode, settings)
     }
 
-    pub fn update_game_mode(ctx: Context<UpdateGameMode>, settings: GameMode) -> Result<()> {
+    pub fn update_game_mode(ctx: Context<UpdateGameMode>, _mode_seed: String, settings: GameMode) -> Result<()> {
         game_mode::upsert::verify_and_set(&mut ctx.accounts.mode, settings)
     }
 
-    pub fn close_game_mode(_ctx: Context<CloseGameMode>) -> Result<()> { Ok(()) }
+    pub fn close_game_mode(_ctx: Context<CloseGameMode>, _mode_seed: String) -> Result<()> { Ok(()) }
 }
 
 
