@@ -1,5 +1,5 @@
 pub use crate::state::game_mode::GameMode;
-use crate::constants::GAME_SEED;
+use crate::constants::GAME_MODE_SEED;
 use anchor_lang::prelude::*;
 
 pub fn verify_and_set(mode: &mut GameMode, settings: GameMode) -> Result<()> {
@@ -20,7 +20,7 @@ pub struct InitializeGameMode<'info> {
 
     #[account(
         init,
-        seeds = [GAME_SEED, owner.key().as_ref(), secret.key().as_ref()],
+        seeds = [GAME_MODE_SEED, owner.key().as_ref(), secret.key().as_ref()],
         bump,
         space = 8 + GameMode::INIT_SPACE,
         payer = owner
@@ -39,7 +39,7 @@ pub struct UpdateGameMode<'info> {
 
     #[account(
         mut,
-        seeds = [GAME_SEED, owner.key().as_ref(), secret.key().as_ref()],
+        seeds = [GAME_MODE_SEED, owner.key().as_ref(), secret.key().as_ref()],
         bump,
     )]
     pub mode: Account<'info, GameMode>,

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { PublicKey } from '@solana/web3.js';
 
-import { useVaultProgram } from './vault-data-access';
+import { useTreasureProgram } from './treasure-data-access';
 
 import { type TokenAccount, useOwnedTokens } from '@/hooks';
 import { ExplorerLink } from '@/components/cluster/cluster-ui';
@@ -16,8 +16,8 @@ if (!NEXT_PUBLIC_OWNER) throw new Error('NEXT_PUBLIC_OWNER is not set');
 
 const TOKENS_OWNER = new PublicKey(NEXT_PUBLIC_OWNER);
 
-export function VaultProgram({ player }: { player: PublicKey }) {
-  const { getProgramAccount } = useVaultProgram();
+export function TreasureProgram({ player }: { player: PublicKey }) {
+  const { getProgramAccount } = useTreasureProgram();
   const { tokens } = useOwnedTokens(TOKENS_OWNER);
   const [token, setToken] = useState<TokenAccount>(
     tokens[0] || { address: '_label' }

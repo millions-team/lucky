@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { useAnchorProvider } from '@/providers';
 import {
   type GameMode,
-  getGamePDA,
+  getGameModePDA,
   getGamesProgram,
   getGamesProgramId,
 } from '@luckyland/anchor';
@@ -57,7 +57,7 @@ export function useGamesProgram({ callback }: { callback?: () => void }) {
       transactionToast(signature);
 
       if (!owner) throw new Error('Wallet not connected');
-      const gamePDA = getGamePDA(owner, secret, cluster.network as Cluster);
+      const gamePDA = getGameModePDA(owner, secret, cluster.network as Cluster);
       addGame(gamePDA, { owner, secret });
 
       return games.refetch().then(() => callback?.());

@@ -5,7 +5,6 @@ seeds = false
 skip-lint = false
 
 [programs.localnet]
-vault = "EJkF6ZLAq9WtmeoSnM2BEuVygS7WUjbq1KQP5xWW7Sgb"
 lucky = "6VCjdiYiU9rAWo7TptZMa423j44GSnyzWMG2KbCCdUz8"
 store = "BJuNDJJkJAFGZGzo8UfaH3t7FgUL5ESCusUFEzKeuLwA"
 games = "74arRDDazQJzSQRhm7VonhyhRnNrwBGZE4dyhNva5z8p"

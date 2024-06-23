@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useCreateTokenAccount, useOwnedToken } from '@/hooks';
-import { getTokenVaultPDA } from '@luckyland/anchor';
+import { getStrongholdPDA } from '@luckyland/anchor';
 
 import { ExplorerLink } from '@/components/cluster/cluster-ui';
 import { ellipsify } from '@/components/ui/ui-layout';
@@ -12,7 +12,7 @@ export function Accounts({
   player,
   onEnabled,
 }: AccountsProps) {
-  const vaultPDA = useMemo(() => getTokenVaultPDA(mint), [mint]);
+  const vaultPDA = useMemo(() => getStrongholdPDA(mint), [mint]);
   const { token, isLoading, refresh } = useOwnedToken(player, mint);
   const createAccount = useCreateTokenAccount({
     address: player,

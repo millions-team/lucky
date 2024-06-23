@@ -8,22 +8,24 @@ import { Cluster, PublicKey } from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { getVaultProgramId, getVaultProgram } from '@luckyland/anchor';
+import { getGamesProgramId, getGamesProgram } from '@luckyland/anchor';
 
 import { useCluster } from '../cluster/cluster-data-access';
 import { useAnchorProvider } from '@/providers';
 import { useTransactionToast } from '../ui/ui-layout';
 
-export function useVaultProgram({ callback }: { callback?: () => void } = {}) {
+export function useTreasureProgram({
+  callback,
+}: { callback?: () => void } = {}) {
   const { connection } = useConnection();
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
   const provider = useAnchorProvider();
   const programId = useMemo(
-    () => getVaultProgramId(cluster.network as Cluster),
+    () => getGamesProgramId(cluster.network as Cluster),
     [cluster.network]
   );
-  const program = getVaultProgram(provider);
+  const program = getGamesProgram(provider);
 
   const getProgramAccount = useQuery({
     queryKey: ['get-program-account', { cluster }],
@@ -33,10 +35,7 @@ export function useVaultProgram({ callback }: { callback?: () => void } = {}) {
   const initialize = useMutation({
     mutationKey: ['vault', 'initialize', { cluster }],
     mutationFn: (mint: PublicKey) =>
-      program.methods
-        .initialize()
-        .accounts({ mintOfTokenBeingSent: mint })
-        .rpc(),
+      program.methods.forgeStronghold().accounts({ gem: mint }).rpc(),
     onSuccess: (signature) => {
       transactionToast(signature);
       callback && callback();
@@ -55,11 +54,11 @@ export function useVaultProgram({ callback }: { callback?: () => void } = {}) {
       amount: bigint;
       sender: PublicKey;
     }) => {
-      const senderTokenAccount = await getAssociatedTokenAddress(mint, sender);
+      const reserve = await getAssociatedTokenAddress(mint, sender);
 
       return program.methods
-        .transferIn(new BN(amount.toString()))
-        .accounts({ mintOfTokenBeingSent: mint, senderTokenAccount })
+        .stockpileGems(new BN(amount.toString()))
+        .accounts({ gem: mint, reserve })
         .rpc();
     },
     onSuccess: (signature) => {
@@ -80,11 +79,11 @@ export function useVaultProgram({ callback }: { callback?: () => void } = {}) {
       amount: bigint;
       sender: PublicKey;
     }) => {
-      const senderTokenAccount = await getAssociatedTokenAddress(mint, sender);
+      const reserve = await getAssociatedTokenAddress(mint, sender);
 
       return program.methods
-        .transferOut(new BN(amount.toString()))
-        .accounts({ mintOfTokenBeingSent: mint, senderTokenAccount })
+        .retrieveGems(new BN(amount.toString()))
+        .accounts({ gem: mint, reserve })
         .rpc();
     },
     onSuccess: (signature) => {
