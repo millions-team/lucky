@@ -1,3 +1,6 @@
+// ----------------------------- Game -----------------------------
+export const GAME_SEED = 'LUCKY_GAME';
+
 // ----------------------------- GameMode -----------------------------
 export const GAME_MODE_SEED = 'GAME_MODE';
 
