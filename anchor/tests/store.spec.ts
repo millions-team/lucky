@@ -249,24 +249,24 @@ describe('store', () => {
         payer.publicKey
       );
       const rent = await connection.getMinimumBalanceForRentExemption(48);
-      const amount = new BN((storeBalanceBeforeWithdraw - rent) / 2);
+      const amount = Math.floor((storeBalanceBeforeWithdraw - rent) / 2);
 
       expect(storeBalanceBeforeWithdraw).toBeGreaterThan(rent);
-      expect(amount.toNumber()).toBeGreaterThan(0);
+      expect(amount).toBeGreaterThan(0);
 
       await program.methods
-        .withdraw(amount)
+        .withdraw(new BN(amount))
         .accounts(accounts)
         .signers([payer])
         .rpc();
 
       const storeBalance = await connection.getBalance(store);
-      const reciverBalance = await connection.getBalance(payer.publicKey);
+      const receiverBalance = await connection.getBalance(payer.publicKey);
 
       expect(storeBalance).toEqual(storeBalanceBeforeWithdraw - amount);
-      expect(reciverBalance).toBeLessThanOrEqual(
-        receiverBalanceBeforeWithdraw + amount.toNumber()
-      );
+
+      const expectedReceiverBalance = receiverBalanceBeforeWithdraw + amount;
+      expect(expectedReceiverBalance / receiverBalance).toBeCloseTo(1);
     });
   });
 
