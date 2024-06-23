@@ -1,4 +1,5 @@
 // ----------------------------- Seeds -----------------------------
+pub const GAME_SEED: &[u8] = b"LUCKY_GAME";
 pub const GAME_MODE_SEED: &[u8] = b"GAME_MODE";
 
 // ----------------------------- GameMode -----------------------------

@@ -24,16 +24,37 @@ pub mod games {
         treasure::unlock::acquire_loot(&ctx, amount)
     }
 
+    // ------------------------ GAME ------------------------
+    pub fn create_game(ctx: Context<InitializeGame>, name: [u8; 33]) -> Result<()> {
+        game::manage::create_game(&mut ctx.accounts.game, &name)
+    }
+
+    pub fn update_game(ctx: Context<UpdateGame>, name: [u8; 33]) -> Result<()> {
+        game::manage::update_game(&mut ctx.accounts.game, &name)
+    }
+
+    pub fn activate_game(ctx: Context<UpdateGame>) -> Result<()> {
+        game::manage::activate_game(&mut ctx.accounts.game)
+    }
+
+    pub fn pause_game(ctx: Context<UpdateGame>) -> Result<()> {
+        game::manage::pause_game(&mut ctx.accounts.game)
+    }
+
+    pub fn end_game(ctx: Context<UpdateGame>) -> Result<()> {
+        game::manage::end_game(&mut ctx.accounts.game)
+    }
+
     // ------------------------ GAME_MODE ------------------------
-    pub fn create_game(ctx: Context<InitializeGameMode>, settings: GameMode) -> Result<()> {
+    pub fn add_game_mode(ctx: Context<InitializeGameMode>, settings: GameMode) -> Result<()> {
         game_mode::upsert::verify_and_set(&mut ctx.accounts.mode, settings)
     }
 
-    pub fn update_game(ctx: Context<UpdateGameMode>, settings: GameMode) -> Result<()> {
+    pub fn update_game_mode(ctx: Context<UpdateGameMode>, settings: GameMode) -> Result<()> {
         game_mode::upsert::verify_and_set(&mut ctx.accounts.mode, settings)
     }
 
-    pub fn close_game(_ctx: Context<CloseGameMode>) -> Result<()> { Ok(()) }
+    pub fn close_game_mode(_ctx: Context<CloseGameMode>) -> Result<()> { Ok(()) }
 }
 
 
