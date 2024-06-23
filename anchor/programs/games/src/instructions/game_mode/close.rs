@@ -1,5 +1,5 @@
 pub use crate::state::game_mode::GameMode;
-use crate::constants::GAME_SEED;
+use crate::constants::GAME_MODE_SEED;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
@@ -9,7 +9,7 @@ pub struct CloseGameMode<'info> {
 
     #[account(
         mut,
-        seeds = [GAME_SEED, owner.key().as_ref(), secret.key().as_ref()],
+        seeds = [GAME_MODE_SEED, owner.key().as_ref(), secret.key().as_ref()],
         bump,
         close = owner // close account and return lamports to payer
     )]
