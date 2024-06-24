@@ -156,8 +156,12 @@ export function useGameAccount({
   const isOwner = useMemo(() => {
     if (!publicKey) return false;
 
-    const { owner } = getGame(pda);
-    return owner.toString() === publicKey.toString();
+    try {
+      const { owner } = getGame(pda);
+      return owner.toString() === publicKey.toString();
+    } catch (e) {
+      return false;
+    }
   }, [pda]);
 
   const gameQuery = useQuery({
@@ -257,8 +261,12 @@ export function useGameModeAccount({ pda }: { pda: PublicKey }) {
   const isOwner = useMemo(() => {
     if (!modeQuery.data || !publicKey) return false;
 
-    const { owner } = getGame(modeQuery.data.game);
-    return owner.toString() === publicKey.toString();
+    try {
+      const { owner } = getGame(modeQuery.data.game);
+      return owner.toString() === publicKey.toString();
+    } catch (e) {
+      return false;
+    }
   }, [modeQuery.data]);
 
   const update = useMutation({

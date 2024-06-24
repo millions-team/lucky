@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](///compare/v0.1.1...v0.1.2) (2024-06-24)
+
+
+### Features
+
+* **anchor:** 👻 Game | Games Program cb91ed5
+* **anchor:** 👻 Game | Games Program 3c015af
+* **anchor:** 👻 Games | Program 5f8a465
+* **anchor:** 👻 Games | Program 131b309
+* **anchor:** 👻 Modes per Game 1a36d15
+* **anchor:** 👻 Treasure | Games Program b68b0b4
+* **web:** 👻 Game | Games Program 20d83b3
+* **web:** 👻 Games | Program 0dc294b
+
+
+### Bug Fixes
+
+* **anchor:** 👻 Unit Test | Store cc72666
+
 ### 0.1.1 (2024-06-21)
 
 
