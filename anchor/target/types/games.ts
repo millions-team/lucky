@@ -170,6 +170,65 @@ export type Games = {
       ]
     },
     {
+      "name": "closeGame",
+      "discriminator": [
+        237,
+        236,
+        157,
+        201,
+        253,
+        20,
+        248,
+        67
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "closeGameMode",
       "discriminator": [
         3,
@@ -984,6 +1043,66 @@ export type Games = {
                 "name": "gameStatus"
               }
             }
+          },
+          {
+            "name": "mode",
+            "type": {
+              "defined": {
+                "name": "gameType"
+              }
+            }
+          },
+          {
+            "name": "round",
+            "type": {
+              "defined": {
+                "name": "gameRound"
+              }
+            }
+          },
+          {
+            "name": "choice",
+            "type": {
+              "defined": {
+                "name": "gameChoice"
+              }
+            }
+          },
+          {
+            "name": "algorithm",
+            "type": {
+              "defined": {
+                "name": "gameAlgorithm"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "gameAlgorithm",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "random"
+          },
+          {
+            "name": "deterministic"
+          }
+        ]
+      }
+    },
+    {
+      "name": "gameChoice",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "single"
+          },
+          {
+            "name": "multiple"
           }
         ]
       }
@@ -1021,6 +1140,20 @@ export type Games = {
       }
     },
     {
+      "name": "gameRound",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "single"
+          },
+          {
+            "name": "multiple"
+          }
+        ]
+      }
+    },
+    {
       "name": "gameStatus",
       "type": {
         "kind": "enum",
@@ -1036,6 +1169,20 @@ export type Games = {
           },
           {
             "name": "ended"
+          }
+        ]
+      }
+    },
+    {
+      "name": "gameType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "singlePlayer"
+          },
+          {
+            "name": "multiPlayer"
           }
         ]
       }

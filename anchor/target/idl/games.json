@@ -164,6 +164,65 @@
       ]
     },
     {
+      "name": "close_game",
+      "discriminator": [
+        237,
+        236,
+        157,
+        201,
+        253,
+        20,
+        248,
+        67
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "close_game_mode",
       "discriminator": [
         3,
@@ -978,6 +1037,66 @@
                 "name": "GameStatus"
               }
             }
+          },
+          {
+            "name": "mode",
+            "type": {
+              "defined": {
+                "name": "GameType"
+              }
+            }
+          },
+          {
+            "name": "round",
+            "type": {
+              "defined": {
+                "name": "GameRound"
+              }
+            }
+          },
+          {
+            "name": "choice",
+            "type": {
+              "defined": {
+                "name": "GameChoice"
+              }
+            }
+          },
+          {
+            "name": "algorithm",
+            "type": {
+              "defined": {
+                "name": "GameAlgorithm"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameAlgorithm",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Random"
+          },
+          {
+            "name": "Deterministic"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameChoice",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Single"
+          },
+          {
+            "name": "Multiple"
           }
         ]
       }
@@ -1015,6 +1134,20 @@
       }
     },
     {
+      "name": "GameRound",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Single"
+          },
+          {
+            "name": "Multiple"
+          }
+        ]
+      }
+    },
+    {
       "name": "GameStatus",
       "type": {
         "kind": "enum",
@@ -1030,6 +1163,20 @@
           },
           {
             "name": "Ended"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "SinglePlayer"
+          },
+          {
+            "name": "MultiPlayer"
           }
         ]
       }

@@ -86,6 +86,20 @@ describe('Game', () => {
 
       expect(game.state).toEqual(Status.Ended);
     });
+
+    it(`Should delete the game`, async () => {
+      const game = await program.account.game.fetch(gamePDA);
+      expect(game.state).toEqual(Status.Ended);
+
+      await program.methods
+        .closeGame()
+        .accounts({ secret: secret.publicKey })
+        .rpc();
+
+      // The account should no longer exist, returning null.
+      const removedGame = await program.account.game.fetchNullable(gamePDA);
+      expect(removedGame).toBeNull();
+    });
   });
 
   describe('Invalid Settings', () => {
