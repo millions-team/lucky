@@ -3,6 +3,8 @@ import './global.css';
 import {
   ReactQueryProvider,
   ClusterProvider,
+  CryptoProvider,
+  LuckyBagsProvider,
   SolanaProvider,
   DataFeedProvider,
 } from '@/providers';
@@ -36,13 +38,17 @@ export default function RootLayout({
       <body>
         <ReactQueryProvider>
           <ClusterProvider>
-            <SolanaProvider>
-              <DataFeedProvider>
-                <UiLayout links={links} env={NEXT_PUBLIC_VERCEL_ENV}>
-                  {children}
-                </UiLayout>
-              </DataFeedProvider>
-            </SolanaProvider>
+            <CryptoProvider>
+              <LuckyBagsProvider>
+                <SolanaProvider>
+                  <DataFeedProvider>
+                    <UiLayout links={links} env={NEXT_PUBLIC_VERCEL_ENV}>
+                      {children}
+                    </UiLayout>
+                  </DataFeedProvider>
+                </SolanaProvider>
+              </LuckyBagsProvider>
+            </CryptoProvider>
           </ClusterProvider>
         </ReactQueryProvider>
         <Analytics />
