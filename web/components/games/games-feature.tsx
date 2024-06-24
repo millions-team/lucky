@@ -4,7 +4,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletButton } from '@/providers';
 
 import { useGamesProgram } from './games-data-access';
-import { GamesCreate, GamesList } from './games-ui';
+import { GamesCreate, GamesList } from './ui';
 
 import { AppHero, ellipsify } from '../ui/ui-layout';
 import { ExplorerLink } from '../cluster/cluster-ui';

@@ -8,6 +8,162 @@
   },
   "instructions": [
     {
+      "name": "activate_game",
+      "discriminator": [
+        166,
+        184,
+        159,
+        118,
+        22,
+        67,
+        88,
+        37
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "add_game_mode",
+      "discriminator": [
+        237,
+        39,
+        123,
+        180,
+        37,
+        214,
+        32,
+        156
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mode",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  71,
+                  65,
+                  77,
+                  69,
+                  95,
+                  77,
+                  79,
+                  68,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "game"
+              },
+              {
+                "kind": "arg",
+                "path": "mode_seed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_mode_seed",
+          "type": "string"
+        },
+        {
+          "name": "settings",
+          "type": {
+            "defined": {
+              "name": "GameMode"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "close_game",
       "discriminator": [
         237,
@@ -33,14 +189,15 @@
               {
                 "kind": "const",
                 "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
                   71,
                   65,
                   77,
-                  69,
-                  95,
-                  77,
-                  79,
-                  68,
                   69
                 ]
               },
@@ -57,9 +214,102 @@
         },
         {
           "name": "secret"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
+    },
+    {
+      "name": "close_game_mode",
+      "discriminator": [
+        3,
+        76,
+        123,
+        99,
+        249,
+        219,
+        30,
+        46
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mode",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  71,
+                  65,
+                  77,
+                  69,
+                  95,
+                  77,
+                  79,
+                  68,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "game"
+              },
+              {
+                "kind": "arg",
+                "path": "mode_seed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": [
+        {
+          "name": "_mode_seed",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "create_game",
@@ -80,21 +330,22 @@
           "signer": true
         },
         {
-          "name": "mode",
+          "name": "game",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
                   71,
                   65,
                   77,
-                  69,
-                  95,
-                  77,
-                  79,
-                  68,
                   69
                 ]
               },
@@ -119,14 +370,70 @@
       ],
       "args": [
         {
-          "name": "settings",
+          "name": "name",
           "type": {
-            "defined": {
-              "name": "GameMode"
-            }
+            "array": [
+              "u8",
+              33
+            ]
           }
         }
       ]
+    },
+    {
+      "name": "end_game",
+      "discriminator": [
+        224,
+        135,
+        245,
+        99,
+        67,
+        175,
+        121,
+        252
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": []
     },
     {
       "name": "forge_stronghold",
@@ -219,6 +526,61 @@
         {
           "name": "rent",
           "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "pause_game",
+      "discriminator": [
+        133,
+        116,
+        165,
+        66,
+        173,
+        81,
+        10,
+        85
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
         }
       ],
       "args": []
@@ -449,21 +811,22 @@
           "signer": true
         },
         {
-          "name": "mode",
+          "name": "game",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
                   71,
                   65,
                   77,
-                  69,
-                  95,
-                  77,
-                  79,
-                  68,
                   69
                 ]
               },
@@ -484,6 +847,104 @@
       ],
       "args": [
         {
+          "name": "name",
+          "type": {
+            "array": [
+              "u8",
+              33
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_game_mode",
+      "discriminator": [
+        130,
+        15,
+        217,
+        14,
+        245,
+        15,
+        125,
+        57
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mode",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  71,
+                  65,
+                  77,
+                  69,
+                  95,
+                  77,
+                  79,
+                  68,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "game"
+              },
+              {
+                "kind": "arg",
+                "path": "mode_seed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": [
+        {
+          "name": "_mode_seed",
+          "type": "string"
+        },
+        {
           "name": "settings",
           "type": {
             "defined": {
@@ -495,6 +956,19 @@
     }
   ],
   "accounts": [
+    {
+      "name": "Game",
+      "discriminator": [
+        27,
+        90,
+        166,
+        125,
+        74,
+        100,
+        121,
+        18
+      ]
+    },
     {
       "name": "GameMode",
       "discriminator": [
@@ -512,46 +986,130 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidName",
-      "msg": "Name must be between 3 and 32 characters"
-    },
-    {
-      "code": 6001,
       "name": "InvalidSlots",
       "msg": "Slots must be between 1 and 16"
     },
     {
-      "code": 6002,
+      "code": 6001,
       "name": "InvalidDigits",
       "msg": "Digits must be between 1 and 8"
     },
     {
-      "code": 6003,
+      "code": 6002,
       "name": "InvalidChoices",
       "msg": "Choices must be between 2 and max value of digits"
     },
     {
-      "code": 6004,
+      "code": 6003,
       "name": "InvalidWinnerSingleChoice",
       "msg": "Winner choice must be between 1 and choices"
     },
     {
-      "code": 6005,
+      "code": 6004,
       "name": "InvalidWinnerChoice",
       "msg": "Winner choice must be between 0 and choices"
     },
     {
-      "code": 6006,
+      "code": 6005,
       "name": "InvalidPickWinner",
       "msg": "Pick winner is true but winner choice is 0"
     }
   ],
   "types": [
     {
+      "name": "Game",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                33
+              ]
+            }
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": {
+                "name": "GameStatus"
+              }
+            }
+          },
+          {
+            "name": "mode",
+            "type": {
+              "defined": {
+                "name": "GameType"
+              }
+            }
+          },
+          {
+            "name": "round",
+            "type": {
+              "defined": {
+                "name": "GameRound"
+              }
+            }
+          },
+          {
+            "name": "choice",
+            "type": {
+              "defined": {
+                "name": "GameChoice"
+              }
+            }
+          },
+          {
+            "name": "algorithm",
+            "type": {
+              "defined": {
+                "name": "GameAlgorithm"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameAlgorithm",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Random"
+          },
+          {
+            "name": "Deterministic"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameChoice",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Single"
+          },
+          {
+            "name": "Multiple"
+          }
+        ]
+      }
+    },
+    {
       "name": "GameMode",
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "game",
+            "type": "pubkey"
+          },
           {
             "name": "slots",
             "type": "u8"
@@ -571,6 +1129,54 @@
           {
             "name": "pick_winner",
             "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameRound",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Single"
+          },
+          {
+            "name": "Multiple"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Created"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Paused"
+          },
+          {
+            "name": "Ended"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "SinglePlayer"
+          },
+          {
+            "name": "MultiPlayer"
           }
         ]
       }

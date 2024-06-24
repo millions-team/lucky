@@ -14,6 +14,162 @@ export type Games = {
   },
   "instructions": [
     {
+      "name": "activateGame",
+      "discriminator": [
+        166,
+        184,
+        159,
+        118,
+        22,
+        67,
+        88,
+        37
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "addGameMode",
+      "discriminator": [
+        237,
+        39,
+        123,
+        180,
+        37,
+        214,
+        32,
+        156
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mode",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  71,
+                  65,
+                  77,
+                  69,
+                  95,
+                  77,
+                  79,
+                  68,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "game"
+              },
+              {
+                "kind": "arg",
+                "path": "modeSeed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "modeSeed",
+          "type": "string"
+        },
+        {
+          "name": "settings",
+          "type": {
+            "defined": {
+              "name": "gameMode"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "closeGame",
       "discriminator": [
         237,
@@ -39,14 +195,15 @@ export type Games = {
               {
                 "kind": "const",
                 "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
                   71,
                   65,
                   77,
-                  69,
-                  95,
-                  77,
-                  79,
-                  68,
                   69
                 ]
               },
@@ -63,9 +220,102 @@ export type Games = {
         },
         {
           "name": "secret"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
       ],
       "args": []
+    },
+    {
+      "name": "closeGameMode",
+      "discriminator": [
+        3,
+        76,
+        123,
+        99,
+        249,
+        219,
+        30,
+        46
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mode",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  71,
+                  65,
+                  77,
+                  69,
+                  95,
+                  77,
+                  79,
+                  68,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "game"
+              },
+              {
+                "kind": "arg",
+                "path": "modeSeed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": [
+        {
+          "name": "modeSeed",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "createGame",
@@ -86,21 +336,22 @@ export type Games = {
           "signer": true
         },
         {
-          "name": "mode",
+          "name": "game",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
                   71,
                   65,
                   77,
-                  69,
-                  95,
-                  77,
-                  79,
-                  68,
                   69
                 ]
               },
@@ -125,14 +376,70 @@ export type Games = {
       ],
       "args": [
         {
-          "name": "settings",
+          "name": "name",
           "type": {
-            "defined": {
-              "name": "gameMode"
-            }
+            "array": [
+              "u8",
+              33
+            ]
           }
         }
       ]
+    },
+    {
+      "name": "endGame",
+      "discriminator": [
+        224,
+        135,
+        245,
+        99,
+        67,
+        175,
+        121,
+        252
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": []
     },
     {
       "name": "forgeStronghold",
@@ -225,6 +532,61 @@ export type Games = {
         {
           "name": "rent",
           "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "pauseGame",
+      "discriminator": [
+        133,
+        116,
+        165,
+        66,
+        173,
+        81,
+        10,
+        85
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
         }
       ],
       "args": []
@@ -455,21 +817,22 @@ export type Games = {
           "signer": true
         },
         {
-          "name": "mode",
+          "name": "game",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
                   71,
                   65,
                   77,
-                  69,
-                  95,
-                  77,
-                  79,
-                  68,
                   69
                 ]
               },
@@ -490,6 +853,104 @@ export type Games = {
       ],
       "args": [
         {
+          "name": "name",
+          "type": {
+            "array": [
+              "u8",
+              33
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateGameMode",
+      "discriminator": [
+        130,
+        15,
+        217,
+        14,
+        245,
+        15,
+        125,
+        57
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "game",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  76,
+                  85,
+                  67,
+                  75,
+                  89,
+                  95,
+                  71,
+                  65,
+                  77,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "secret"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mode",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  71,
+                  65,
+                  77,
+                  69,
+                  95,
+                  77,
+                  79,
+                  68,
+                  69
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "game"
+              },
+              {
+                "kind": "arg",
+                "path": "modeSeed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "secret"
+        }
+      ],
+      "args": [
+        {
+          "name": "modeSeed",
+          "type": "string"
+        },
+        {
           "name": "settings",
           "type": {
             "defined": {
@@ -501,6 +962,19 @@ export type Games = {
     }
   ],
   "accounts": [
+    {
+      "name": "game",
+      "discriminator": [
+        27,
+        90,
+        166,
+        125,
+        74,
+        100,
+        121,
+        18
+      ]
+    },
     {
       "name": "gameMode",
       "discriminator": [
@@ -518,46 +992,130 @@ export type Games = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidName",
-      "msg": "Name must be between 3 and 32 characters"
-    },
-    {
-      "code": 6001,
       "name": "invalidSlots",
       "msg": "Slots must be between 1 and 16"
     },
     {
-      "code": 6002,
+      "code": 6001,
       "name": "invalidDigits",
       "msg": "Digits must be between 1 and 8"
     },
     {
-      "code": 6003,
+      "code": 6002,
       "name": "invalidChoices",
       "msg": "Choices must be between 2 and max value of digits"
     },
     {
-      "code": 6004,
+      "code": 6003,
       "name": "invalidWinnerSingleChoice",
       "msg": "Winner choice must be between 1 and choices"
     },
     {
-      "code": 6005,
+      "code": 6004,
       "name": "invalidWinnerChoice",
       "msg": "Winner choice must be between 0 and choices"
     },
     {
-      "code": 6006,
+      "code": 6005,
       "name": "invalidPickWinner",
       "msg": "Pick winner is true but winner choice is 0"
     }
   ],
   "types": [
     {
+      "name": "game",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                33
+              ]
+            }
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": {
+                "name": "gameStatus"
+              }
+            }
+          },
+          {
+            "name": "mode",
+            "type": {
+              "defined": {
+                "name": "gameType"
+              }
+            }
+          },
+          {
+            "name": "round",
+            "type": {
+              "defined": {
+                "name": "gameRound"
+              }
+            }
+          },
+          {
+            "name": "choice",
+            "type": {
+              "defined": {
+                "name": "gameChoice"
+              }
+            }
+          },
+          {
+            "name": "algorithm",
+            "type": {
+              "defined": {
+                "name": "gameAlgorithm"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "gameAlgorithm",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "random"
+          },
+          {
+            "name": "deterministic"
+          }
+        ]
+      }
+    },
+    {
+      "name": "gameChoice",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "single"
+          },
+          {
+            "name": "multiple"
+          }
+        ]
+      }
+    },
+    {
       "name": "gameMode",
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "game",
+            "type": "pubkey"
+          },
           {
             "name": "slots",
             "type": "u8"
@@ -577,6 +1135,54 @@ export type Games = {
           {
             "name": "pickWinner",
             "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "gameRound",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "single"
+          },
+          {
+            "name": "multiple"
+          }
+        ]
+      }
+    },
+    {
+      "name": "gameStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "created"
+          },
+          {
+            "name": "active"
+          },
+          {
+            "name": "paused"
+          },
+          {
+            "name": "ended"
+          }
+        ]
+      }
+    },
+    {
+      "name": "gameType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "singlePlayer"
+          },
+          {
+            "name": "multiPlayer"
           }
         ]
       }

@@ -5,6 +5,8 @@ use anchor_lang::prelude::*;
 #[account]
 #[derive(InitSpace)]
 pub struct GameMode {
+    pub game: Pubkey,       // The game account.
+
     pub slots: u8,          // Number of slots in the game.
     // 1 <= slots <= 16.
 
@@ -16,7 +18,7 @@ pub struct GameMode {
     // Example: digits = 3; 2 <= choices <= 999.
 
     pub winner_choice: u32,  // The winning choice.
-    // w == 0; requires slots >= 2; means all slots must be the same.
+    // w == 0; requires slots >= 2; means any equal choice across all slots is a winner.
     // slots == 1; requires 1 <= w <= choices.
     // slots >= 2 & 1 <= w <= choices; means the winning choice is the same in all slots.
 
@@ -28,8 +30,9 @@ pub struct GameMode {
 }
 
 impl GameMode {
-    pub fn new(slots: u8, digits: u8, choices: u32, winner_choice: u32, pick_winner: bool) -> Self {
+    pub fn new(game: Pubkey, slots: u8, digits: u8, choices: u32, winner_choice: u32, pick_winner: bool) -> Self {
         Self {
+            game,
             slots,
             digits,
             choices,

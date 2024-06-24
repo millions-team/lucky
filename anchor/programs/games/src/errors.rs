@@ -1,10 +1,19 @@
 use anchor_lang::error_code;
 
 #[error_code]
-pub enum GameModeErrorCode {
+pub enum GameErrorCode {
     #[msg("Name must be between 3 and 32 characters")]
     InvalidName,
 
+    #[msg("Game is already ended")]
+    GameEnded,
+
+    #[msg("Game is not ended")]
+    GameNotEnded,
+}
+
+#[error_code]
+pub enum GameModeErrorCode {
     #[msg("Slots must be between 1 and 16")]
     InvalidSlots,
 
