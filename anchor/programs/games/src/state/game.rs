@@ -9,11 +9,40 @@ pub enum GameStatus {
     Ended,
 }
 
+#[derive(InitSpace, Copy, Clone, Debug, AnchorSerialize, AnchorDeserialize, PartialEq)]
+pub enum GameType {
+    SinglePlayer,
+    MultiPlayer,
+}
+
+#[derive(InitSpace, Copy, Clone, Debug, AnchorSerialize, AnchorDeserialize, PartialEq)]
+pub enum GameRound {
+    Single,
+    Multiple,
+}
+
+#[derive(InitSpace, Copy, Clone, Debug, AnchorSerialize, AnchorDeserialize, PartialEq)]
+pub enum GameChoice {
+    Single,
+    Multiple,
+}
+
+#[derive(InitSpace, Copy, Clone, Debug, AnchorSerialize, AnchorDeserialize, PartialEq)]
+pub enum GameAlgorithm {
+    Random,
+    Deterministic,
+}
+
 #[account]
 #[derive(InitSpace)]
 pub struct Game {
     pub name: [u8; 33], // Only 32 bytes are used. The last byte is a null terminator.
     pub state: GameStatus,
+
+    pub mode: GameType,
+    pub round: GameRound,
+    pub choice: GameChoice,
+    pub algorithm: GameAlgorithm,
 }
 
 impl Game {
@@ -23,6 +52,11 @@ impl Game {
         let mut game = Self {
             name: [0; 33],
             state: GameStatus::Created,
+
+            mode: GameType::SinglePlayer,
+            round: GameRound::Single,
+            choice: GameChoice::Single,
+            algorithm: GameAlgorithm::Random,
         };
 
         game.set_name(name)?;

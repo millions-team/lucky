@@ -18,7 +18,7 @@ pub struct GameMode {
     // Example: digits = 3; 2 <= choices <= 999.
 
     pub winner_choice: u32,  // The winning choice.
-    // w == 0; requires slots >= 2; means all slots must be the same.
+    // w == 0; requires slots >= 2; means any equal choice across all slots is a winner.
     // slots == 1; requires 1 <= w <= choices.
     // slots >= 2 & 1 <= w <= choices; means the winning choice is the same in all slots.
 

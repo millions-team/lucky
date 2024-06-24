@@ -3,15 +3,6 @@ use crate::errors::GameErrorCode;
 use crate::constants::GAME_SEED;
 use anchor_lang::prelude::*;
 
-pub fn create_game(game: &mut Game, name: &[u8; 33]) -> Result<()> {
-    let _game = Game::new(&name)?;
-
-    game.name = _game.name;
-    game.state = _game.state;
-
-    Ok(())
-}
-
 pub fn update_game(game: &mut Game, name: &[u8; 33]) -> Result<()> {
     game.set_name(&name)?;
 
@@ -43,24 +34,6 @@ pub fn delete_game(game: &mut Game) -> Result<()> {
 
     Ok(())
 }
-#[derive(Accounts)]
-pub struct InitializeGame<'info> {
-    #[account(mut)]
-    pub owner: Signer<'info>,
-
-    #[account(
-        init,
-        seeds = [GAME_SEED, owner.key().as_ref(), secret.key().as_ref()],
-        bump,
-        space = 8 + Game::INIT_SPACE,
-        payer = owner
-    )]
-    pub game: Account<'info, Game>,
-
-    /// CHECK: This is just a seed to allow an owner create different games.
-    pub secret: AccountInfo<'info>,
-    pub system_program: Program<'info, System>,
-}
 
 #[derive(Accounts)]
 pub struct UpdateGame<'info> {
@@ -76,4 +49,23 @@ pub struct UpdateGame<'info> {
 
     /// CHECK: This is the seed to only allow the owner update the game.
     pub secret: AccountInfo<'info>,
+}
+
+
+#[derive(Accounts)]
+pub struct CloseGame<'info> {
+    #[account(mut)]
+    pub owner: Signer<'info>,
+
+    #[account(
+        mut,
+        seeds = [GAME_SEED, owner.key().as_ref(), secret.key().as_ref()],
+        bump,
+        close = owner,
+    )]
+    pub game: Account<'info, Game>,
+
+    /// CHECK: This is the seed to only allow the owner close the game.
+    pub secret: AccountInfo<'info>,
+    system_program: Program<'info, System>,
 }

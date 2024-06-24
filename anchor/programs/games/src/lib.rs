@@ -28,7 +28,7 @@ pub mod games {
 
     // ------------------------ GAME ------------------------
     pub fn create_game(ctx: Context<InitializeGame>, name: [u8; 33]) -> Result<()> {
-        game::manage::create_game(&mut ctx.accounts.game, &name)
+        game::init::new_game(&mut ctx.accounts.game, &name)
     }
 
     pub fn update_game(ctx: Context<UpdateGame>, name: [u8; 33]) -> Result<()> {
@@ -45,6 +45,10 @@ pub mod games {
 
     pub fn end_game(ctx: Context<UpdateGame>) -> Result<()> {
         game::manage::end_game(&mut ctx.accounts.game)
+    }
+
+    pub fn close_game(ctx: Context<CloseGame>) -> Result<()> {
+        game::manage::delete_game(&mut ctx.accounts.game)
     }
 
     // ------------------------ GAME_MODE ------------------------
