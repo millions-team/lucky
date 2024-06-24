@@ -53,7 +53,7 @@ export function Deposit({ token, player, balance, onCompleted }: ActionsProps) {
             onClick={() =>
               deposit.mutateAsync({
                 mint: token.mint,
-                amount: BigInt(amount) * BigInt(10 ** token.decimals),
+                amount: BigInt(amount * 10 ** token.decimals),
                 sender: player,
               })
             }

@@ -1,22 +1,36 @@
 import { useState } from 'react';
 
-import { type GameMode } from '@luckyland/anchor';
+import { encodeName, type GameMode } from '@luckyland/anchor';
+import { Keypair, PublicKey } from '@solana/web3.js';
+import { IconSeeding } from '@tabler/icons-react';
 
 export function SettingsForm({
+  game = false,
   settings: _init = { pickWinner: false } as GameMode,
   title = 'Game Settings',
+  subtitle,
   className,
   onSubmit,
   onCancel,
 }: {
   title?: string;
+  subtitle?: string;
+  game?: boolean;
   settings?: GameMode;
   className?: string;
-  onSubmit: (settings: GameMode) => Promise<void>;
+  onSubmit: (
+    settings: GameMode,
+    gameName?: Array<number>,
+    seed?: string
+  ) => Promise<void>;
   onCancel: () => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
   const [settings, setSettings] = useState(_init);
+  const [name, setName] = useState('');
+
+  const [seeding, setSeeding] = useState(false);
+  const [seed, setSeed] = useState(Keypair.generate().publicKey.toBase58());
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,25 +41,73 @@ export function SettingsForm({
       settings.pickWinner =
         settings.winnerChoice === 0 ? false : settings.pickWinner;
 
-      await onSubmit(settings);
+      await onSubmit(settings, game ? encodeName(name) : undefined, seed);
       reset(true);
     } catch (e) {
+      console.log(e);
       reset();
     }
   };
 
   const reset = (success?: boolean) => {
     setSubmitting(false);
-    if (success) setSettings({} as GameMode);
+    if (success) {
+      setName('');
+      setSettings({} as GameMode);
+    }
   };
 
   return (
     <div className={`card w-full max-w-md glass ${className}`}>
       <div className="card-body">
-        <h2 className="card-title justify-center text-3xl">{title}</h2>
+        <div className="card-title flex-col justify-center">
+          <h2 className="text-3xl">{title}</h2>
+          <h4 className="text-sm text-info">{subtitle}</h4>
+          {game && (
+            <button
+              className="absolute top-4 right-6 btn btn-ghost btn-circle"
+              onClick={() => setSeeding((c) => !c)}
+            >
+              <IconSeeding />
+            </button>
+          )}
+        </div>
 
         <form onSubmit={submit}>
-          <div className="form-control">
+          {game && (
+            <>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Name</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  required
+                  className="input input-bordered input-primary"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              {seeding && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Seed</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Seed"
+                    required
+                    className="input input-bordered input-primary"
+                    value={seed}
+                    onChange={(e) => setSeed(e.target.value)}
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          <div className="form-control border-t-2 mt-4">
             <label className="label">
               <span className="label-text text-xl">Slots</span>
             </label>

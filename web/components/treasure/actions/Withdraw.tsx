@@ -52,7 +52,7 @@ export function Withdraw({
             onClick={() =>
               withdraw.mutateAsync({
                 mint: token.mint,
-                amount: BigInt(amount) * BigInt(10 ** token.decimals),
+                amount: BigInt(amount * 10 ** token.decimals),
                 sender: player,
               })
             }
