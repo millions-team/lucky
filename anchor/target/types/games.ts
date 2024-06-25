@@ -537,6 +537,73 @@ export type Games = {
       "args": []
     },
     {
+      "name": "issueBounty",
+      "discriminator": [
+        188,
+        205,
+        76,
+        253,
+        211,
+        189,
+        235,
+        161
+      ],
+      "accounts": [
+        {
+          "name": "bounty",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  66,
+                  79,
+                  85,
+                  78,
+                  84,
+                  89
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "gem"
+              },
+              {
+                "kind": "account",
+                "path": "task"
+              }
+            ]
+          }
+        },
+        {
+          "name": "task"
+        },
+        {
+          "name": "gem"
+        },
+        {
+          "name": "supplier",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "settings",
+          "type": {
+            "defined": {
+              "name": "bounty"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "pauseGame",
       "discriminator": [
         133,
@@ -963,6 +1030,19 @@ export type Games = {
   ],
   "accounts": [
     {
+      "name": "bounty",
+      "discriminator": [
+        237,
+        16,
+        105,
+        198,
+        19,
+        69,
+        242,
+        234
+      ]
+    },
+    {
       "name": "game",
       "discriminator": [
         27,
@@ -1022,6 +1102,34 @@ export type Games = {
     }
   ],
   "types": [
+    {
+      "name": "bounty",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "gem",
+            "type": "pubkey"
+          },
+          {
+            "name": "task",
+            "type": "pubkey"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "reward",
+            "type": "u64"
+          },
+          {
+            "name": "merchandise",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
     {
       "name": "game",
       "type": {

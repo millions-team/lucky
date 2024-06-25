@@ -1,6 +1,11 @@
+import { GAME_NAME_LEN } from './constants';
+
 export function encodeName(name: string) {
   const buffer = new TextEncoder().encode(name);
-  return Array.from({ length: 33 }, (_, i) => (i === 32 ? 0 : buffer[i] ?? 0));
+  const MAX_LEN = GAME_NAME_LEN - 1;
+  return Array.from({ length: GAME_NAME_LEN }, (_, i) =>
+    i === MAX_LEN ? 0 : buffer[i] ?? 0
+  );
 }
 
 export function decodeName(name: number[]) {

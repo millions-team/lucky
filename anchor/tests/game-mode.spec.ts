@@ -103,7 +103,7 @@ describe('Game Mode', () => {
 
         it(`Should initialize the game with the correct settings`, async () => {
           await program.methods
-            .addGameMode(seed, settings)
+            .addGameMode(seed, { ...settings, game: gamePDA })
             .accounts({ secret: secret.publicKey })
             .signers([gamesKeypair])
             .rpc();
@@ -123,7 +123,7 @@ describe('Game Mode', () => {
             const newSettings = VALID_GAMES[i + 1];
 
             await program.methods
-              .updateGameMode(seed, newSettings)
+              .updateGameMode(seed, { ...newSettings, game: gamePDA })
               .accounts({ secret: secret.publicKey })
               .rpc();
 
@@ -139,7 +139,7 @@ describe('Game Mode', () => {
           it(`Should fail to update the game settings`, async () => {
             await expect(
               program.methods
-                .updateGameMode(seed, INVALID_GAME)
+                .updateGameMode(seed, { ...INVALID_GAME, game: gamePDA })
                 .accounts({ secret: secret.publicKey })
                 .rpc()
             ).rejects.toThrow();
@@ -163,7 +163,7 @@ describe('Game Mode', () => {
 
   describe('Invalid Settings', () => {
     // Invalid game set tests. The goal is to reach all the branches of the verify function.
-    const INVALID_GAMES: Partial<GameMode & { reason: string }>[] = [
+    const INVALID_GAMES: Array<GameMode & { reason: string }> = [
       {
         slots: 0,
         digits: 1,
@@ -277,7 +277,7 @@ describe('Game Mode', () => {
         it(`Should fail to initialize the game with the invalid settings`, async () => {
           await expect(
             program.methods
-              .addGameMode(seed, settings)
+              .addGameMode(seed, { ...settings, game: gamePDA })
               .accounts({ secret: secret.publicKey })
               .signers([gamesKeypair])
               .rpc()

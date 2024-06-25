@@ -277,14 +277,19 @@
   ],
   "errors": [
     {
-      "code": 6100,
-      "name": "PseudoRandomError",
-      "msg": "PseudoRandom error"
+      "code": 6010,
+      "name": "InvalidSeed",
+      "msg": "Invalid seed"
     },
     {
-      "code": 6200,
-      "name": "VrfError",
-      "msg": "Vrf error"
+      "code": 6011,
+      "name": "TwoEqualConsecutiveValues",
+      "msg": "Two consecutive values are the same"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidRoll",
+      "msg": "Roll out of bound"
     }
   ],
   "types": [
