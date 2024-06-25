@@ -8,34 +8,48 @@ import {
 } from '@chainlink/solana-sdk';
 import { useAnchorProvider } from '@/providers/solana-provider';
 import { PublicKey } from '@solana/web3.js';
+import { atomWithStorage } from 'jotai/utils';
+import { atom, useAtomValue, useSetAtom } from 'jotai/index';
 
 //SOL/USD Devnet Feed
 const USD_SOL_FEED_ADDRESS = new PublicKey(
   '99B2bTijsU6f1GCT73HmdR7HCFFjGMBcPZY6jZ96ynrR'
 );
 export const DECIMALS = 8; // All Chainlink feeds have 8 decimals
+type StoredRound = Omit<Round, 'answer'> & { answer: number };
+type Feeds = Record<string, StoredRound>;
+const feedsAtom = atomWithStorage<Feeds>('feeds', {}, undefined, {
+  getOnInit: true,
+});
+const lastFeedsAtom = atom<Feeds>((get) => get(feedsAtom));
 
-// TODO: Implement as an stored atom to be used in localhost
-const DataFeedContext = React.createContext<Round | null>(null);
-export const useDataFeed = () => React.useContext(DataFeedContext) as Round;
+const DataFeedContext = React.createContext<StoredRound | null>(null);
+export const useDataFeed = () =>
+  React.useContext(DataFeedContext) as StoredRound;
 export const DataFeedProvider: React.FC<
   React.PropsWithChildren<{ feedAddress?: PublicKey }>
 > = ({ feedAddress = USD_SOL_FEED_ADDRESS, children }) => {
+  const feeds = useAtomValue(lastFeedsAtom);
+  const setFeeds = useSetAtom(feedsAtom);
+
   const provider = useAnchorProvider();
   const [dataFeed, setDataFeed] = React.useState<OCR2Feed | null>(null);
-  const [round, setRound] = React.useState<Round | null>(null);
   const [tick, setTick] = React.useState(0);
 
   useEffect(() => {
     if (dataFeed) return;
 
     const timeout = setTimeout(async () => {
-      const feed = await OCR2Feed.load(
-        CHAINLINK_AGGREGATOR_PROGRAM_ID,
-        provider
-      );
-      setDataFeed(feed);
-      setInterval(() => setTick((tick) => tick + 1), 30000);
+      try {
+        const feed = await OCR2Feed.load(
+          CHAINLINK_AGGREGATOR_PROGRAM_ID,
+          provider
+        );
+        setDataFeed(feed);
+        setInterval(() => setTick((tick) => tick + 1), 30000);
+      } catch (e) {
+        console.error(e);
+      }
     }, 300);
 
     return () => clearTimeout(timeout);
@@ -43,11 +57,15 @@ export const DataFeedProvider: React.FC<
 
   useEffect(() => {
     if (!dataFeed) return;
+    let listener: number;
 
     const timeout = setTimeout(async () => {
-      let listener: number;
-      const setAndRemove = (round: Round) => {
-        setRound(round);
+      const setAndRemove = ({ answer, ...rest }: Round) => {
+        const round = { ...rest, answer: answer.toNumber() } as StoredRound;
+        setFeeds((feeds) => ({
+          ...feeds,
+          [feedAddress.toString()]: round,
+        }));
         return dataFeed.removeListener(listener);
       };
       listener = dataFeed.onRound(feedAddress, setAndRemove);
@@ -57,7 +75,7 @@ export const DataFeedProvider: React.FC<
   }, [dataFeed, feedAddress, tick]);
 
   return (
-    <DataFeedContext.Provider value={round}>
+    <DataFeedContext.Provider value={feeds[feedAddress.toString()]}>
       {children}
     </DataFeedContext.Provider>
   );

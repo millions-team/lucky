@@ -23,7 +23,7 @@ export function Sell({ storePda }: BaseProps) {
 
   const dataFeed = useDataFeed();
   const gas = useMemo(
-    () => (dataFeed?.answer ? 1 / (dataFeed.answer.toNumber() / DECIMALS) : 0),
+    () => (dataFeed?.answer ? 1 / (dataFeed.answer / DECIMALS) : 0),
     [dataFeed?.answer]
   );
 
@@ -45,8 +45,7 @@ export function Sell({ storePda }: BaseProps) {
                   !balance.data
                 )
                   return;
-                const rate =
-                  storeQuery.data.price.toNumber() / dataFeed.answer.toNumber();
+                const rate = storeQuery.data.price.toNumber() / dataFeed.answer;
                 const amount = balance.data / LAMPORTS_PER_SOL - gas;
                 const max = amount / rate;
                 const { amount: vaultBalance } = vaultQuery.data;

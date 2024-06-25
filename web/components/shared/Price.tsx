@@ -24,7 +24,7 @@ export function Price({ amount, symbol, className = '' }: PriceProps) {
     const _amount = amount.toNumber();
     if (pair === 'USD') return _amount / 10 ** DECIMALS;
 
-    const rate = dataFeed.answer.toNumber();
+    const rate = dataFeed.answer;
     const price = _amount / rate;
     return Math.round(price * 100000) / 100000;
   }, [dataFeed?.answer, pair, amount]);
