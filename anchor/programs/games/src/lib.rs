@@ -62,7 +62,11 @@ pub mod games {
     }
 
     pub fn close_game_mode(_ctx: Context<CloseGameMode>, _mode_seed: String) -> Result<()> { Ok(()) }
+
+    // ------------------------ BOUNTY ------------------------
+    pub fn issue_bounty(ctx: Context<InitializeBounty>, settings: Bounty) -> Result<()> {
+        ctx.accounts.bounty.gem = ctx.accounts.gem.key();
+        ctx.accounts.bounty.task = ctx.accounts.task.key();
+        bounty::publish::new_bounty(&mut ctx.accounts.bounty, settings)
+    }
 }
-
-
-
