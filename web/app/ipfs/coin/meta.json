@@ -1,0 +1,35 @@
+{
+  "name": "Luckyland",
+  "symbol": "LUCKY",
+  "description": "All the missing gold coins from the pirate ship have been found! The crew is celebrating with a feast and a treasure hunt. The lucky coin is the key to the treasure chest. Find it and you will be rewarded with a chest full of gold!",
+  "seller_fee_basis_points": 0,
+  "image": "https://shdw-drive.genesysgo.net/QZNGUVnJgkw6sGQddwZVZkhyUWSUXAjXF9HQAjiVZ55/coin.png",
+  "animation_url": null,
+  "attributes": [
+    {
+      "trait_type": "Gold",
+      "value": "100%"
+    },
+    {
+      "trait_type": "Pirate",
+      "value": "Arrr!"
+    }
+  ],
+  "external_url": "https://luckyland.vercel.app",
+  "properties": {
+    "category": "image",
+    "creators": [
+      {
+        "address": "CaCTrUxh6fSrLph9wtPpoprp6RQzvatvmgP1ULJGV1pB",
+        "verified": true,
+        "share": 100
+      }
+    ],
+    "files": [
+      {
+        "type": "image/png",
+        "uri": "https://shdw-drive.genesysgo.net/QZNGUVnJgkw6sGQddwZVZkhyUWSUXAjXF9HQAjiVZ55/coin.png"
+      }
+    ]
+  }
+}
