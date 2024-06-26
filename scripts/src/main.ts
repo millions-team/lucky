@@ -99,22 +99,21 @@ const keeperPDA = getKeeperPDA();
   const confirmOptions = { skipPreflight: true };
   const program = getGamesProgram(provider);
 
+  console.log(`Forging stronghold...`);
   const txHash = await program.methods
     .forgeStronghold()
     .accounts({ gem })
     .rpc(confirmOptions);
 
-  console.log(`Initialize`);
-
   await confirmAndLogTransaction(txHash, connection, cluster);
-  console.log(`Stronghold initialized.`);
+  console.log(`Stronghold forged.`);
   console.log(`------------------------------------------------`);
 
   let reserveInfo = await getAccount(connection, reserve.address);
   let strongholdInfo = await getAccount(connection, strongholdPDA);
-  console.log('Reserve amount: ' + reserveInfo.amount / BigInt(mintDecimals));
+  console.log('Reserve balance: ' + reserveInfo.amount / BigInt(mintDecimals));
   console.log(
-    'Stronghold amount: ' + strongholdInfo.amount / BigInt(mintDecimals)
+    'Stronghold balance: ' + strongholdInfo.amount / BigInt(mintDecimals)
   );
   console.log(`------------------------------------------------`);
   console.log('Stockpile gems...');
@@ -128,9 +127,9 @@ const keeperPDA = getKeeperPDA();
 
   reserveInfo = await getAccount(connection, reserve.address);
   strongholdInfo = await getAccount(connection, strongholdPDA);
-  console.log('Reserve amount: ' + reserveInfo.amount / BigInt(mintDecimals));
+  console.log('Reserve balance: ' + reserveInfo.amount / BigInt(mintDecimals));
   console.log(
-    'Stronghold amount: ' + strongholdInfo.amount / BigInt(mintDecimals)
+    'Stronghold balance: ' + strongholdInfo.amount / BigInt(mintDecimals)
   );
   console.log(`------------------------------------------------`);
   console.log('Program execution complete.');
