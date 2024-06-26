@@ -37,11 +37,12 @@
         }
       }
     },
-    "serve": {
+    "token-create": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "scripts:build"
+        "buildTarget": "scripts:build",
+        "watch": false
       },
       "configurations": {
         "development": {
