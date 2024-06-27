@@ -531,6 +531,173 @@
       "args": []
     },
     {
+      "name": "fund_bounty",
+      "discriminator": [
+        36,
+        148,
+        139,
+        239,
+        172,
+        37,
+        58,
+        255
+      ],
+      "accounts": [
+        {
+          "name": "keeper",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  75,
+                  69,
+                  69,
+                  80,
+                  69,
+                  82
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "stronghold",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  86,
+                  65,
+                  85,
+                  76,
+                  84
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "gem"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bounty",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  66,
+                  79,
+                  85,
+                  78,
+                  84,
+                  89
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task"
+              },
+              {
+                "kind": "account",
+                "path": "gem"
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ]
+          }
+        },
+        {
+          "name": "task"
+        },
+        {
+          "name": "gem"
+        },
+        {
+          "name": "trader"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  86,
+                  65,
+                  85,
+                  76,
+                  84
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bounty"
+              }
+            ]
+          }
+        },
+        {
+          "name": "supplier",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "issue_bounty",
       "discriminator": [
         188,
@@ -561,11 +728,15 @@
               },
               {
                 "kind": "account",
+                "path": "task"
+              },
+              {
+                "kind": "account",
                 "path": "gem"
               },
               {
                 "kind": "account",
-                "path": "task"
+                "path": "trader"
               }
             ]
           }
@@ -575,6 +746,9 @@
         },
         {
           "name": "gem"
+        },
+        {
+          "name": "trader"
         },
         {
           "name": "supplier",
@@ -1066,33 +1240,18 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidSlots",
-      "msg": "Slots must be between 1 and 16"
+      "name": "InvalidName",
+      "msg": "Name must be between 3 and 32 characters"
     },
     {
       "code": 6001,
-      "name": "InvalidDigits",
-      "msg": "Digits must be between 1 and 8"
+      "name": "GameEnded",
+      "msg": "Game is already ended"
     },
     {
       "code": 6002,
-      "name": "InvalidChoices",
-      "msg": "Choices must be between 2 and max value of digits"
-    },
-    {
-      "code": 6003,
-      "name": "InvalidWinnerSingleChoice",
-      "msg": "Winner choice must be between 1 and choices"
-    },
-    {
-      "code": 6004,
-      "name": "InvalidWinnerChoice",
-      "msg": "Winner choice must be between 0 and choices"
-    },
-    {
-      "code": 6005,
-      "name": "InvalidPickWinner",
-      "msg": "Pick winner is true but winner choice is 0"
+      "name": "GameNotEnded",
+      "msg": "Game is not ended"
     }
   ],
   "types": [
@@ -1102,24 +1261,24 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "gem",
-            "type": "pubkey"
-          },
-          {
             "name": "task",
             "type": "pubkey"
           },
           {
-            "name": "price",
-            "type": "u64"
+            "name": "gem",
+            "type": "pubkey"
           },
           {
             "name": "reward",
             "type": "u64"
           },
           {
-            "name": "merchandise",
+            "name": "trader",
             "type": "pubkey"
+          },
+          {
+            "name": "price",
+            "type": "u64"
           }
         ]
       }

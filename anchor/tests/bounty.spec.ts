@@ -1,31 +1,31 @@
 import * as anchor from '@coral-xyz/anchor';
-import { BN, Program } from '@coral-xyz/anchor';
+import { BN } from '@coral-xyz/anchor';
 import { Keypair, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import {
   createAssociatedTokenAccount,
   createMint,
+  getAccount,
   mintToChecked,
 } from '@solana/spl-token';
 
-import { Games } from '../target/types/games';
 import {
+  getGamesProgram,
   getGamePDA,
   getGameModePDA,
-  getBountyPDA,
   encodeName,
+  getKeeperPDA,
+  getStrongholdPDA,
+  getBountyPDA,
+  getBountyVaultPDA,
 } from '../src/games-exports';
 
 const DECIMALS = 8;
-const USD_SOL_FEED_ADDRESS = new PublicKey(
-  '99B2bTijsU6f1GCT73HmdR7HCFFjGMBcPZY6jZ96ynrR'
-);
-
 describe('Bounty', () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
-  const program = anchor.workspace.Games as Program<Games>;
+  const program = getGamesProgram(provider);
   const connection = provider.connection;
 
   const supplier = Keypair.generate();
@@ -34,18 +34,19 @@ describe('Bounty', () => {
   const gamePDA = getGamePDA(supplier.publicKey, secret.publicKey);
   const task = getGameModePDA(gamePDA, seed);
 
-  let mint: PublicKey;
+  let gem: PublicKey; // Mint of token to be used for bounties.
+  let trader: PublicKey; // Mint of token to be charged to players for playing the game.
   let accounts: Record<string, PublicKey>;
 
   beforeAll(async () => {
     const payer = supplier;
     const tx = await connection.requestAirdrop(
       supplier.publicKey,
-      5 * LAMPORTS_PER_SOL
+      0.5 * LAMPORTS_PER_SOL
     );
     await connection.confirmTransaction(tx);
 
-    mint = await createMint(
+    gem = await createMint(
       connection, // conneciton
       payer, // fee payer
       payer.publicKey, // mint authority
@@ -53,31 +54,42 @@ describe('Bounty', () => {
       DECIMALS
     );
 
-    const ata = await createAssociatedTokenAccount(
+    trader = await createMint(
+      connection, // conneciton
+      payer, // fee payer
+      payer.publicKey, // mint authority
+      null, // freeze authority (you can use `null` to disable it. when you disable it, you can't turn it on again)
+      DECIMALS
+    );
+
+    const reserve = await createAssociatedTokenAccount(
       connection, // connection
       payer, // fee payer
-      mint, // mint
+      gem, // mint
       payer.publicKey // owner,
     );
 
     accounts = {
-      supplier: supplier.publicKey,
-      gem: mint,
       task,
+      gem, // LuckyLand token.
+      trader, // Lucky Shot token.
+      supplier: supplier.publicKey,
     };
 
+    const amount = 1000 * 10 ** DECIMALS;
     await mintToChecked(
       connection, // connection
       payer, // fee payer
-      mint, // mint
-      ata, // receiver (should be a token account)
+      gem, // mint
+      reserve, // receiver (must be a token account)
       payer, // mint authority
-      1000e8, // amount. if your decimals is 8, you mint 10^8 for 1 token.
+      amount, // amount. if your decimals is 8, you mint 10^8 for 1 token.
       DECIMALS
     );
 
     const name = encodeName('Awesome Game Modes');
 
+    // Create a game and a game mode.
     await program.methods
       .createGame(name)
       .accounts({ owner: payer.publicKey, secret: secret.publicKey })
@@ -96,16 +108,34 @@ describe('Bounty', () => {
       .accounts({ owner: payer.publicKey, secret: secret.publicKey })
       .signers([payer])
       .rpc();
+
+    // Forge a stronghold and stockpile gems.
+    await program.methods
+      .forgeStronghold()
+      .accounts(accounts)
+      .signers([payer])
+      .rpc();
+
+    await program.methods
+      .stockpileGems(new BN(amount))
+      .accounts({
+        ...accounts,
+        reserve,
+      })
+      .signers([payer])
+      .rpc();
   });
 
   it('Should initialize a bounty', async () => {
-    const { gem, task } = accounts;
+    const { gem, task, trader } = accounts;
     const settings = {
-      gem,
-      task,
-      price: new BN(0.5 * 10 ** DECIMALS),
+      task, // Game mode. This is ignored here. It assigns the one in the accounts.
+
+      gem, // Token to be used for bounties. This is ignored here. It assigns the one in the accounts.
       reward: new BN(20000 * 10 ** DECIMALS),
-      merchandise: USD_SOL_FEED_ADDRESS,
+
+      price: new BN(0.5 * 10 ** DECIMALS),
+      trader, // Token to be charged to players for playing the game. This is ignored here. It assigns the one in the accounts.
     };
 
     await program.methods
@@ -114,13 +144,42 @@ describe('Bounty', () => {
       .signers([supplier])
       .rpc();
 
-    const bountyPDA = getBountyPDA(gem, task);
+    const bountyPDA = getBountyPDA(task, gem, trader);
     const bounty = await program.account.bounty.fetch(bountyPDA);
 
-    expect(bounty.gem).toEqual(settings.gem);
     expect(bounty.task).toEqual(settings.task);
-    expect(bounty.price.toString()).toEqual(settings.price.toString());
+
+    expect(bounty.gem).toEqual(settings.gem);
     expect(bounty.reward.toString()).toEqual(settings.reward.toString());
-    expect(bounty.merchandise).toEqual(settings.merchandise);
+
+    expect(bounty.price.toString()).toEqual(settings.price.toString());
+    expect(bounty.trader).toEqual(settings.trader);
+  });
+
+  it(`Should init bounty vault and transport the gems from stronghold`, async () => {
+    const { gem, task, trader } = accounts;
+    const strongholdPDA = getStrongholdPDA(gem);
+    const strongholdBeforeTransport = await getAccount(
+      connection,
+      strongholdPDA
+    );
+    const amount = strongholdBeforeTransport.amount;
+    expect(amount).toBeGreaterThan(0);
+
+    await program.methods
+      .fundBounty(new BN(amount))
+      .accounts(accounts)
+      .signers([supplier])
+      .rpc();
+
+    const bountyPDA = getBountyPDA(task, gem, trader);
+    const vaultPDA = getBountyVaultPDA(bountyPDA);
+
+    const stronghold = await getAccount(connection, strongholdPDA);
+    const vault = await getAccount(connection, vaultPDA);
+
+    expect(vault.owner).toEqual(getKeeperPDA());
+    expect(stronghold.amount.toString()).toEqual('0');
+    expect(vault.amount.toString()).toEqual(amount.toString());
   });
 });

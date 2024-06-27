@@ -537,6 +537,173 @@ export type Games = {
       "args": []
     },
     {
+      "name": "fundBounty",
+      "discriminator": [
+        36,
+        148,
+        139,
+        239,
+        172,
+        37,
+        58,
+        255
+      ],
+      "accounts": [
+        {
+          "name": "keeper",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  75,
+                  69,
+                  69,
+                  80,
+                  69,
+                  82
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "stronghold",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  86,
+                  65,
+                  85,
+                  76,
+                  84
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "gem"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bounty",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  66,
+                  79,
+                  85,
+                  78,
+                  84,
+                  89
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task"
+              },
+              {
+                "kind": "account",
+                "path": "gem"
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ]
+          }
+        },
+        {
+          "name": "task"
+        },
+        {
+          "name": "gem"
+        },
+        {
+          "name": "trader"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  86,
+                  65,
+                  85,
+                  76,
+                  84
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bounty"
+              }
+            ]
+          }
+        },
+        {
+          "name": "supplier",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "issueBounty",
       "discriminator": [
         188,
@@ -567,11 +734,15 @@ export type Games = {
               },
               {
                 "kind": "account",
+                "path": "task"
+              },
+              {
+                "kind": "account",
                 "path": "gem"
               },
               {
                 "kind": "account",
-                "path": "task"
+                "path": "trader"
               }
             ]
           }
@@ -581,6 +752,9 @@ export type Games = {
         },
         {
           "name": "gem"
+        },
+        {
+          "name": "trader"
         },
         {
           "name": "supplier",
@@ -1072,33 +1246,18 @@ export type Games = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidSlots",
-      "msg": "Slots must be between 1 and 16"
+      "name": "invalidName",
+      "msg": "Name must be between 3 and 32 characters"
     },
     {
       "code": 6001,
-      "name": "invalidDigits",
-      "msg": "Digits must be between 1 and 8"
+      "name": "gameEnded",
+      "msg": "Game is already ended"
     },
     {
       "code": 6002,
-      "name": "invalidChoices",
-      "msg": "Choices must be between 2 and max value of digits"
-    },
-    {
-      "code": 6003,
-      "name": "invalidWinnerSingleChoice",
-      "msg": "Winner choice must be between 1 and choices"
-    },
-    {
-      "code": 6004,
-      "name": "invalidWinnerChoice",
-      "msg": "Winner choice must be between 0 and choices"
-    },
-    {
-      "code": 6005,
-      "name": "invalidPickWinner",
-      "msg": "Pick winner is true but winner choice is 0"
+      "name": "gameNotEnded",
+      "msg": "Game is not ended"
     }
   ],
   "types": [
@@ -1108,24 +1267,24 @@ export type Games = {
         "kind": "struct",
         "fields": [
           {
-            "name": "gem",
-            "type": "pubkey"
-          },
-          {
             "name": "task",
             "type": "pubkey"
           },
           {
-            "name": "price",
-            "type": "u64"
+            "name": "gem",
+            "type": "pubkey"
           },
           {
             "name": "reward",
             "type": "u64"
           },
           {
-            "name": "merchandise",
+            "name": "trader",
             "type": "pubkey"
+          },
+          {
+            "name": "price",
+            "type": "u64"
           }
         ]
       }
