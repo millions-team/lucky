@@ -71,4 +71,8 @@ pub mod games {
 
         bounty::publish::new_bounty(&mut ctx.accounts.bounty, settings)
     }
+
+    pub fn fund_bounty(ctx: Context<VaultLoad>, amount: u64) -> Result<()> {
+        bounty::fund::vault_load(&ctx, amount)
+    }
 }
