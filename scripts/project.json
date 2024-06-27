@@ -53,6 +53,14 @@
         }
       }
     },
+    "load-bpf": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "scripts/loaders",
+        "commands": ["sh chainlink-data-feed.sh", "sh metaplex.sh"],
+        "parallel": false
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
