@@ -8,7 +8,11 @@ import { Cluster, PublicKey } from '@solana/web3.js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import { getGamesProgramId, getGamesProgram } from '@luckyland/anchor';
+import {
+  getGamesProgramId,
+  getGamesProgram,
+  getKeeperPDA,
+} from '@luckyland/anchor';
 
 import { useCluster } from '../cluster/cluster-data-access';
 import { useAnchorProvider } from '@/providers';
@@ -26,6 +30,10 @@ export function useTreasureProgram({
     [cluster.network]
   );
   const program = getGamesProgram(provider);
+  const keeperPDA = useMemo(
+    () => getKeeperPDA(cluster.network as Cluster),
+    [cluster.network]
+  );
 
   const getProgramAccount = useQuery({
     queryKey: ['get-program-account', { cluster }],
@@ -97,6 +105,7 @@ export function useTreasureProgram({
     program,
     programId,
     getProgramAccount,
+    keeperPDA,
     initialize,
     deposit,
     withdraw,

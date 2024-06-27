@@ -9,6 +9,18 @@ lucky = "6VCjdiYiU9rAWo7TptZMa423j44GSnyzWMG2KbCCdUz8"
 store = "BJuNDJJkJAFGZGzo8UfaH3t7FgUL5ESCusUFEzKeuLwA"
 games = "74arRDDazQJzSQRhm7VonhyhRnNrwBGZE4dyhNva5z8p"
 
+[[test.genesis]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+program = "bpf-programs/metaplex_token_metadata_program.so"
+
+[[test.genesis]]
+address = "HEvSKofvBgfaexv23kMabbYqxasxU3mQ4ibBMEmJWHny"
+program = "bpf-programs/chainlink_store.so"
+
+[[test.genesis]]
+address = "cjg3oHmg9uuPsP8D6g29NWvhySJkdYdAo9D25PRbKXJ"
+program = "bpf-programs/chainlink_aggregator.so"
+
 [registry]
 url = "https://api.apr.dev"
 
