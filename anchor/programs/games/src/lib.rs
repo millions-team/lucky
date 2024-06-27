@@ -67,6 +67,8 @@ pub mod games {
     pub fn issue_bounty(ctx: Context<InitializeBounty>, settings: Bounty) -> Result<()> {
         ctx.accounts.bounty.gem = ctx.accounts.gem.key();
         ctx.accounts.bounty.task = ctx.accounts.task.key();
+        ctx.accounts.bounty.trader = ctx.accounts.trader.key();
+
         bounty::publish::new_bounty(&mut ctx.accounts.bounty, settings)
     }
 }
