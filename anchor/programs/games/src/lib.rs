@@ -79,4 +79,8 @@ pub mod games {
 
         Ok(())
     }
+
+    pub fn renew_bounty(ctx: Context<RenewBounty>, settings: BountySettings) -> Result<()> {
+        bounty::renew::existent_bounty(&mut ctx.accounts.bounty, settings)
+    }
 }
