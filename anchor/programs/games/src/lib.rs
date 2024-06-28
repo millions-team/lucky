@@ -64,7 +64,8 @@ pub mod games {
     pub fn close_game_mode(_ctx: Context<CloseGameMode>, _mode_seed: String) -> Result<()> { Ok(()) }
 
     // ------------------------ BOUNTY ------------------------
-    pub fn issue_bounty(ctx: Context<InitializeBounty>, settings: Bounty) -> Result<()> {
+    pub fn issue_bounty(ctx: Context<InitializeBounty>, settings: BountySettings) -> Result<()> {
+        ctx.accounts.bounty.owner = ctx.accounts.supplier.key();
         ctx.accounts.bounty.gem = ctx.accounts.gem.key();
         ctx.accounts.bounty.task = ctx.accounts.task.key();
         ctx.accounts.bounty.trader = ctx.accounts.trader.key();
