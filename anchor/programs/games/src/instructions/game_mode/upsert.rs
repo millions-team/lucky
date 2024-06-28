@@ -1,9 +1,9 @@
-pub use crate::state::game_mode::GameMode;
+pub use crate::state::game_mode::{GameMode, GameModeSettings};
 use crate::constants::{GAME_SEED, GAME_MODE_SEED};
 use anchor_lang::prelude::*;
 use crate::instructions::Game;
 
-pub fn verify_and_set(mode: &mut GameMode, settings: GameMode) -> Result<()> {
+pub fn verify_and_set(mode: &mut GameMode, settings: GameModeSettings) -> Result<()> {
     mode.slots = settings.slots.clone();
     mode.digits = settings.digits.clone();
     mode.choices = settings.choices.clone();
