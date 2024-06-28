@@ -1,23 +1,24 @@
-pub use crate::state::{game_mode::GameMode, bounty::Bounty};
+pub use crate::state::{game_mode::GameMode, bounty::{Bounty, BountySettings}};
 use crate::constants::{BOUNTY_SEED};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint};
 
-pub fn new_bounty(bounty: &mut Bounty, settings: Bounty) -> Result<()> {
+pub fn new_bounty(bounty: &mut Bounty, settings: BountySettings) -> Result<()> {
     bounty.price = settings.price.clone();
     bounty.reward = settings.reward.clone();
-    // TODO: Verify it's a valid chainlink data feed.
-    bounty.merchandise = settings.merchandise.clone();
 
     Ok(())
 }
 
 #[derive(Accounts)]
 pub struct InitializeBounty<'info> {
+    #[account(mut)]
+    pub supplier: Signer<'info>,
+
     #[account(
-        init_if_needed,
+        init,
         payer = supplier,
-        seeds = [BOUNTY_SEED, gem.key().as_ref(), task.key().as_ref()],
+        seeds = [BOUNTY_SEED, task.key().as_ref(), gem.key().as_ref(), trader.key().as_ref()],
         bump,
         space = 8 + Bounty::INIT_SPACE
     )]
@@ -25,8 +26,7 @@ pub struct InitializeBounty<'info> {
 
     pub task: Account<'info, GameMode>,
     pub gem: Account<'info, Mint>,
+    pub trader: Account<'info, Mint>,
 
-    #[account(mut)]
-    supplier: Signer<'info>,
     system_program: Program<'info, System>,
 }

@@ -12,6 +12,7 @@ pub const MIN_CHOICES: u32 = 2;
 
 // ----------------------------- Bounty -----------------------------
 pub const BOUNTY_SEED: &[u8] = b"BOUNTY";
+pub const RENEW_THRESHOLD: u64 = 10; // 10% of the last issued bounty.
 
 // ----------------------------- Treasure -----------------------------
 pub const KEEPER_SEED: &[u8] = b"TREASURE_KEEPER";

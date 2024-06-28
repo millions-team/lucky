@@ -11,7 +11,7 @@ import {
   NAME,
   SYMBOL,
   DECIMALS,
-  PIECES_PER_GEM,
+  PIECES_PER_TOKEN,
   idPath,
   ID_NAME,
 } from './constants';
@@ -20,58 +20,53 @@ import { loadOrCreateKeypair } from '../../utils';
 
 let manufacturer: Metaplex;
 
-export async function ForgeGems(
+export async function ForgeTrader(
   market: Connection,
   payer: Keypair,
   amount = BigInt(0)
 ) {
-  console.log(`------------------ ForgeGems ------------------`);
+  console.log(`------------------ ForgeTrader ------------------`);
   console.log(
-    `Forging (${formatAmount(amount, false)}) ${NAME} gems on ${
+    `Forging (${formatAmount(amount, false)}) ${NAME} tokens on ${
       market.rpcEndpoint
     } market...`
   );
 
-  activateManufacturer(market, payer);
+  manufacturer = getManufacturer(market, payer);
   console.log(`------------------------------------------------`);
-  const { gem, minter } = await forgeMatrix();
+  const { trader, minter } = await forgeMatrix();
   console.log(`------------------------------------------------`);
   const supplier = payer;
-  let reserve = await checkBalance(market, supplier, gem);
+  let store = await checkBalance(market, supplier, trader);
   console.log(`------------------------------------------------`);
   if (amount <= 0) {
-    console.log(`No gems to forge.`);
-    return { gem, reserve };
+    console.log(`No trades to issue.`);
+    return { trader, store };
   }
 
-  await issueGems(
+  await issueTokens(
     market,
     payer,
-    gem,
-    reserve.address,
+    trader,
+    store.address,
     minter,
-    amount * PIECES_PER_GEM
+    amount * PIECES_PER_TOKEN
   );
   console.log(`------------------------------------------------`);
-  reserve = await checkBalance(market, supplier, gem);
+  store = await checkBalance(market, supplier, trader);
 
-  return { gem, reserve };
+  return { trader, store };
 }
 
 export function formatAmount(amount: bigint, raw = true) {
-  const _amount = raw ? amount / PIECES_PER_GEM : amount;
+  const _amount = raw ? amount / PIECES_PER_TOKEN : amount;
   return `${Intl.NumberFormat().format(_amount)} $${SYMBOL}`;
 }
 
-function activateManufacturer(market: Connection, payer: Keypair) {
-  if (manufacturer) return manufacturer;
-  return (manufacturer = getManufacturer(market, payer));
-}
-
 async function forgeMatrix() {
-  const gemId = loadOrCreateKeypair(idPath(ID_NAME.GEM));
+  const tokenId = loadOrCreateKeypair(idPath(ID_NAME.TRADER));
   const authorityId = loadOrCreateKeypair(idPath(ID_NAME.MINTER));
-  const gem = gemId.publicKey;
+  const trader = tokenId.publicKey;
   const uri = getMetadataURI(SYMBOL);
 
   try {
@@ -84,7 +79,7 @@ async function forgeMatrix() {
       name: NAME,
       symbol: SYMBOL,
       decimals: DECIMALS,
-      useNewMint: gemId,
+      useNewMint: tokenId,
       mintAuthority: authorityId,
       updateAuthority: authorityId,
       tokenStandard: TokenStandard.Fungible,
@@ -92,41 +87,41 @@ async function forgeMatrix() {
       isMutable: true,
     });
 
-    console.log(`Gem's matrix forged: ${gem}`);
+    console.log(`Token's matrix forged: ${trader}`);
     console.log(
-      `Pieces per gem: ${Intl.NumberFormat().format(PIECES_PER_GEM)}`
+      `Pieces per trade: ${Intl.NumberFormat().format(PIECES_PER_TOKEN)}`
     );
   } catch (e) {
     if (!e.message.includes('already in use')) throw e;
 
-    console.log(`Gem's matrix already exists`);
+    console.log(`Trade's matrix already exists`);
   }
 
-  return { gem, minter: authorityId };
+  return { trader, minter: authorityId };
 }
 
-async function issueGems(
+async function issueTokens(
   market: Connection,
   payer: Keypair,
   gem: PublicKey,
-  reserve: PublicKey,
+  store: PublicKey,
   minter: Keypair,
   amount: bigint
 ) {
-  console.log(`Issuing ${formatAmount(amount)} gems...`);
-  console.log(`Recipient: ${reserve}`);
+  console.log(`Issuing ${formatAmount(amount)} tokens...`);
+  console.log(`Recipient: ${store}`);
 
   const tx = await mintToChecked(
     market,
     payer,
     gem,
-    reserve, // receiver (should be a token account)
+    store, // receiver (should be a token account)
     minter, // mint authority
     amount, // amount. if your decimals is 8, you mint 10^8 for 1 token.
     DECIMALS // decimals
   );
 
-  console.log(`Successfully minted ${formatAmount(amount)} gems.`);
+  console.log(`Successfully minted ${formatAmount(amount)} tokens.`);
   console.log(`Issued signature: ${tx}`);
 
   return tx;
@@ -145,8 +140,8 @@ async function checkBalance(
   );
 
   console.log(`Supplier: ${supplier.publicKey}`);
-  console.log(`Supplier reserve chamber: ${reserve.address}`);
-  console.log(`Chamber balance: ${formatAmount(reserve.amount)}`);
+  console.log(`Supplier store: ${reserve.address}`);
+  console.log(`Store balance: ${formatAmount(reserve.amount)}`);
 
   return reserve;
 }

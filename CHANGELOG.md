@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](///compare/v0.1.1...v0.1.3) (2024-06-27)
+
+
+### Features
+
+* **anchor:** 👻 Bounty | Games Program b35a620
+* **anchor:** 👻 Game | Games Program cb91ed5
+* **anchor:** 👻 Game | Games Program 3c015af
+* **anchor:** 👻 Games | Program 5f8a465
+* **anchor:** 👻 Games | Program 131b309
+* **anchor:** 👻 Modes per Game 1a36d15
+* **anchor:** 👻 Treasure | Games Program b68b0b4
+* **scripts:** 👻 BPF Loaders c8be106
+* **scripts:** 👻 BPF Loaders 928f687
+* **scripts:** 👻 Token Create 6ad1a0b
+* **web:** 👻 Crypto Provider 7370d3e
+* **web:** 👻 Data Feed 4d5f6ed
+* **web:** 👻 Game | Games Program 20d83b3
+* **web:** 👻 Games | Program 0dc294b
+* **web:** 👻 Lucky Bags b9db6e9
+* **web:** 👻 Lucky Wallet Adapter 232fe93
+* **web:** 👻 Lucky Wallet Provider fcc8f0f
+* **web:** 👻 Token Metadata | IPFS f70c0a3
+
+
+### Bug Fixes
+
+* **anchor:** 👻 Unit Test | Store cc72666
+
 ### [0.1.2](///compare/v0.1.1...v0.1.2) (2024-06-24)
 
 

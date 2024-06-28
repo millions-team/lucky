@@ -2,6 +2,15 @@ pub use crate::errors::GameModeErrorCode;
 use crate::constants::{MAX_DIGITS, MAX_SLOTS, MIN_CHOICES, MIN_DIGITS, MIN_SLOTS};
 use anchor_lang::prelude::*;
 
+#[derive(AnchorSerialize, AnchorDeserialize)]
+pub struct GameModeSettings {
+    pub slots: u8,
+    pub digits: u8,
+    pub choices: u32,
+    pub winner_choice: u32,
+    pub pick_winner: bool,
+}
+
 #[account]
 #[derive(InitSpace)]
 pub struct GameMode {
@@ -79,5 +88,4 @@ impl GameMode {
         if pick_winner && winner_choice == 0 { return Err(GameModeErrorCode::InvalidPickWinner.into()); }
         Ok(())
     }
-
 }
