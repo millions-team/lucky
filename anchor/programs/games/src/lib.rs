@@ -9,7 +9,7 @@ pub mod state;
 
 use instructions::*;
 
-declare_id!("74arRDDazQJzSQRhm7VonhyhRnNrwBGZE4dyhNva5z8p");
+declare_id!("LuckhEzDRjC8wrPcXQyiK8Vdj5nVuurtfNtq6PQsirw");
 
 #[program]
 pub mod games {

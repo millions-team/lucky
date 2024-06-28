@@ -1,25 +1,13 @@
 [toolchain]
 
 [features]
-seeds = false
+resolution = true
 skip-lint = false
 
 [programs.localnet]
+games = "LuckhEzDRjC8wrPcXQyiK8Vdj5nVuurtfNtq6PQsirw"
 lucky = "6VCjdiYiU9rAWo7TptZMa423j44GSnyzWMG2KbCCdUz8"
 store = "BJuNDJJkJAFGZGzo8UfaH3t7FgUL5ESCusUFEzKeuLwA"
-games = "74arRDDazQJzSQRhm7VonhyhRnNrwBGZE4dyhNva5z8p"
-
-[[test.genesis]]
-address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-program = "bpf-programs/metaplex_token_metadata_program.so"
-
-[[test.genesis]]
-address = "HEvSKofvBgfaexv23kMabbYqxasxU3mQ4ibBMEmJWHny"
-program = "bpf-programs/chainlink_store.so"
-
-[[test.genesis]]
-address = "cjg3oHmg9uuPsP8D6g29NWvhySJkdYdAo9D25PRbKXJ"
-program = "bpf-programs/chainlink_aggregator.so"
 
 [registry]
 url = "https://api.apr.dev"
@@ -35,6 +23,18 @@ test = "../node_modules/.bin/nx run anchor:jest"
 startup_wait = 5000
 shutdown_wait = 2000
 upgradeable = false
+
+[[test.genesis]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+program = "bpf-programs/metaplex_token_metadata_program.so"
+
+[[test.genesis]]
+address = "HEvSKofvBgfaexv23kMabbYqxasxU3mQ4ibBMEmJWHny"
+program = "bpf-programs/chainlink_store.so"
+
+[[test.genesis]]
+address = "cjg3oHmg9uuPsP8D6g29NWvhySJkdYdAo9D25PRbKXJ"
+program = "bpf-programs/chainlink_aggregator.so"
 
 [test.validator]
 bind_address = "127.0.0.1"
