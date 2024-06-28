@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](///compare/v0.1.3...v0.1.4) (2024-06-28)
+
+
+### Features
+
+* **anchor:** 👻 Fund | Bounty 99cb79c
+* **anchor:** 👻 Fund | Bounty 6f5478a
+* **anchor:** 👻 Renew | Bounty 381432a
+* **anchor:** 👻 Security & Stats | Bounty f14951a
+* **anchor:** 👻 Settings | GameMode a41918d
+* **anchor:** 👻 Trader | Bounty 7fbf681
+* **scripts:** 👻 Lucky Shot db0aece
+
 ### [0.1.3](///compare/v0.1.1...v0.1.3) (2024-06-27)
 
 
