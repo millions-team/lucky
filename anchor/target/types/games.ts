@@ -163,7 +163,7 @@ export type Games = {
           "name": "settings",
           "type": {
             "defined": {
-              "name": "gameMode"
+              "name": "gameModeSettings"
             }
           }
         }
@@ -610,42 +610,10 @@ export type Games = {
         },
         {
           "name": "bounty",
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  66,
-                  79,
-                  85,
-                  78,
-                  84,
-                  89
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "task"
-              },
-              {
-                "kind": "account",
-                "path": "gem"
-              },
-              {
-                "kind": "account",
-                "path": "trader"
-              }
-            ]
-          }
-        },
-        {
-          "name": "task"
+          "writable": true
         },
         {
           "name": "gem"
-        },
-        {
-          "name": "trader"
         },
         {
           "name": "vault",
@@ -717,6 +685,11 @@ export type Games = {
       ],
       "accounts": [
         {
+          "name": "supplier",
+          "writable": true,
+          "signer": true
+        },
+        {
           "name": "bounty",
           "writable": true,
           "pda": {
@@ -757,11 +730,6 @@ export type Games = {
           "name": "trader"
         },
         {
-          "name": "supplier",
-          "writable": true,
-          "signer": true
-        },
-        {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
@@ -771,7 +739,7 @@ export type Games = {
           "name": "settings",
           "type": {
             "defined": {
-              "name": "bounty"
+              "name": "bountySettings"
             }
           }
         }
@@ -831,6 +799,74 @@ export type Games = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "renewBounty",
+      "discriminator": [
+        152,
+        166,
+        165,
+        182,
+        73,
+        154,
+        157,
+        13
+      ],
+      "accounts": [
+        {
+          "name": "supplier",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bounty",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  86,
+                  65,
+                  85,
+                  76,
+                  84
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bounty"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "settings",
+          "type": {
+            "defined": {
+              "name": "bountySettings"
+            }
+          }
+        }
+      ]
     },
     {
       "name": "retrieveGems",
@@ -1195,7 +1231,7 @@ export type Games = {
           "name": "settings",
           "type": {
             "defined": {
-              "name": "gameMode"
+              "name": "gameModeSettings"
             }
           }
         }
@@ -1246,18 +1282,33 @@ export type Games = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidName",
-      "msg": "Name must be between 3 and 32 characters"
+      "name": "invalidSlots",
+      "msg": "Slots must be between 1 and 16"
     },
     {
       "code": 6001,
-      "name": "gameEnded",
-      "msg": "Game is already ended"
+      "name": "invalidDigits",
+      "msg": "Digits must be between 1 and 8"
     },
     {
       "code": 6002,
-      "name": "gameNotEnded",
-      "msg": "Game is not ended"
+      "name": "invalidChoices",
+      "msg": "Choices must be between 2 and max value of digits"
+    },
+    {
+      "code": 6003,
+      "name": "invalidWinnerSingleChoice",
+      "msg": "Winner choice must be between 1 and choices"
+    },
+    {
+      "code": 6004,
+      "name": "invalidWinnerChoice",
+      "msg": "Winner choice must be between 0 and choices"
+    },
+    {
+      "code": 6005,
+      "name": "invalidPickWinner",
+      "msg": "Pick winner is true but winner choice is 0"
     }
   ],
   "types": [
@@ -1266,6 +1317,10 @@ export type Games = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
           {
             "name": "task",
             "type": "pubkey"
@@ -1284,6 +1339,34 @@ export type Games = {
           },
           {
             "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "currentlyIssued",
+            "type": "u64"
+          },
+          {
+            "name": "winners",
+            "type": "u32"
+          },
+          {
+            "name": "totalClaimed",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bountySettings",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "reward",
             "type": "u64"
           }
         ]
@@ -1383,6 +1466,34 @@ export type Games = {
             "name": "game",
             "type": "pubkey"
           },
+          {
+            "name": "slots",
+            "type": "u8"
+          },
+          {
+            "name": "digits",
+            "type": "u8"
+          },
+          {
+            "name": "choices",
+            "type": "u32"
+          },
+          {
+            "name": "winnerChoice",
+            "type": "u32"
+          },
+          {
+            "name": "pickWinner",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "gameModeSettings",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
             "name": "slots",
             "type": "u8"

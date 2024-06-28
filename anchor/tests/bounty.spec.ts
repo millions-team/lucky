@@ -17,6 +17,7 @@ import {
   getStrongholdPDA,
   getBountyPDA,
   getBountyVaultPDA,
+  toBN,
 } from '../src/games-exports';
 
 const DECIMALS = 8;
@@ -62,124 +63,275 @@ describe('Bounty', () => {
       DECIMALS
     );
 
-    const reserve = await createAssociatedTokenAccount(
-      connection, // connection
-      payer, // fee payer
-      gem, // mint
-      payer.publicKey // owner,
-    );
-
+    const bounty = getBountyPDA(task, gem, trader);
     accounts = {
       task,
       gem, // LuckyLand token.
       trader, // Lucky Shot token.
       supplier: supplier.publicKey,
+      bounty,
+      vault: getBountyVaultPDA(bounty),
     };
+  });
 
-    const amount = 1000 * 10 ** DECIMALS;
-    await mintToChecked(
-      connection, // connection
-      payer, // fee payer
-      gem, // mint
-      reserve, // receiver (must be a token account)
-      payer, // mint authority
-      amount, // amount. if your decimals is 8, you mint 10^8 for 1 token.
-      DECIMALS
-    );
+  describe('Preparing the Stronghold', () => {
+    beforeAll(async () => {
+      const payer = supplier;
 
+      const reserve = await createAssociatedTokenAccount(
+        connection, // connection
+        payer, // fee payer
+        gem, // mint
+        payer.publicKey // owner,
+      );
+
+      // const bag = await createAssociatedTokenAccount(
+      //   connection, // connection
+      //   payer, // fee payer
+      //   trader, // mint
+      //   payer.publicKey // owner,
+      // );
+
+      await Promise.all(
+        [
+          [gem, toBN(100_000_000, DECIMALS), reserve],
+          // [trader, toBN(100, DECIMALS), bag],
+        ].map(([mint, amount, receiver]) =>
+          mintToChecked(
+            connection, // connection
+            payer, // fee payer
+            mint, // mint
+            receiver, // receiver (must be a token account)
+            payer, // mint authority
+            amount, // amount. if your decimals is 8, you mint 10^8 for 1 token.
+            DECIMALS
+          )
+        )
+      );
+
+      accounts['reserve'] = reserve;
+      // accounts['bag'] = bag;
+    });
+
+    it('Should forge and stockpile the stronghold for the gem', async () => {
+      const { reserve: account } = accounts;
+
+      await program.methods
+        .forgeStronghold()
+        .accounts(accounts)
+        .signers([supplier])
+        .rpc();
+
+      const reserve = await getAccount(connection, account);
+      await program.methods
+        .stockpileGems(new BN(reserve.amount.toString()))
+        .accounts(accounts)
+        .signers([supplier])
+        .rpc();
+    });
+
+    it('Should forge a stronghold for the trader', async () => {
+      const { trader: gem } = accounts;
+
+      // Forge a stronghold to test failure test cases.
+      await program.methods
+        .forgeStronghold()
+        .accounts({ gem, supplier: supplier.publicKey })
+        .signers([supplier])
+        .rpc();
+    });
+  });
+
+  describe('Preparing the game', () => {
     const name = encodeName('Awesome Game Modes');
 
-    // Create a game and a game mode.
-    await program.methods
-      .createGame(name)
-      .accounts({ owner: payer.publicKey, secret: secret.publicKey })
-      .signers([payer])
-      .rpc();
+    it('Should create a game', async () => {
+      await program.methods
+        .createGame(name)
+        .accounts({ owner: supplier.publicKey, secret: secret.publicKey })
+        .signers([supplier])
+        .rpc();
+    });
 
-    await program.methods
-      .addGameMode(seed, {
-        game: gamePDA,
+    it('Should create a game mode', async () => {
+      const settings = {
         slots: 1,
         digits: 1,
         choices: 2,
         winnerChoice: 1,
         pickWinner: true,
-      })
-      .accounts({ owner: payer.publicKey, secret: secret.publicKey })
-      .signers([payer])
-      .rpc();
+      };
 
-    // Forge a stronghold and stockpile gems.
-    await program.methods
-      .forgeStronghold()
-      .accounts(accounts)
-      .signers([payer])
-      .rpc();
-
-    await program.methods
-      .stockpileGems(new BN(amount))
-      .accounts({
-        ...accounts,
-        reserve,
-      })
-      .signers([payer])
-      .rpc();
+      await program.methods
+        .addGameMode(seed, settings)
+        .accounts({ owner: supplier.publicKey, secret: secret.publicKey })
+        .signers([supplier])
+        .rpc();
+    });
   });
 
-  it('Should initialize a bounty', async () => {
-    const { gem, task, trader } = accounts;
-    const settings = {
-      task, // Game mode. This is ignored here. It assigns the one in the accounts.
+  describe('Issue', () => {
+    it('Should initialize a bounty', async () => {
+      const { gem, task, trader } = accounts;
+      const settings = {
+        reward: toBN(1000, DECIMALS),
+        price: toBN(0.5, DECIMALS),
+      };
 
-      gem, // Token to be used for bounties. This is ignored here. It assigns the one in the accounts.
-      reward: new BN(20000 * 10 ** DECIMALS),
+      await program.methods
+        .issueBounty(settings)
+        .accounts(accounts)
+        .signers([supplier])
+        .rpc();
 
-      price: new BN(0.5 * 10 ** DECIMALS),
-      trader, // Token to be charged to players for playing the game. This is ignored here. It assigns the one in the accounts.
-    };
+      const bountyPDA = getBountyPDA(task, gem, trader);
+      const bounty = await program.account.bounty.fetch(bountyPDA);
 
-    await program.methods
-      .issueBounty(settings)
-      .accounts(accounts)
-      .signers([supplier])
-      .rpc();
+      expect(bounty.owner).toEqual(supplier.publicKey);
+      expect(bounty.task).toEqual(task);
 
-    const bountyPDA = getBountyPDA(task, gem, trader);
-    const bounty = await program.account.bounty.fetch(bountyPDA);
+      expect(bounty.gem).toEqual(gem);
+      expect(bounty.reward.toString()).toEqual(settings.reward.toString());
 
-    expect(bounty.task).toEqual(settings.task);
+      expect(bounty.price.toString()).toEqual(settings.price.toString());
+      expect(bounty.trader).toEqual(trader);
 
-    expect(bounty.gem).toEqual(settings.gem);
-    expect(bounty.reward.toString()).toEqual(settings.reward.toString());
-
-    expect(bounty.price.toString()).toEqual(settings.price.toString());
-    expect(bounty.trader).toEqual(settings.trader);
+      expect(bounty.currentlyIssued.toString()).toEqual('0');
+      expect(bounty.winners).toEqual(0);
+      expect(bounty.totalClaimed.toString()).toEqual('0');
+    });
   });
 
-  it(`Should init bounty vault and transport the gems from stronghold`, async () => {
-    const { gem, task, trader } = accounts;
-    const strongholdPDA = getStrongholdPDA(gem);
-    const strongholdBeforeTransport = await getAccount(
-      connection,
-      strongholdPDA
-    );
-    const amount = strongholdBeforeTransport.amount;
-    expect(amount).toBeGreaterThan(0);
+  describe('Fund', () => {
+    it(`Should fail to init and incorrect gem`, async () => {
+      const { bounty: bountyPDA, trader } = accounts;
+      const strongholdPDA = getStrongholdPDA(trader);
+      const stronghold = await getAccount(connection, strongholdPDA);
 
-    await program.methods
-      .fundBounty(new BN(amount))
-      .accounts(accounts)
-      .signers([supplier])
-      .rpc();
+      const bounty = await program.account.bounty.fetch(bountyPDA);
+      const amount = BigInt(bounty.reward * 10);
+      expect(stronghold.amount.toString()).toEqual('0');
 
-    const bountyPDA = getBountyPDA(task, gem, trader);
-    const vaultPDA = getBountyVaultPDA(bountyPDA);
+      await expect(
+        program.methods
+          .fundBounty(new BN(amount.toString()))
+          .accounts({
+            bounty: bountyPDA,
+            gem: trader,
+            supplier: supplier.publicKey,
+          })
+          .signers([supplier])
+          .rpc()
+      ).rejects.toThrow(/InvalidGem/);
+    });
 
-    const stronghold = await getAccount(connection, strongholdPDA);
-    const vault = await getAccount(connection, vaultPDA);
+    it(`Should init bounty vault and transport the gems from stronghold`, async () => {
+      const { bounty: bountyPDA, vault: vaultPDA } = accounts;
+      const strongholdPDA = getStrongholdPDA(gem);
+      const strongholdBeforeTransport = await getAccount(
+        connection,
+        strongholdPDA
+      );
+      const bountyBeforeTransport = await program.account.bounty.fetch(
+        bountyPDA
+      );
 
-    expect(vault.owner).toEqual(getKeeperPDA());
-    expect(stronghold.amount.toString()).toEqual('0');
-    expect(vault.amount.toString()).toEqual(amount.toString());
+      const amount = BigInt(bountyBeforeTransport.reward * 10);
+      expect(bountyBeforeTransport.currentlyIssued.toString()).toEqual('0');
+      expect(strongholdBeforeTransport.amount).toBeGreaterThanOrEqual(amount);
+
+      await program.methods
+        .fundBounty(new BN(amount))
+        .accounts(accounts)
+        .signers([supplier])
+        .rpc();
+
+      const stronghold = await getAccount(connection, strongholdPDA);
+      const bounty = await program.account.bounty.fetch(bountyPDA);
+      const vault = await getAccount(connection, vaultPDA);
+
+      expect(vault.owner).toEqual(getKeeperPDA());
+      expect(stronghold.amount).toEqual(
+        strongholdBeforeTransport.amount - amount
+      );
+      expect(vault.amount.toString()).toEqual(amount.toString());
+      expect(bounty.currentlyIssued.toString()).toEqual(
+        vault.amount.toString()
+      );
+    });
+
+    it('Should fail to fund bounty with uncollectible amount', async () => {
+      const { bounty: bountyPDA } = accounts;
+      const strongholdPDA = getStrongholdPDA(gem);
+      const stronghold = await getAccount(connection, strongholdPDA);
+
+      const bounty = await program.account.bounty.fetch(bountyPDA);
+      const amount = BigInt(bounty.reward * 10.5); // Not a multiple of the bounty reward.
+      expect(stronghold.amount).toBeGreaterThanOrEqual(amount);
+
+      await expect(
+        program.methods
+          .fundBounty(new BN(amount.toString()))
+          .accounts(accounts)
+          .signers([supplier])
+          .rpc()
+      ).rejects.toThrow(/UncollectibleReward/);
+    });
+
+    it(`Should fail to fund and incorrect gem`, async () => {
+      const { bounty: bountyPDA, trader } = accounts;
+      const strongholdPDA = getStrongholdPDA(trader);
+      const stronghold = await getAccount(connection, strongholdPDA);
+
+      const bounty = await program.account.bounty.fetch(bountyPDA);
+      const amount = BigInt(bounty.reward * 10);
+      expect(stronghold.amount.toString()).toEqual('0');
+
+      await expect(
+        program.methods
+          .fundBounty(new BN(amount.toString()))
+          .accounts({
+            bounty: bountyPDA,
+            gem: trader,
+            supplier: supplier.publicKey,
+          })
+          .signers([supplier])
+          .rpc()
+      ).rejects.toThrow(/ConstraintTokenMint/);
+    });
+  });
+
+  describe('Renew', () => {
+    it('Should fail to update bounty settings if not owner', async () => {
+      const { bounty } = accounts;
+      const notOwner = Keypair.generate();
+      const settings = {
+        reward: toBN(2000, DECIMALS),
+        price: toBN(1, DECIMALS),
+      };
+
+      await expect(
+        program.methods
+          .renewBounty(settings)
+          .accounts({ bounty, supplier: notOwner.publicKey })
+          .signers([notOwner])
+          .rpc()
+      ).rejects.toThrow(/InvalidOwner/);
+    });
+
+    it('Should fail if vault amount is not bellow the threshold', async () => {
+      const settings = {
+        reward: toBN(4000, DECIMALS),
+        price: toBN(2, DECIMALS),
+      };
+
+      await expect(
+        program.methods
+          .renewBounty(settings)
+          .accounts(accounts)
+          .signers([supplier])
+          .rpc()
+      ).rejects.toThrow(/ThresholdNotReached/);
+    });
   });
 });

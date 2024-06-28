@@ -45,7 +45,6 @@ describe('Treasure', () => {
     accounts = {
       keeper: getKeeperPDA(),
       stronghold: getStrongholdPDA(mint),
-      supplier: payer.publicKey,
       gem: mint,
     };
 
@@ -61,13 +60,7 @@ describe('Treasure', () => {
   });
 
   it('Should initialize Keeper & Stronghold', async () => {
-    const { payer } = provider.wallet as anchor.Wallet;
-
-    await program.methods
-      .forgeStronghold()
-      .accounts(accounts)
-      .signers([payer])
-      .rpc();
+    await program.methods.forgeStronghold().accounts(accounts).rpc();
 
     const { keeper, stronghold } = accounts;
     const vaultAccount = await getAccount(connection, stronghold);
