@@ -1,9 +1,11 @@
-use crate::instructions::{Bounty, GameMode};
-use crate::constants::{KEEPER_SEED, VAULT_SEED, BOUNTY_SEED};
+pub use crate::state::bounty::Bounty;
+use crate::errors::BountyErrorCode;
+use crate::constants::{KEEPER_SEED, VAULT_SEED};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount, Transfer};
 
-pub fn vault_load(ctx: &Context<VaultLoad>, amount: u64) -> Result<()> {
+pub fn vault_load(ctx: &Context<VaultLoad>, amount: u64) -> Result<u64> {
+    let available = ctx.accounts.vault.amount.clone();
     let transfer_instruction = Transfer {
         from: ctx.accounts.stronghold.to_account_info(),
         to: ctx.accounts.vault.to_account_info(),
@@ -21,6 +23,13 @@ pub fn vault_load(ctx: &Context<VaultLoad>, amount: u64) -> Result<()> {
     );
 
     anchor_spl::token::transfer(cpi_ctx, amount)?;
+
+    Ok(available + amount)
+}
+
+pub fn gems_issued(bounty: &mut Bounty, amount: u64) -> Result<()> {
+    if amount % bounty.reward != 0 { return Err(BountyErrorCode::UncollectibleReward.into()); }
+    bounty.currently_issued = amount;
 
     Ok(())
 }
@@ -44,15 +53,12 @@ pub struct VaultLoad<'info> {
     )]
     stronghold: Account<'info, TokenAccount>,
 
+    #[account(mut)]
+    pub bounty: Account<'info, Bounty>,
     #[account(
-        seeds = [BOUNTY_SEED, task.key().as_ref(), gem.key().as_ref(), trader.key().as_ref()],
-        bump
+        constraint = gem.key() == bounty.gem @ BountyErrorCode::InvalidGem,
     )]
-    bounty: Account<'info, Bounty>,
-
-    task: Account<'info, GameMode>,
     gem: Account<'info, Mint>,
-    trader: Account<'info, Mint>,
 
     #[account(
         init_if_needed,

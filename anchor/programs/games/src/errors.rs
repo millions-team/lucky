@@ -13,6 +13,21 @@ pub enum GameErrorCode {
 }
 
 #[error_code]
+pub enum BountyErrorCode {
+    #[msg("Bounty is not owned by the supplier")]
+    InvalidOwner,
+
+    #[msg("Vault amount is above threshold")]
+    ThresholdNotReached,
+
+    #[msg("Invalid gem")]
+    InvalidGem,
+
+    #[msg("Total vault reward is uncollectible")]
+    UncollectibleReward,
+}
+
+#[error_code]
 pub enum GameModeErrorCode {
     #[msg("Slots must be between 1 and 16")]
     InvalidSlots,

@@ -74,6 +74,9 @@ pub mod games {
     }
 
     pub fn fund_bounty(ctx: Context<VaultLoad>, amount: u64) -> Result<()> {
-        bounty::fund::vault_load(&ctx, amount)
+        let available = bounty::fund::vault_load(&ctx, amount)?;
+        bounty::fund::gems_issued(&mut ctx.accounts.bounty, available)?;
+
+        Ok(())
     }
 }
