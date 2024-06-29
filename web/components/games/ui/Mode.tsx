@@ -10,8 +10,8 @@ import {
 
 import { ExplorerLink } from '@/components/cluster/cluster-ui';
 import { ellipsify } from '@/components/ui/ui-layout';
+import { useGameModeAccount } from '@/hooks';
 
-import { useGameModeAccount } from '../games-data-access';
 import { SettingsForm } from './SettingsForm';
 
 export function GameMode({ pda }: { pda: PublicKey }) {

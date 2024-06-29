@@ -11,7 +11,7 @@ const BASE_URL =
     ? 'http://localhost:3000'
     : `https://${VERCEL_PROJECT_PRODUCTION_URL}`;
 
-export async function getTokenWithMetadata(symbol: string) {
+async function getTokenWithMetadata(symbol: string) {
   const token = getToken(symbol);
   const metadata = { name: token.name, symbol: token.symbol, ...METADATA };
 
