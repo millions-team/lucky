@@ -13,8 +13,9 @@ export const metadata = {
 
 const links: { label: string; path: string; program?: boolean }[] = [
   { label: 'Account', path: '/account' },
-  { label: 'Vault', path: '/vault', program: true },
   { label: 'Lucky', path: '/lucky', program: true },
+  { label: 'TinyAdventure', path: '/tiny-adventure', program: true },
+  { label: 'Dealer', path: '/dealer', program: true },
 ];
 
 if (NEXT_PUBLIC_VERCEL_ENV !== 'production')
@@ -26,14 +27,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="dark">
       <body>
         <ReactQueryProvider>
           <ClusterProvider>
             <SolanaProvider>
-              <UiLayout links={links} env={NEXT_PUBLIC_VERCEL_ENV}>
-                {children}
-              </UiLayout>
+              <div className="max-w-md mx-auto">
+                <UiLayout links={links} env={NEXT_PUBLIC_VERCEL_ENV}>
+                  {children}
+                </UiLayout>
+              </div>
             </SolanaProvider>
           </ClusterProvider>
         </ReactQueryProvider>

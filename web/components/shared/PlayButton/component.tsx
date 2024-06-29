@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import styles from './styles.module.css';
-
+import { PlayButtonContext } from '@/context/ProtectedContext'; // contexto protector
 const MIN = 1;
 const MAX = 99;
 
@@ -26,7 +26,7 @@ export function PlayButton({
   const [values, setValues] = useState<number[]>(randomArray(8, MIN, MAX));
   const [intervalRef, setIntervalRef] = useState<NodeJS.Timeout | null>(null);
   const [playTimeout, setPlayTimeout] = useState<number>(1000);
-  const [match, setMatch] = useState(false);
+  const { match, setMatch } = useContext(PlayButtonContext);
 
   const shiftAndPush = () => {
     setValues((values) => randomArray(values.length, MIN, MAX));
@@ -64,7 +64,7 @@ export function PlayButton({
 
   return (
     <button
-      className={`${styles.border} bg-[url('/img/push-me/play.svg')] bg-center bg-no-repeat bg-cover`}
+      className={`${styles.border} bg-[url('/img/push-me/boton.png')] bg-center bg-no-repeat bg-cover`}
       onMouseDown={start}
       onMouseUp={play}
       onTouchStart={start}
@@ -76,11 +76,11 @@ export function PlayButton({
       data-result={result || undefined}
     >
       <div className={`${styles.door} w-full h-full`}>
-        <div className={`${styles.button}`}>
-          Push
-          <br />
-          Me
-        </div>
+        {/* <div className={`${styles.button}`}>
+    Push
+    <br />
+    Me
+  </div> */}
         {values.map((value, i) => (
           <div
             key={i}
