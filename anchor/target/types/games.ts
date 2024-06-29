@@ -387,6 +387,108 @@ export type Games = {
       ]
     },
     {
+      "name": "createTreasure",
+      "discriminator": [
+        181,
+        23,
+        158,
+        25,
+        74,
+        94,
+        113,
+        141
+      ],
+      "accounts": [
+        {
+          "name": "keeper",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  75,
+                  69,
+                  69,
+                  80,
+                  69,
+                  82
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  69,
+                  83,
+                  67,
+                  82,
+                  79,
+                  87
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasure",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "endGame",
       "discriminator": [
         224,
@@ -517,6 +619,26 @@ export type Games = {
           "name": "gem"
         },
         {
+          "name": "treasure",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "supplier",
           "writable": true,
           "signer": true
@@ -550,70 +672,44 @@ export type Games = {
       ],
       "accounts": [
         {
-          "name": "keeper",
+          "name": "supplier",
           "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  84,
-                  82,
-                  69,
-                  65,
-                  83,
-                  85,
-                  82,
-                  69,
-                  95,
-                  75,
-                  69,
-                  69,
-                  80,
-                  69,
-                  82
-                ]
-              }
-            ]
-          }
+          "signer": true
         },
         {
-          "name": "stronghold",
-          "writable": true,
-          "pda": {
-            "seeds": [
-              {
-                "kind": "const",
-                "value": [
-                  84,
-                  82,
-                  69,
-                  65,
-                  83,
-                  85,
-                  82,
-                  69,
-                  95,
-                  86,
-                  65,
-                  85,
-                  76,
-                  84
-                ]
-              },
-              {
-                "kind": "account",
-                "path": "gem"
-              }
-            ]
-          }
+          "name": "reserve",
+          "writable": true
         },
         {
           "name": "bounty",
           "writable": true
         },
         {
-          "name": "gem"
+          "name": "escrow",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  69,
+                  83,
+                  67,
+                  82,
+                  79,
+                  87
+                ]
+              }
+            ]
+          }
         },
         {
           "name": "vault",
@@ -647,9 +743,7 @@ export type Games = {
           }
         },
         {
-          "name": "supplier",
-          "writable": true,
-          "signer": true
+          "name": "gem"
         },
         {
           "name": "systemProgram",
@@ -728,6 +822,36 @@ export type Games = {
         },
         {
           "name": "trader"
+        },
+        {
+          "name": "stronghold",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69,
+                  95,
+                  86,
+                  65,
+                  85,
+                  76,
+                  84
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "gem"
+              }
+            ]
+          }
         },
         {
           "name": "systemProgram",
@@ -948,9 +1072,32 @@ export type Games = {
           "name": "gem"
         },
         {
-          "name": "supplier",
+          "name": "treasure",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  82,
+                  69,
+                  65,
+                  83,
+                  85,
+                  82,
+                  69
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
           "writable": true,
-          "signer": true
+          "signer": true,
+          "relations": [
+            "treasure"
+          ]
         },
         {
           "name": "systemProgram",
@@ -1277,6 +1424,19 @@ export type Games = {
         104,
         137
       ]
+    },
+    {
+      "name": "treasure",
+      "discriminator": [
+        98,
+        92,
+        220,
+        45,
+        191,
+        149,
+        105,
+        178
+      ]
     }
   ],
   "errors": [
@@ -1561,6 +1721,18 @@ export type Games = {
           },
           {
             "name": "multiPlayer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "treasure",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
           }
         ]
       }

@@ -17,5 +17,7 @@ export const BOUNTY_SEED = 'BOUNTY';
 
 // ----------------------------- Treasure -----------------------------
 export const KEEPER_SEED = 'TREASURE_KEEPER';
+export const ESCROW_SEED = 'TREASURE_ESCROW';
 export const VAULT_SEED = 'TREASURE_VAULT';
 export const TREASURE_SEED = 'TREASURE';
+export const TREASURE_FORGE_COST = 25; // 25 SOL

@@ -283,19 +283,14 @@ export type Lucky = {
   ],
   "errors": [
     {
-      "code": 6010,
-      "name": "invalidSeed",
-      "msg": "Invalid seed"
+      "code": 6100,
+      "name": "pseudoRandomError",
+      "msg": "PseudoRandom error"
     },
     {
-      "code": 6011,
-      "name": "twoEqualConsecutiveValues",
-      "msg": "Two consecutive values are the same"
-    },
-    {
-      "code": 6012,
-      "name": "invalidRoll",
-      "msg": "Roll out of bound"
+      "code": 6200,
+      "name": "vrfError",
+      "msg": "Vrf error"
     }
   ],
   "types": [

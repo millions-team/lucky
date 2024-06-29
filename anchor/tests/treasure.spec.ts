@@ -1,6 +1,6 @@
 import * as anchor from '@coral-xyz/anchor';
 import { BN, Program } from '@coral-xyz/anchor';
-import { Keypair, PublicKey } from '@solana/web3.js';
+import { Keypair, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import {
   Account,
   createAssociatedTokenAccount,
@@ -11,7 +11,12 @@ import {
 } from '@solana/spl-token';
 
 import { Games } from '../target/types/games';
-import { getKeeperPDA, getStrongholdPDA } from '../src/games-exports';
+import {
+  getKeeperPDA,
+  getStrongholdPDA,
+  getTreasurePDA,
+  TREASURE_FORGE_COST,
+} from '../src/games-exports';
 
 describe('Treasure', () => {
   // Configure the client to use the local cluster.
@@ -21,13 +26,14 @@ describe('Treasure', () => {
   const program = anchor.workspace.Games as Program<Games>;
   const connection = provider.connection;
 
-  let mint: PublicKey;
+  let gem: PublicKey;
   let accounts: Record<string, PublicKey>;
+  const authority = Keypair.generate();
 
   beforeAll(async () => {
     const { payer } = provider.wallet as anchor.Wallet;
 
-    mint = await createMint(
+    gem = await createMint(
       connection, // conneciton
       payer, // fee payer
       payer.publicKey, // mint authority
@@ -38,20 +44,21 @@ describe('Treasure', () => {
     const ata = await createAssociatedTokenAccount(
       connection, // connection
       payer, // fee payer
-      mint, // mint
+      gem, // mint
       payer.publicKey // owner,
     );
 
     accounts = {
       keeper: getKeeperPDA(),
-      stronghold: getStrongholdPDA(mint),
-      gem: mint,
+      treasure: getTreasurePDA(),
+      stronghold: getStrongholdPDA(gem),
+      gem,
     };
 
     await mintToChecked(
       connection, // connection
       payer, // fee payer
-      mint, // mint
+      gem, // mint
       ata, // receiver (should be a token account)
       payer, // mint authority
       1000e8, // amount. if your decimals is 8, you mint 10^8 for 1 token.
@@ -59,14 +66,100 @@ describe('Treasure', () => {
     );
   });
 
-  it('Should initialize Keeper & Stronghold', async () => {
-    await program.methods.forgeStronghold().accounts(accounts).rpc();
+  describe('Build', () => {
+    beforeAll(async () => {
+      const tx = await connection.requestAirdrop(
+        authority.publicKey,
+        0.1 * LAMPORTS_PER_SOL
+      );
+      await connection.confirmTransaction(tx);
+    });
 
-    const { keeper, stronghold } = accounts;
-    const vaultAccount = await getAccount(connection, stronghold);
+    it('Should create the keeper, escrow, and treasure accounts', async () => {
+      const { treasure: pda } = accounts;
+      const _ = await program.account.treasure.fetchNullable(pda);
+      expect(_).toBeNull();
 
-    expect(vaultAccount.owner).toEqual(keeper);
-    expect(vaultAccount.amount.toString()).toEqual('0');
+      await program.methods
+        .createTreasure()
+        .accounts({ authority: authority.publicKey })
+        .signers([authority])
+        .rpc();
+
+      const treasure = await program.account.treasure.fetch(pda);
+      expect(treasure.authority).toEqual(authority.publicKey);
+    });
+
+    it('Should fail to create the treasure if it already exists', async () => {
+      await expect(
+        program.methods
+          .createTreasure()
+          .accounts({ authority: authority.publicKey })
+          .signers([authority])
+          .rpc()
+      ).rejects.toThrow(/custom program error: 0x0/);
+    });
+  });
+
+  describe('Forge', () => {
+    describe('By Authority', () => {
+      let gem: PublicKey;
+
+      beforeAll(async () => {
+        gem = await createMint(
+          connection, // conneciton
+          authority, // fee payer
+          authority.publicKey, // mint authority
+          null, // freeze authority (you can use `null` to disable it. when you disable it, you can't turn it on again)
+          8 // decimals
+        );
+      });
+
+      it('Should forge a stronghold without charge', async () => {
+        const balance = await connection.getBalance(authority.publicKey);
+        expect(balance).toBeLessThan(TREASURE_FORGE_COST * LAMPORTS_PER_SOL);
+
+        await program.methods
+          .forgeStronghold()
+          .accounts({ gem, supplier: authority.publicKey })
+          .signers([authority])
+          .rpc();
+
+        const stronghold = await getAccount(connection, getStrongholdPDA(gem));
+        expect(stronghold.owner).toEqual(accounts.keeper);
+        expect(stronghold.amount.toString()).toEqual('0');
+      });
+    });
+
+    describe('By Non-Authority', () => {
+      const payer = Keypair.generate();
+
+      beforeAll(async () => {
+        const tx = await connection.requestAirdrop(
+          payer.publicKey,
+          (TREASURE_FORGE_COST + 0.01) * LAMPORTS_PER_SOL
+        );
+        await connection.confirmTransaction(tx);
+      });
+
+      it('Should forge a Stronghold and charge the payer for the cost', async () => {
+        const { gem, keeper } = accounts;
+        const balanceBeforeForge = await connection.getBalance(keeper);
+        const cost = TREASURE_FORGE_COST * LAMPORTS_PER_SOL;
+
+        await program.methods
+          .forgeStronghold()
+          .accounts({ gem, supplier: payer.publicKey })
+          .signers([payer])
+          .rpc();
+
+        const stronghold = await getAccount(connection, accounts.stronghold);
+        const balance = await connection.getBalance(keeper);
+        expect(balance).toEqual(balanceBeforeForge + cost);
+        expect(stronghold.owner).toEqual(accounts.keeper);
+        expect(stronghold.amount.toString()).toEqual('0');
+      });
+    });
   });
 
   describe('Deposit', () => {
@@ -79,12 +172,12 @@ describe('Treasure', () => {
       const { address } = await getOrCreateAssociatedTokenAccount(
         connection,
         payer,
-        mint,
+        gem,
         sender.publicKey
       );
 
       reserve = address;
-      await mintToChecked(connection, payer, mint, reserve, payer, 10e8, 8);
+      await mintToChecked(connection, payer, gem, reserve, payer, 10e8, 8);
     });
 
     beforeEach(async () => {
@@ -115,73 +208,81 @@ describe('Treasure', () => {
   });
 
   describe('Withdraw', () => {
-    let receiver: Keypair;
-    let receiverTokenAccount: PublicKey;
-    let receiverAccount: Account;
+    describe('By Authority', () => {
+      let reserve: PublicKey;
 
-    beforeAll(async () => {
-      const { payer } = provider.wallet as anchor.Wallet;
-      receiver = Keypair.generate();
-      receiverTokenAccount = await createAssociatedTokenAccount(
-        connection,
-        payer,
-        mint,
-        receiver.publicKey
-      );
-    });
+      beforeAll(async () => {
+        reserve = await createAssociatedTokenAccount(
+          connection,
+          authority,
+          gem,
+          authority.publicKey
+        );
+      });
 
-    beforeEach(async () => {
-      receiverAccount = await getAccount(connection, receiverTokenAccount);
-    });
+      it('Should withdraw gems', async () => {
+        const { stronghold } = accounts;
+        const reserveBeforeWithdraw = await getAccount(connection, reserve);
+        const strongholdBeforeWithdraw = await getAccount(
+          connection,
+          stronghold
+        );
 
-    it('Should withdraw tokens', async () => {
-      const { payer } = provider.wallet as anchor.Wallet;
-      const { stronghold } = accounts;
-      const vaultBeforeWithdraw = await getAccount(connection, stronghold);
-      const amount = vaultBeforeWithdraw.amount / BigInt(2);
-      expect(amount).toBeGreaterThan(BigInt(0));
+        const amount = strongholdBeforeWithdraw.amount / BigInt(2);
+        expect(amount).toBeGreaterThan(0);
 
-      await program.methods
-        .retrieveGems(new BN(amount))
-        .accounts({
-          ...accounts,
-          reserve: receiverTokenAccount,
-        })
-        .signers([payer])
-        .rpc();
-
-      const vaultAccount = await getAccount(connection, stronghold);
-      const receiverAfterWithdraw = await getAccount(
-        connection,
-        receiverTokenAccount
-      );
-      expect(vaultAccount.amount).toEqual(vaultBeforeWithdraw.amount - amount);
-      expect(receiverAfterWithdraw.amount).toEqual(
-        receiverAccount.amount + amount
-      );
-    });
-
-    it('Should fail to withdraw more than the vault has', async () => {
-      const { payer } = provider.wallet as anchor.Wallet;
-      const { stronghold } = accounts;
-      const vaultBeforeWithdraw = await getAccount(connection, stronghold);
-      const amount = vaultBeforeWithdraw.amount * BigInt(2);
-
-      try {
         await program.methods
           .retrieveGems(new BN(amount))
-          .accounts({
-            ...accounts,
-            reserve: receiverTokenAccount,
-          })
-          .signers([payer])
+          .accounts({ gem, reserve, authority: authority.publicKey })
+          .signers([authority])
           .rpc();
-        fail('Should have failed');
-      } catch (err) {
-        const vaultAccount = await getAccount(connection, stronghold);
-        expect(err.toString()).toContain('custom program error: 0x1');
-        expect(vaultAccount.amount).toEqual(vaultBeforeWithdraw.amount);
-      }
+
+        const reserveAfterWithdraw = await getAccount(connection, reserve);
+        const strongholdAfterWithdraw = await getAccount(
+          connection,
+          stronghold
+        );
+        expect(strongholdAfterWithdraw.amount).toEqual(
+          strongholdBeforeWithdraw.amount - amount
+        );
+        expect(reserveAfterWithdraw.amount).toEqual(
+          reserveBeforeWithdraw.amount + amount
+        );
+      });
+    });
+    describe('By Non-Authority', () => {
+      const receiver = Keypair.generate();
+      let reserve: PublicKey;
+
+      beforeAll(async () => {
+        const tx = await connection.requestAirdrop(
+          receiver.publicKey,
+          0.01 * LAMPORTS_PER_SOL
+        );
+        await connection.confirmTransaction(tx);
+
+        reserve = await createAssociatedTokenAccount(
+          connection,
+          receiver,
+          gem,
+          receiver.publicKey
+        );
+      });
+
+      it('Should fail with InvalidAuthority', async () => {
+        const { stronghold } = accounts;
+        const vaultBeforeWithdraw = await getAccount(connection, stronghold);
+        const amount = vaultBeforeWithdraw.amount * BigInt(2);
+        expect(amount).toBeGreaterThan(0);
+
+        await expect(
+          program.methods
+            .retrieveGems(new BN(amount))
+            .accounts({ gem, reserve, authority: receiver.publicKey })
+            .signers([receiver])
+            .rpc()
+        ).rejects.toThrow(/InvalidAuthority/);
+      });
     });
   });
 });
