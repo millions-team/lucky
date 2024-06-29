@@ -16,5 +16,7 @@ pub const RENEW_THRESHOLD: u64 = 10; // 10% of the last issued bounty.
 
 // ----------------------------- Treasure -----------------------------
 pub const KEEPER_SEED: &[u8] = b"TREASURE_KEEPER";
+pub const ESCROW_SEED: &[u8] = b"TREASURE_ESCROW";
 pub const VAULT_SEED: &[u8] = b"TREASURE_VAULT";
 pub const TREASURE_SEED: &[u8] = b"TREASURE";
+pub const TREASURE_FORGE_COST: u64 = 25; // 25 SOL
