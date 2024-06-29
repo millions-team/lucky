@@ -16,7 +16,15 @@ pub mod games {
     use super::*;
 
     // ------------------------ TREASURE ------------------------
-    pub fn forge_stronghold(_ctx: Context<InitializeTreasure>) -> Result<()> { Ok(()) }
+    pub fn create_treasure(ctx: Context<BuildTreasure>) -> Result<()> {
+        ctx.accounts.treasure.authority = ctx.accounts.authority.key();
+
+        Ok(())
+    }
+
+    pub fn forge_stronghold(ctx: Context<InitializeTreasure>) -> Result<()> {
+        treasure::forge::pay(&ctx)
+    }
 
     pub fn stockpile_gems(ctx: Context<Stockpile>, amount: u64) -> Result<()> {
         treasure::stockpile::receive(&ctx, amount)
