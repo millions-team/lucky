@@ -13,25 +13,38 @@ import { ellipsify } from '@/components/ui/ui-layout';
 import { useGameModeAccount } from '@/hooks';
 
 import { SettingsForm } from './SettingsForm';
+import { Badge, CreateBounty } from './bounty';
 
 export function GameMode({ pda }: { pda: PublicKey }) {
   const { isOwner, modeQuery, update, close } = useGameModeAccount({ pda });
   const data = useMemo(() => modeQuery.data, [modeQuery.data]);
-  const [enableForm, setEnableForm] = useState(false);
+  const [activeForm, setActiveForm] = useState('');
 
-  return enableForm ? (
-    <SettingsForm
-      settings={data}
-      onSubmit={async (settings) => {
-        await update.mutateAsync(settings);
-        setEnableForm(false);
-      }}
-      onCancel={() => setEnableForm(false)}
-    />
+  return activeForm ? (
+    activeForm === 'settings' ? (
+      <SettingsForm
+        settings={data}
+        onSubmit={async (settings) => {
+          await update.mutateAsync(settings);
+          setActiveForm('');
+        }}
+        onCancel={() => setActiveForm('')}
+      />
+    ) : (
+      activeForm === 'bounty' &&
+      modeQuery.data && (
+        <CreateBounty
+          task={pda}
+          gameMode={modeQuery.data}
+          onCompleted={() => setActiveForm('')}
+          onCancel={() => setActiveForm('')}
+        />
+      )
+    )
   ) : (
     <div className="card border-4 border-base-300">
       {data ? (
-        <div className="card-body">
+        <div className="card-body items-center">
           <div
             className={`card-title badge badge-outline uppercase badge-info py-4 text-xl`}
           >
@@ -71,12 +84,21 @@ export function GameMode({ pda }: { pda: PublicKey }) {
             <>
               <button
                 className="absolute top-2 left-2 btn btn-xs btn-circle tooltip tooltip-right tooltip-primary"
-                onClick={() => setEnableForm(!enableForm)}
+                onClick={() => setActiveForm('settings')}
                 disabled={update.isPending}
                 data-tip="Update"
               >
                 <IconEdit />
               </button>
+
+              <div className="tooltip tooltip-info" data-tip="New Award">
+                <div
+                  className="btn btn-xs btn-outline btn-accent"
+                  onClick={() => setActiveForm('bounty')}
+                >
+                  + bounty
+                </div>
+              </div>
 
               <div
                 className="absolute top-2 right-2 tooltip tooltip-left tooltip-error"
@@ -101,6 +123,12 @@ export function GameMode({ pda }: { pda: PublicKey }) {
               </div>
             </>
           )}
+
+          <div className="flex flex-col items-center gap-2 mt-4 w-full">
+            {data.bounties.map(({ publicKey }, i) => (
+              <Badge key={i} pda={publicKey} />
+            ))}
+          </div>
 
           <h3
             className="tooltip tooltip-primary tooltip-left text-xs absolute bottom-2 right-2"

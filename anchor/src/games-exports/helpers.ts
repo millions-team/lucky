@@ -37,3 +37,8 @@ export function fromBigInt(value: bigint, decimals: number) {
 export function fromBN(value: BN, decimals: number) {
   return fromBigInt(BigInt(value.toString()), decimals);
 }
+
+export function formatAmount(value?: number | bigint) {
+  if (!value) return '0';
+  return Intl.NumberFormat('en-US').format(value);
+}
