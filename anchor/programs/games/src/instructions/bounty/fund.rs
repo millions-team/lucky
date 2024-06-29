@@ -1,25 +1,20 @@
 pub use crate::state::bounty::Bounty;
 use crate::errors::BountyErrorCode;
-use crate::constants::{KEEPER_SEED, VAULT_SEED};
+use crate::constants::{ESCROW_SEED, VAULT_SEED};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount, Transfer};
 
 pub fn vault_load(ctx: &Context<VaultLoad>, amount: u64) -> Result<u64> {
     let available = ctx.accounts.vault.amount.clone();
     let transfer_instruction = Transfer {
-        from: ctx.accounts.stronghold.to_account_info(),
+        from: ctx.accounts.reserve.to_account_info(),
         to: ctx.accounts.vault.to_account_info(),
-        authority: ctx.accounts.keeper.to_account_info(),
+        authority: ctx.accounts.supplier.to_account_info(),
     };
 
-    let bump = ctx.bumps.keeper;
-    let seeds = &[KEEPER_SEED.as_ref(), &[bump]];
-    let signer = &[&seeds[..]];
-
-    let cpi_ctx = CpiContext::new_with_signer(
+    let cpi_ctx = CpiContext::new(
         ctx.accounts.token_program.to_account_info(),
         transfer_instruction,
-        signer,
     );
 
     anchor_spl::token::transfer(cpi_ctx, amount)?;
@@ -36,29 +31,21 @@ pub fn gems_issued(bounty: &mut Bounty, amount: u64) -> Result<()> {
 
 #[derive(Accounts)]
 pub struct VaultLoad<'info> {
-    /// CHECK: The keeper of the treasure, required to relocate the gems.
-    #[account(
-        mut,
-        seeds = [KEEPER_SEED],
-        bump,
-    )]
-    keeper: AccountInfo<'info>,
+    #[account(mut)]
+    supplier: Signer<'info>,
 
-    #[account(
-        mut,
-        seeds = [VAULT_SEED, gem.key().as_ref()],
-        bump,
-        token::mint = gem,
-        token::authority = keeper,
-    )]
-    stronghold: Account<'info, TokenAccount>,
+    #[account(mut)]
+    reserve: Account<'info, TokenAccount>,
 
     #[account(mut)]
     pub bounty: Account<'info, Bounty>,
+
+    /// CHECK: This is the bounties vault keeper, required to initialize a vault.
     #[account(
-        constraint = gem.key() == bounty.gem @ BountyErrorCode::InvalidGem,
+        seeds = [ESCROW_SEED],
+        bump,
     )]
-    gem: Account<'info, Mint>,
+    escrow: AccountInfo<'info>,
 
     #[account(
         init_if_needed,
@@ -66,12 +53,14 @@ pub struct VaultLoad<'info> {
         seeds = [VAULT_SEED, bounty.key().as_ref()],
         bump,
         token::mint = gem,
-        token::authority = keeper,
+        token::authority = escrow,
     )]
     vault: Account<'info, TokenAccount>,
 
-    #[account(mut)]
-    supplier: Signer<'info>,
+    #[account(
+        constraint = gem.key() == bounty.gem @ BountyErrorCode::InvalidGem,
+    )]
+    gem: Account<'info, Mint>,
     system_program: Program<'info, System>,
     token_program: Program<'info, Token>,
     rent: Sysvar<'info, Rent>,

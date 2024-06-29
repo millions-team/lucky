@@ -51,6 +51,10 @@ pub mod games {
         game::manage::pause_game(&mut ctx.accounts.game)
     }
 
+    // TODO: As each bounty is tied to a game mode.
+    //  we need to close all bounties associated with all game modes recursively.
+    //      we must not allow ending a game if there are active bounties.
+    //  currently, all bounties get orphaned.
     pub fn end_game(ctx: Context<UpdateGame>) -> Result<()> {
         game::manage::end_game(&mut ctx.accounts.game)
     }
@@ -69,6 +73,10 @@ pub mod games {
         game_mode::upsert::verify_and_set(&mut ctx.accounts.mode, settings)
     }
 
+    // TODO: As each bounty is tied to a game mode.
+    //  we need to close all bounties associated with the game mode.
+    //      we must not allow closing a game mode if there are active bounties.
+    //  currently, all bounties get orphaned.
     pub fn close_game_mode(_ctx: Context<CloseGameMode>, _mode_seed: String) -> Result<()> { Ok(()) }
 
     // ------------------------ BOUNTY ------------------------
