@@ -1,4 +1,6 @@
-use crate::constants::{KEEPER_SEED, VAULT_SEED};
+pub use crate::state::treasure::Treasure;
+pub use crate::errors::TreasureErrorCode;
+use crate::constants::{KEEPER_SEED, VAULT_SEED, TREASURE_SEED};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount, Transfer};
 
@@ -48,8 +50,15 @@ pub struct UnlockStronghold<'info> {
     reserve: Account<'info, TokenAccount>,
     gem: Account<'info, Mint>,
 
+    #[account(
+        has_one = authority @ TreasureErrorCode::InvalidAuthority,
+        seeds = [TREASURE_SEED],
+        bump,
+    )]
+    pub treasure: Account<'info, Treasure>,
+
     #[account(mut)]
-    supplier: Signer<'info>,
+    authority: Signer<'info>,
     system_program: Program<'info, System>,
     token_program: Program<'info, Token>,
     rent: Sysvar<'info, Rent>,
