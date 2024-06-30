@@ -103,4 +103,18 @@ pub mod games {
     pub fn renew_bounty(ctx: Context<RenewBounty>, settings: BountySettings) -> Result<()> {
         bounty::renew::existent_bounty(&mut ctx.accounts.bounty, settings)
     }
+
+    // ------------------------ PLAYER ------------------------
+    pub fn play_round(ctx: Context<Play>) -> Result<()> {
+        escrow::accept::payment(&ctx)?;
+        let winner = player::game::play(&mut ctx.accounts.player, &ctx.accounts.bounty)?;
+
+        ctx.accounts.player.winner = winner;
+        if winner {
+            ctx.accounts.player.winning_count = ctx.accounts.player.winning_count.checked_add(1).unwrap();
+            escrow::redeem::reward(&ctx)?;
+        }
+
+        Ok(())
+    }
 }

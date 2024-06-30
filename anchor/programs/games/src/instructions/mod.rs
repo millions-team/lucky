@@ -4,9 +4,11 @@ pub mod game_mode;
 pub mod treasure;
 pub mod escrow;
 pub mod bounty;
+pub mod player;
 
 pub use game::*;
 pub use game_mode::*;
 pub use treasure::*;
 pub use escrow::*;
 pub use bounty::*;
+pub use player::*;
