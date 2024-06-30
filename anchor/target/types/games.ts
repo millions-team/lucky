@@ -2045,7 +2045,7 @@ export type Games = {
             "type": "pubkey"
           },
           {
-            "name": "count",
+            "name": "rounds",
             "type": "u32"
           },
           {

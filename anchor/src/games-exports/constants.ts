@@ -23,3 +23,6 @@ export const MIN_CHOICES = 2;
 
 // ----------------------------- Bounty -----------------------------
 export const BOUNTY_SEED = 'BOUNTY';
+
+// ----------------------------- Player -----------------------------
+export const PLAYER_SEED = 'LUCKY_PLAYER';
