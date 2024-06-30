@@ -9,14 +9,22 @@ pub mod state;
 
 use instructions::*;
 
-declare_id!("74arRDDazQJzSQRhm7VonhyhRnNrwBGZE4dyhNva5z8p");
+declare_id!("LuckhEzDRjC8wrPcXQyiK8Vdj5nVuurtfNtq6PQsirw");
 
 #[program]
 pub mod games {
     use super::*;
 
     // ------------------------ TREASURE ------------------------
-    pub fn forge_stronghold(_ctx: Context<InitializeTreasure>) -> Result<()> { Ok(()) }
+    pub fn create_treasure(ctx: Context<BuildTreasure>) -> Result<()> {
+        ctx.accounts.treasure.authority = ctx.accounts.authority.key();
+
+        Ok(())
+    }
+
+    pub fn forge_stronghold(ctx: Context<InitializeTreasure>) -> Result<()> {
+        treasure::forge::pay(&ctx)
+    }
 
     pub fn stockpile_gems(ctx: Context<Stockpile>, amount: u64) -> Result<()> {
         treasure::stockpile::receive(&ctx, amount)
@@ -43,6 +51,10 @@ pub mod games {
         game::manage::pause_game(&mut ctx.accounts.game)
     }
 
+    // TODO: As each bounty is tied to a game mode.
+    //  we need to close all bounties associated with all game modes recursively.
+    //      we must not allow ending a game if there are active bounties.
+    //  currently, all bounties get orphaned.
     pub fn end_game(ctx: Context<UpdateGame>) -> Result<()> {
         game::manage::end_game(&mut ctx.accounts.game)
     }
@@ -52,17 +64,39 @@ pub mod games {
     }
 
     // ------------------------ GAME_MODE ------------------------
-    pub fn add_game_mode(ctx: Context<InitializeGameMode>, _mode_seed: String, settings: GameMode) -> Result<()> {
+    pub fn add_game_mode(ctx: Context<InitializeGameMode>, _mode_seed: String, settings: GameModeSettings) -> Result<()> {
         ctx.accounts.mode.game = ctx.accounts.game.key();
         game_mode::upsert::verify_and_set(&mut ctx.accounts.mode, settings)
     }
 
-    pub fn update_game_mode(ctx: Context<UpdateGameMode>, _mode_seed: String, settings: GameMode) -> Result<()> {
+    pub fn update_game_mode(ctx: Context<UpdateGameMode>, _mode_seed: String, settings: GameModeSettings) -> Result<()> {
         game_mode::upsert::verify_and_set(&mut ctx.accounts.mode, settings)
     }
 
+    // TODO: As each bounty is tied to a game mode.
+    //  we need to close all bounties associated with the game mode.
+    //      we must not allow closing a game mode if there are active bounties.
+    //  currently, all bounties get orphaned.
     pub fn close_game_mode(_ctx: Context<CloseGameMode>, _mode_seed: String) -> Result<()> { Ok(()) }
+
+    // ------------------------ BOUNTY ------------------------
+    pub fn issue_bounty(ctx: Context<InitializeBounty>, settings: BountySettings) -> Result<()> {
+        ctx.accounts.bounty.owner = ctx.accounts.supplier.key();
+        ctx.accounts.bounty.gem = ctx.accounts.gem.key();
+        ctx.accounts.bounty.task = ctx.accounts.task.key();
+        ctx.accounts.bounty.trader = ctx.accounts.trader.key();
+
+        bounty::publish::new_bounty(&mut ctx.accounts.bounty, settings)
+    }
+
+    pub fn fund_bounty(ctx: Context<VaultLoad>, amount: u64) -> Result<()> {
+        let available = bounty::fund::vault_load(&ctx, amount)?;
+        bounty::fund::gems_issued(&mut ctx.accounts.bounty, available)?;
+
+        Ok(())
+    }
+
+    pub fn renew_bounty(ctx: Context<RenewBounty>, settings: BountySettings) -> Result<()> {
+        bounty::renew::existent_bounty(&mut ctx.accounts.bounty, settings)
+    }
 }
-
-
-

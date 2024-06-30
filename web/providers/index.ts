@@ -5,5 +5,6 @@ export * from './wallet-provider';
 export * from './solana-provider';
 
 export * from '@/components/cluster/cluster-data-access';
+export * from '@/app/games/_provider/games-provider';
 
 export * from './data-feed';

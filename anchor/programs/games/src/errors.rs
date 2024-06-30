@@ -1,6 +1,12 @@
 use anchor_lang::error_code;
 
 #[error_code]
+pub enum TreasureErrorCode {
+    #[msg("Treasure authority is not the signer")]
+    InvalidAuthority,
+}
+
+#[error_code]
 pub enum GameErrorCode {
     #[msg("Name must be between 3 and 32 characters")]
     InvalidName,
@@ -31,4 +37,19 @@ pub enum GameModeErrorCode {
 
     #[msg("Pick winner is true but winner choice is 0")]
     InvalidPickWinner,
+}
+
+#[error_code]
+pub enum BountyErrorCode {
+    #[msg("Bounty is not owned by the supplier")]
+    InvalidOwner,
+
+    #[msg("Vault amount is above threshold")]
+    ThresholdNotReached,
+
+    #[msg("Invalid gem")]
+    InvalidGem,
+
+    #[msg("Total vault reward is uncollectible")]
+    UncollectibleReward,
 }

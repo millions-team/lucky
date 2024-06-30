@@ -1,7 +1,7 @@
 use crate::errors::GameErrorCode;
 use anchor_lang::prelude::*;
 
-#[derive(InitSpace, Copy, Clone, Debug, AnchorSerialize, AnchorDeserialize, PartialEq)]
+#[derive(InitSpace, AnchorSerialize, AnchorDeserialize, Clone, PartialEq)]
 pub enum GameStatus {
     Created,
     Active,
@@ -9,25 +9,25 @@ pub enum GameStatus {
     Ended,
 }
 
-#[derive(InitSpace, Copy, Clone, Debug, AnchorSerialize, AnchorDeserialize, PartialEq)]
+#[derive(InitSpace, AnchorSerialize, AnchorDeserialize, Clone, PartialEq)]
 pub enum GameType {
     SinglePlayer,
     MultiPlayer,
 }
 
-#[derive(InitSpace, Copy, Clone, Debug, AnchorSerialize, AnchorDeserialize, PartialEq)]
+#[derive(InitSpace, AnchorSerialize, AnchorDeserialize, Clone, PartialEq)]
 pub enum GameRound {
     Single,
     Multiple,
 }
 
-#[derive(InitSpace, Copy, Clone, Debug, AnchorSerialize, AnchorDeserialize, PartialEq)]
+#[derive(InitSpace, AnchorSerialize, AnchorDeserialize, Clone, PartialEq)]
 pub enum GameChoice {
     Single,
     Multiple,
 }
 
-#[derive(InitSpace, Copy, Clone, Debug, AnchorSerialize, AnchorDeserialize, PartialEq)]
+#[derive(InitSpace, AnchorSerialize, AnchorDeserialize, Clone, PartialEq)]
 pub enum GameAlgorithm {
     Random,
     Deterministic,

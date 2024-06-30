@@ -3,13 +3,14 @@ import { PublicKey } from '@solana/web3.js';
 import { useConnection } from '@solana/wallet-adapter-react';
 
 import { useGetTokenAccounts } from '@/components/account/account-data-access';
+import { getToken } from '@utils/token';
 import type { TokenAccount } from './splt-token.d';
-import { getToken } from './use-get-token';
 
 export function useOwnedTokens(address: PublicKey) {
   const { connection } = useConnection();
   const { data: tokenAccounts, refetch } = useGetTokenAccounts({ address });
   const [tokens, setTokens] = useState<TokenAccount[]>([]);
+  const [mints, setMints] = useState<Record<string, TokenAccount>>({});
 
   useEffect(() => {
     if (!tokenAccounts?.length) return;
@@ -31,11 +32,15 @@ export function useOwnedTokens(address: PublicKey) {
           } as TokenAccount;
         })
       )
-      .then(setTokens);
+      .then((tokens) => {
+        setTokens(tokens);
+        setMints(Object.fromEntries(tokens.map((t) => [t.mint, t])));
+      });
   }, [connection, tokenAccounts]);
 
   return {
     tokens,
+    mints,
     refresh: () => refetch(),
   };
 }

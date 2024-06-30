@@ -16,6 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./web/*"],
+      "@utils/*": ["anchor/utils/*"],
+      "@constants": ["anchor/constants/index.ts"],
       "@luckyland/anchor": ["anchor/src/index.ts"]
     }
   },

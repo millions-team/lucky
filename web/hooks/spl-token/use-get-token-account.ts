@@ -1,10 +1,11 @@
 import { PublicKey } from '@solana/web3.js';
+import { getAccount } from '@solana/spl-token';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
-import type { TokenAccount } from './splt-token.d';
-import { getAccount } from '@solana/spl-token';
-import { getToken } from './use-get-token';
 
+import { getToken } from '@utils/token';
+
+import type { TokenAccount } from './splt-token.d';
 /*
  * @desc Custom hook to get all details of a token account
  *

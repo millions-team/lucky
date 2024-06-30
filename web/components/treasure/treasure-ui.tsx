@@ -10,15 +10,9 @@ import { ExplorerLink } from '@/components/cluster/cluster-ui';
 import { ellipsify } from '@/components/ui/ui-layout';
 import { VaultActions } from './actions';
 
-const { NEXT_PUBLIC_OWNER = '6nmrVvmrDD61cmHu3MqPMekT9APaZMC1x7yuokKxPYWs' } =
-  process.env;
-if (!NEXT_PUBLIC_OWNER) throw new Error('NEXT_PUBLIC_OWNER is not set');
-
-const TOKENS_OWNER = new PublicKey(NEXT_PUBLIC_OWNER);
-
 export function TreasureProgram({ player }: { player: PublicKey }) {
-  const { getProgramAccount } = useTreasureProgram();
-  const { tokens } = useOwnedTokens(TOKENS_OWNER);
+  const { getProgramAccount, keeperPDA } = useTreasureProgram();
+  const { tokens } = useOwnedTokens(keeperPDA);
   const [token, setToken] = useState<TokenAccount>(
     tokens[0] || { address: '_label' }
   );

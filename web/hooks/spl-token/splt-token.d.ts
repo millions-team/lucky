@@ -1,13 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
-
-export interface Token {
-  mint: PublicKey;
-  name: string;
-  symbol: string;
-  decimals: number;
-  supply?: bigint;
-  metadata?: any;
-}
+import { Token } from '@utils/token';
 
 export interface TokenAccount extends Token {
   address: string;

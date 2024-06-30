@@ -1,0 +1,33 @@
+{
+  "description": "A lucky coin.",
+  "seller_fee_basis_points": 0,
+  "image": "https://shdw-drive.genesysgo.net/QZNGUVnJgkw6sGQddwZVZkhyUWSUXAjXF9HQAjiVZ55/coin.png",
+  "animation_url": null,
+  "attributes": [
+    {
+      "trait_type": "Gold",
+      "value": "100%"
+    },
+    {
+      "trait_type": "Luck",
+      "value": "100%"
+    }
+  ],
+  "external_url": "https://luckyland.vercel.app",
+  "properties": {
+    "category": "image",
+    "creators": [
+      {
+        "address": "LucktycNvshfXyJZcRcbbc5kFtn3ZCSZpxGGKyNGje1",
+        "verified": true,
+        "share": 100
+      }
+    ],
+    "files": [
+      {
+        "type": "image/png",
+        "uri": "https://shdw-drive.genesysgo.net/QZNGUVnJgkw6sGQddwZVZkhyUWSUXAjXF9HQAjiVZ55/coin.png"
+      }
+    ]
+  }
+}

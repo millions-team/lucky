@@ -1,9 +1,16 @@
 import { type Cluster, PublicKey } from '@solana/web3.js';
-import { getGamesProgramId, KEEPER_SEED, VAULT_SEED } from '..';
+import { getGamesProgramId, KEEPER_SEED, TREASURE_SEED, VAULT_SEED } from '..';
 
 export function getKeeperPDA(cluster?: Cluster) {
   return PublicKey.findProgramAddressSync(
     [Buffer.from(KEEPER_SEED, 'utf8')],
+    getGamesProgramId(cluster)
+  )[0];
+}
+
+export function getTreasurePDA(cluster?: Cluster) {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from(TREASURE_SEED, 'utf8')],
     getGamesProgramId(cluster)
   )[0];
 }
