@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](///compare/v0.1.4...v0.1.5) (2024-06-30)
+
+
+### Features
+
+* **anchor:** 👻 Authority | Treasure 4f1ab49
+* **anchor:** 👻 Forge Cost | Treasure 795dca6
+* **anchor:** 👻 Fund | Bounty 0d53975
+* **anchor:** 👻 Publish | Bounty b88b6ec
+* **anchor:** 👻 Unlock | Treasure 74ad545
+* **lib:** 👻 Utilities 06a8a10
+* **scripts:** 👻 Features 97aa7c3
+* **web:** 👻 Bounty | Game Modes c969081
+* **web:** 👻 Fund Bounty 7bce8c4
+
 ### [0.1.4](///compare/v0.1.3...v0.1.4) (2024-06-28)
 
 
