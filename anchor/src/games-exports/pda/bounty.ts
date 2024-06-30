@@ -1,5 +1,5 @@
 import { type Cluster, PublicKey } from '@solana/web3.js';
-import { getGamesProgramId, BOUNTY_SEED, ESCROW_SEED, VAULT_SEED } from '..';
+import { getGamesProgramId, BOUNTY_SEED, VAULT_SEED } from '..';
 
 export function getBountyPDA(
   task: PublicKey,
@@ -14,12 +14,6 @@ export function getBountyPDA(
       gem.toBytes(),
       trader.toBytes(),
     ],
-    getGamesProgramId(cluster)
-  )[0];
-}
-export function getEscrowPDA(cluster?: Cluster) {
-  return PublicKey.findProgramAddressSync(
-    [Buffer.from(ESCROW_SEED, 'utf8')],
     getGamesProgramId(cluster)
   )[0];
 }

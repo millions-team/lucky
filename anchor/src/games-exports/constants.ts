@@ -1,3 +1,12 @@
+// ----------------------------- Treasure -----------------------------
+export const KEEPER_SEED = 'TREASURE_KEEPER';
+export const ESCROW_SEED = 'TREASURE_ESCROW';
+export const VAULT_SEED = 'TREASURE_VAULT';
+export const COLLECTOR_SEED = 'TOLLKEEPER';
+export const TREASURE_SEED = 'TREASURE';
+export const TREASURE_FORGE_COST = 25; // 25 SOL
+export const TRADER_LAUNCH_COST = 50; // 50 SOL
+
 // ----------------------------- Game -----------------------------
 export const GAME_SEED = 'LUCKY_GAME';
 export const GAME_NAME_LEN = 33;
@@ -14,10 +23,3 @@ export const MIN_CHOICES = 2;
 
 // ----------------------------- Bounty -----------------------------
 export const BOUNTY_SEED = 'BOUNTY';
-
-// ----------------------------- Treasure -----------------------------
-export const KEEPER_SEED = 'TREASURE_KEEPER';
-export const ESCROW_SEED = 'TREASURE_ESCROW';
-export const VAULT_SEED = 'TREASURE_VAULT';
-export const TREASURE_SEED = 'TREASURE';
-export const TREASURE_FORGE_COST = 25; // 25 SOL
