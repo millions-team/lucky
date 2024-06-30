@@ -20,6 +20,7 @@ import {
   getBountyVaultPDA,
   toBN,
   TREASURE_FORGE_COST,
+  TRADER_LAUNCH_COST,
 } from '../src/games-exports';
 
 const DECIMALS = 8;
@@ -112,13 +113,44 @@ describe('Bounty', () => {
         getTreasurePDA()
       );
 
-      const timeout = new Promise((resolve) =>
-        setTimeout(resolve, treasure ? 0 : 1000)
-      );
-      await timeout;
+      const timeout = new Promise((resolve) => {
+        const id = setTimeout(() => resolve(id), treasure ? 0 : 1000);
+      });
+
+      clearTimeout(((await timeout) as NodeJS.Timeout).unref());
       await program.methods
         .forgeStronghold()
         .accounts({ gem, supplier: payer.publicKey })
+        .signers([payer])
+        .rpc();
+    });
+  });
+
+  describe('Preparing the Escrow', () => {
+    const payer = Keypair.generate();
+
+    beforeAll(async () => {
+      const tx = await connection.requestAirdrop(
+        payer.publicKey,
+        (TRADER_LAUNCH_COST + 0.1) * LAMPORTS_PER_SOL
+      );
+      await connection.confirmTransaction(tx);
+    });
+
+    it('Should launch a trader for the gem', async () => {
+      const { trader } = accounts;
+      const treasure = await program.account.treasure.fetchNullable(
+        getTreasurePDA()
+      );
+
+      const timeout = new Promise((resolve) => {
+        const id = setTimeout(() => resolve(id), treasure ? 0 : 1000);
+      });
+
+      clearTimeout(((await timeout) as NodeJS.Timeout).unref());
+      await program.methods
+        .launchEscrow()
+        .accounts({ trader, supplier: payer.publicKey })
         .signers([payer])
         .rpc();
     });

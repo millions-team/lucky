@@ -13,9 +13,12 @@ import {
 import { Games } from '../target/types/games';
 import {
   getKeeperPDA,
-  getStrongholdPDA,
+  getEscrowPDA,
   getTreasurePDA,
+  getStrongholdPDA,
+  getCollectorPDA,
   TREASURE_FORGE_COST,
+  TRADER_LAUNCH_COST,
 } from '../src/games-exports';
 
 describe('Treasure', () => {
@@ -27,6 +30,7 @@ describe('Treasure', () => {
   const connection = provider.connection;
 
   let gem: PublicKey;
+  let trader: PublicKey;
   let accounts: Record<string, PublicKey>;
   const authority = Keypair.generate();
 
@@ -34,6 +38,14 @@ describe('Treasure', () => {
     const { payer } = provider.wallet as anchor.Wallet;
 
     gem = await createMint(
+      connection, // conneciton
+      payer, // fee payer
+      payer.publicKey, // mint authority
+      null, // freeze authority (you can use `null` to disable it. when you disable it, you can't turn it on again)
+      8 // decimals
+    );
+
+    trader = await createMint(
       connection, // conneciton
       payer, // fee payer
       payer.publicKey, // mint authority
@@ -52,7 +64,9 @@ describe('Treasure', () => {
       keeper: getKeeperPDA(),
       treasure: getTreasurePDA(),
       stronghold: getStrongholdPDA(gem),
+      escrow: getEscrowPDA(),
       gem,
+      trader,
     };
 
     await mintToChecked(
@@ -87,6 +101,7 @@ describe('Treasure', () => {
         .rpc();
 
       const treasure = await program.account.treasure.fetch(pda);
+      // TODO: Verify that keeper and escrow accounts are created.
       expect(treasure.authority).toEqual(authority.publicKey);
     });
 
@@ -155,9 +170,73 @@ describe('Treasure', () => {
 
         const stronghold = await getAccount(connection, accounts.stronghold);
         const balance = await connection.getBalance(keeper);
+
         expect(balance).toEqual(balanceBeforeForge + cost);
         expect(stronghold.owner).toEqual(accounts.keeper);
         expect(stronghold.amount.toString()).toEqual('0');
+      });
+    });
+  });
+
+  describe('Launch', () => {
+    describe('By Authority', () => {
+      let trader: PublicKey;
+
+      beforeAll(async () => {
+        trader = await createMint(
+          connection, // conneciton
+          authority, // fee payer
+          authority.publicKey, // mint authority
+          null, // freeze authority (you can use `null` to disable it. when you disable it, you can't turn it on again)
+          8 // decimals
+        );
+      });
+
+      it('Should launch an escrow collector', async () => {
+        const { escrow } = accounts;
+        const balance = await connection.getBalance(authority.publicKey);
+        expect(balance).toBeLessThan(TRADER_LAUNCH_COST * LAMPORTS_PER_SOL);
+
+        await program.methods
+          .launchEscrow()
+          .accounts({ supplier: authority.publicKey, trader })
+          .signers([authority])
+          .rpc();
+
+        const collector = await getAccount(connection, getCollectorPDA(trader));
+        expect(collector.owner).toEqual(escrow);
+        expect(collector.amount.toString()).toEqual('0');
+      });
+    });
+
+    describe('By Non-Authority', () => {
+      const payer = Keypair.generate();
+
+      beforeAll(async () => {
+        const tx = await connection.requestAirdrop(
+          payer.publicKey,
+          (TRADER_LAUNCH_COST + 0.1) * LAMPORTS_PER_SOL
+        );
+        await connection.confirmTransaction(tx);
+      });
+
+      it('Should launch an escrow collector and charge the payer for the cost', async () => {
+        const { trader, escrow } = accounts;
+        const balanceBeforeLaunch = await connection.getBalance(escrow);
+        const cost = TRADER_LAUNCH_COST * LAMPORTS_PER_SOL;
+
+        await program.methods
+          .launchEscrow()
+          .accounts({ supplier: payer.publicKey, trader })
+          .signers([payer])
+          .rpc();
+
+        const collector = await getAccount(connection, getCollectorPDA(trader));
+        const balance = await connection.getBalance(escrow);
+
+        expect(balance).toEqual(balanceBeforeLaunch + cost);
+        expect(collector.owner).toEqual(escrow);
+        expect(collector.amount.toString()).toEqual('0');
       });
     });
   });
