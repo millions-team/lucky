@@ -16,8 +16,9 @@ import {
   ID_NAME,
 } from './constants';
 import { getManufacturer, getMetadataURI } from '../utils';
-import { loadOrCreateKeypair } from '../../utils';
+import { formatter, loadOrCreateKeypair } from '../../utils';
 
+const formatAmount = formatter(PIECES_PER_GEM, SYMBOL);
 let manufacturer: Metaplex;
 
 export async function ForgeGems(
@@ -56,11 +57,6 @@ export async function ForgeGems(
   reserve = await checkBalance(market, supplier, gem);
 
   return { gem, reserve };
-}
-
-export function formatAmount(amount: bigint, raw = true) {
-  const _amount = raw ? amount / PIECES_PER_GEM : amount;
-  return `${Intl.NumberFormat().format(_amount)} $${SYMBOL}`;
 }
 
 function activateManufacturer(market: Connection, payer: Keypair) {

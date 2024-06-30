@@ -1,2 +1,2 @@
-export * from './stronghold';
 export * from './luckyland';
+export * from './luckyshot';

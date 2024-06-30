@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { Keypair } from '@solana/web3.js';
 
-function resolvePath(filepath) {
+function resolvePath(filepath: string) {
   if (filepath[0] === '~') {
     return join(process.env.HOME, filepath.slice(1));
   }

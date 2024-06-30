@@ -1,5 +1,5 @@
 import { Connection } from '@solana/web3.js';
-import { Cluster, ClusterNetwork } from './connection';
+import { type Cluster, ClusterNetwork } from './connection';
 
 export async function confirmTransaction(
   txHash: string,

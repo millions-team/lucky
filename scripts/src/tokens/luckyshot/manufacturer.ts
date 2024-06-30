@@ -16,8 +16,9 @@ import {
   ID_NAME,
 } from './constants';
 import { getManufacturer, getMetadataURI } from '../utils';
-import { loadOrCreateKeypair } from '../../utils';
+import { formatter, loadOrCreateKeypair } from '../../utils';
 
+const formatAmount = formatter(PIECES_PER_TOKEN, SYMBOL);
 let manufacturer: Metaplex;
 
 export async function ForgeTrader(
@@ -56,11 +57,6 @@ export async function ForgeTrader(
   store = await checkBalance(market, supplier, trader);
 
   return { trader, store };
-}
-
-export function formatAmount(amount: bigint, raw = true) {
-  const _amount = raw ? amount / PIECES_PER_TOKEN : amount;
-  return `${Intl.NumberFormat().format(_amount)} $${SYMBOL}`;
 }
 
 async function forgeMatrix() {

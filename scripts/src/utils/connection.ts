@@ -1,5 +1,5 @@
 import {
-  Cluster as Web3Cluster,
+  type Cluster as Web3Cluster,
   Connection,
   clusterApiUrl,
   Keypair,
