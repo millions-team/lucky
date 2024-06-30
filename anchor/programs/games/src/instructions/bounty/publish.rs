@@ -1,5 +1,5 @@
 pub use crate::state::{game_mode::GameMode, bounty::{Bounty, BountySettings}};
-use crate::constants::{BOUNTY_SEED, VAULT_SEED};
+use crate::constants::{BOUNTY_SEED, VAULT_SEED, COLLECTOR_SEED};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, TokenAccount};
 
@@ -35,6 +35,14 @@ pub struct InitializeBounty<'info> {
         bump
     )]
     stronghold: Account<'info, TokenAccount>,
+
+    // To prevent charging an unknown token.
+    #[account(
+        seeds = [COLLECTOR_SEED, trader.key().as_ref()],
+        token::mint = trader,
+        bump
+    )]
+    collector: Account<'info, TokenAccount>,
 
     system_program: Program<'info, System>,
 }

@@ -26,6 +26,10 @@ pub mod games {
         treasure::forge::pay(&ctx)
     }
 
+    pub fn launch_escrow(ctx: Context<LaunchEscrow>) -> Result<()> {
+        escrow::launch::pay_definition(&ctx)
+    }
+
     pub fn stockpile_gems(ctx: Context<Stockpile>, amount: u64) -> Result<()> {
         treasure::stockpile::receive(&ctx, amount)
     }
