@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { PublicKey } from '@solana/web3.js';
-import { getAccount } from '@solana/spl-token';
+import { getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { BN } from '@coral-xyz/anchor';
@@ -46,15 +46,16 @@ export function useBountyAccount({ pda }: { pda: PublicKey }) {
 
   const fund = useMutation({
     mutationKey: ['bounty', 'fund', { cluster, pda }],
-    mutationFn: (amount: BN) => {
+    mutationFn: async (amount: BN) => {
       if (!bountyQuery.data) throw new Error('Bounty not found');
       if (!publicKey) throw new Error('Wallet not connected');
 
       const { gem } = bountyQuery.data;
+      const reserve = await getAssociatedTokenAddress(gem, publicKey);
 
       return program.methods
         .fundBounty(amount)
-        .accounts({ gem, bounty: pda, supplier: publicKey })
+        .accounts({ gem, bounty: pda, supplier: publicKey, reserve })
         .rpc();
     },
     onSuccess: (tx) => {
