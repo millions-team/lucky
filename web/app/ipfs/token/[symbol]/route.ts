@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
 
-import { getToken } from './constants';
 import METADATA from './meta.json';
+
+import { getTokenDefinition } from '@constants';
 
 const { VERCEL_ENV = 'development', VERCEL_PROJECT_PRODUCTION_URL } =
   process.env;
@@ -12,7 +13,7 @@ const BASE_URL =
     : `https://${VERCEL_PROJECT_PRODUCTION_URL}`;
 
 async function getTokenWithMetadata(symbol: string) {
-  const token = getToken(symbol);
+  const token = getTokenDefinition(symbol);
   const metadata = { name: token.name, symbol: token.symbol, ...METADATA };
 
   return { token, metadata };
