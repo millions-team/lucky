@@ -12,7 +12,7 @@ export function useBountyProgram() {
   const { publicKey } = useWallet();
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
-  const { program, games } = useGamesProgram({});
+  const { program, games } = useGamesProgram();
 
   const create = useMutation({
     mutationKey: ['bounty', 'create', { cluster }],

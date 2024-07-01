@@ -4,7 +4,7 @@ import { useGamesProgram } from '../games-data-access';
 import { GameCard } from './Card';
 
 export function GamesList() {
-  const { games, getProgramAccount } = useGamesProgram({});
+  const { games, getProgramAccount } = useGamesProgram();
 
   if (getProgramAccount.isLoading) {
     return <span className="loading loading-spinner loading-lg"></span>;

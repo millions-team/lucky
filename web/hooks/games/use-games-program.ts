@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
 import { useGames, useAnchorProvider, useCluster } from '@/providers';
-import { useTransactionToast } from '@/components/ui/ui-layout';
+import { useTransactionToast } from '@/hooks';
 
 import {
   type GameMode,
@@ -15,18 +15,19 @@ import {
   getGamesProgramId,
 } from '@luckyland/anchor';
 
-export function useGamesProgram({ callback }: { callback?: () => void }) {
+export function useGamesProgram({ callback }: { callback?: () => void } = {}) {
   const { publicKey: owner } = useWallet();
   const { addGame, getGame, addMode } = useGames();
   const { connection } = useConnection();
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
   const provider = useAnchorProvider();
+
   const programId = useMemo(
     () => getGamesProgramId(cluster.network as Cluster),
     [cluster]
   );
-  const program = getGamesProgram(provider);
+  const program = useMemo(() => getGamesProgram(provider), [provider]);
 
   const games = useQuery({
     queryKey: ['games', 'all', { cluster }],

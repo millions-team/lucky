@@ -14,7 +14,7 @@ export function useGameModeAccount({ pda }: { pda: PublicKey }) {
   const { cluster } = useCluster();
   const { getGame, getMode, deleteMode } = useGames();
   const transactionToast = useTransactionToast();
-  const { program, games } = useGamesProgram({});
+  const { program, games } = useGamesProgram();
 
   const modeQuery = useQuery({
     queryKey: ['game-mode', 'fetch', { cluster, pda }],

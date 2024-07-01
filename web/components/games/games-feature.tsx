@@ -11,7 +11,7 @@ import { ExplorerLink } from '../cluster/cluster-ui';
 
 export default function GamesFeature() {
   const { publicKey } = useWallet();
-  const { programId } = useGamesProgram({});
+  const { programId } = useGamesProgram();
 
   return publicKey ? (
     <div className="max-w-7xl mx-auto px-2">
