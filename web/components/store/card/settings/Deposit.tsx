@@ -10,7 +10,7 @@ export function Deposit({ storePda }: BaseProps) {
 
   return (
     token && (
-      <label className="form-control w-full max-w-xs">
+      <label className="form-control flex-1 max-w-xs">
         <div className="label">
           <span className="label-text">Store Deposit</span>
           <span

@@ -111,7 +111,7 @@ export function StoreList() {
       {stores.isLoading ? (
         <span className="loading loading-spinner loading-lg"></span>
       ) : stores.data?.length ? (
-        <div className="grid md:grid-cols-2 gap-4 lg:p-8">
+        <div className="flex flex-wrap gap-4 p-4 justify-around">
           {stores.data?.map((pda) => (
             <StoreCard
               key={pda.publicKey.toString()}

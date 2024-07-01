@@ -16,7 +16,12 @@ import {
 
 import { useCluster } from '../cluster/cluster-data-access';
 import { useTransactionToast } from '../ui/ui-layout';
-import { useGetTokenAccount, useOwnedToken, useStoreBalance } from '@/hooks';
+import {
+  useGetTokenAccount,
+  useOwnedToken,
+  usePlayer,
+  useStoreBalance,
+} from '@/hooks';
 import { getAssociatedTokenAddress } from '@solana/spl-token';
 import { useAnchorProvider } from '@/providers';
 
@@ -77,9 +82,7 @@ export function useStoreProgramAccount({
   storePda: PublicKey;
   callback?: () => void;
 }) {
-  const { publicKey } = useWallet();
-  if (!publicKey) throw new Error('Wallet not connected');
-
+  const { owner } = usePlayer();
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
   const { program, stores } = useStoreProgram();
@@ -91,7 +94,7 @@ export function useStoreProgramAccount({
   // ------------------- queries ----------------------
   const vaultQuery = useGetTokenAccount({ address: vaultPDA });
 
-  const tokenQuery = useOwnedToken(publicKey, vaultQuery.data?.mint);
+  const tokenQuery = useOwnedToken(owner, vaultQuery.data?.mint);
 
   const storeQuery = useQuery({
     queryKey: ['store', 'fetch', { cluster, storePda }],
@@ -102,9 +105,9 @@ export function useStoreProgramAccount({
 
   // ------------------- computed ---------------------
   const isOwner = useMemo(() => {
-    if (!storeQuery.data?.mint || !publicKey) return false;
-    return storePda.equals(getStorePDA(publicKey, storeQuery.data.mint));
-  }, [publicKey, storeQuery.data?.mint, storePda]);
+    if (!storeQuery.data?.mint || !owner) return false;
+    return storePda.equals(getStorePDA(owner, storeQuery.data.mint));
+  }, [owner, storeQuery.data?.mint, storePda]);
 
   // ------------------- mutations -------------------
   const initVault = useMutation({
@@ -125,11 +128,10 @@ export function useStoreProgramAccount({
     mutationKey: ['store', 'deposit', { cluster, storePda }],
     mutationFn: async (amount: bigint) => {
       if (!vaultQuery.data) throw new Error('Vault not initialized');
-      if (!publicKey) throw new Error('Wallet not connected');
 
       const targetAccount = await getAssociatedTokenAddress(
         vaultQuery.data.mint,
-        publicKey
+        owner
       );
 
       return program.methods
@@ -169,11 +171,10 @@ export function useStoreProgramAccount({
     mutationKey: ['store', 'sell', { cluster, storePda }],
     mutationFn: async (amount: bigint) => {
       if (!vaultQuery.data) throw new Error('Vault not initialized');
-      if (!publicKey) throw new Error('Wallet not connected');
 
       const targetAccount = await getAssociatedTokenAddress(
         vaultQuery.data.mint,
-        publicKey
+        owner
       );
 
       return program.methods

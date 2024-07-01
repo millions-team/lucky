@@ -3,42 +3,27 @@
 import { useMemo } from 'react';
 import { getAssociatedTokenAddress } from '@solana/spl-token';
 import { BN } from '@coral-xyz/anchor';
-import { useConnection } from '@solana/wallet-adapter-react';
 import { Cluster, PublicKey } from '@solana/web3.js';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-import {
-  getGamesProgramId,
-  getGamesProgram,
-  getKeeperPDA,
-} from '@luckyland/anchor';
+import { getKeeperPDA } from '@luckyland/anchor';
 
 import { useCluster } from '../cluster/cluster-data-access';
-import { useAnchorProvider } from '@/providers';
 import { useTransactionToast } from '../ui/ui-layout';
+import { useGamesProgram } from '@/hooks';
 
 export function useTreasureProgram({
   callback,
 }: { callback?: () => void } = {}) {
-  const { connection } = useConnection();
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
-  const provider = useAnchorProvider();
-  const programId = useMemo(
-    () => getGamesProgramId(cluster.network as Cluster),
-    [cluster.network]
-  );
-  const program = getGamesProgram(provider);
+  const { program, programId, getProgramAccount } = useGamesProgram();
+
   const keeperPDA = useMemo(
     () => getKeeperPDA(cluster.network as Cluster),
     [cluster.network]
   );
-
-  const getProgramAccount = useQuery({
-    queryKey: ['get-program-account', { cluster }],
-    queryFn: () => connection.getParsedAccountInfo(programId),
-  });
 
   const initialize = useMutation({
     mutationKey: ['vault', 'initialize', { cluster }],

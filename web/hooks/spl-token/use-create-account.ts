@@ -9,15 +9,17 @@ import {
 } from '@solana/spl-token';
 
 import { buildTransaction } from '@/utils';
+import { usePlayer } from '@/hooks';
 
 export function useCreateTokenAccount({
-  address,
+  mint,
   callback,
 }: {
-  address: PublicKey;
+  mint: PublicKey;
   callback?: () => void;
 }) {
   const { connection } = useConnection();
+  const { owner: address } = usePlayer();
   const { wallet } = useWallet();
   const client = useQueryClient();
   const transactionToast = useTransactionToast();
@@ -25,21 +27,21 @@ export function useCreateTokenAccount({
   return useMutation({
     mutationKey: [
       'create-token-account',
-      { endpoint: connection.rpcEndpoint, address },
+      { endpoint: connection.rpcEndpoint, address, mint },
     ],
-    mutationFn: async (mint: PublicKey) => {
+    mutationFn: async () => {
       if (!wallet?.adapter) throw new Error('Wallet not connected');
 
       const ata = await getAssociatedTokenAddress(mint, address);
       const instruction = createAssociatedTokenAccountInstruction(
-        wallet.adapter.publicKey!, // payer
+        address, // payer
         ata, // ata
         address, // owner
         mint // mint
       );
 
       const { transaction } = await buildTransaction({
-        payerKey: wallet.adapter.publicKey!,
+        payerKey: address,
         connection,
         instructions: [instruction],
       });

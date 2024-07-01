@@ -13,7 +13,7 @@ export function Settings({ storePda }: BaseProps) {
 
       <div className="card-actions flex-col justify-center items-center">
         <PriceUpdate storePda={storePda} />
-        <div className="flex gap-8">
+        <div className="flex flex-wrap gap-8 justify-center">
           <Deposit storePda={storePda} />
           <Withdraw storePda={storePda} />
         </div>

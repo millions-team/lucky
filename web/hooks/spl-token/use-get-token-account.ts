@@ -4,6 +4,7 @@ import { useConnection } from '@solana/wallet-adapter-react';
 import { useQuery } from '@tanstack/react-query';
 
 import { getToken } from '@utils/token';
+import { fromBigInt } from '@luckyland/anchor';
 
 import type { TokenAccount } from './splt-token.d';
 /*
@@ -35,7 +36,8 @@ export function useGetTokenAccount({ address }: { address: PublicKey }) {
 
       return {
         ...token,
-        amount: Number(account.amount / BigInt(10 ** token.decimals)),
+        balance: account.amount,
+        amount: fromBigInt(account.amount, token.decimals),
         address: address.toString(),
       };
     },

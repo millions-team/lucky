@@ -1,11 +1,12 @@
 import { useEffect, useMemo } from 'react';
-import { useCreateTokenAccount, useOwnedToken } from '@/hooks';
+import { useOwnedToken } from '@/hooks';
 import { getStrongholdPDA } from '@luckyland/anchor';
 
 import { ExplorerLink } from '@/components/cluster/cluster-ui';
 import { ellipsify } from '@/components/ui/ui-layout';
 
 import type { AccountsProps } from './actions';
+import { CreateTokenAccount } from '@/components/shared';
 
 export function Accounts({
   token: { mint },
@@ -14,11 +15,6 @@ export function Accounts({
 }: AccountsProps) {
   const vaultPDA = useMemo(() => getStrongholdPDA(mint), [mint]);
   const { token, isLoading, refresh } = useOwnedToken(player, mint);
-  const createAccount = useCreateTokenAccount({
-    address: player,
-    callback: refresh,
-  });
-
   useEffect(() => onEnabled(Boolean(token)), [token]);
 
   return (
@@ -43,24 +39,10 @@ export function Accounts({
         (isLoading ? (
           <span className="loading loading-ball loading-lg"></span>
         ) : (
-          <div className="card max-w-md bg-base-100 my-8 border-2 border-accent">
-            <div className="card-body">
-              <h2 className="card-title">No Token Account</h2>
-              <p>
-                You need to create an account for this token before you can
-                interact with the vault.
-              </p>
-
-              <div className="card-actions justify-end mt-8">
-                <button
-                  className="btn btn-primary"
-                  onClick={() => createAccount.mutateAsync(mint)}
-                >
-                  Create Token Account
-                </button>
-              </div>
-            </div>
-          </div>
+          <CreateTokenAccount
+            mint={mint}
+            onChange={(success) => success && refresh()}
+          />
         ))}
     </>
   );

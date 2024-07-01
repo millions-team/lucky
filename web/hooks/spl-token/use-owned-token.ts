@@ -29,6 +29,7 @@ export function useOwnedToken(address: PublicKey, mint?: PublicKey) {
       ...tokenDetails.data,
       address: pubkey.toString(),
       amount,
+      balance: BigInt(account.data.parsed.info.tokenAmount.amount),
     });
   }, [
     connection,

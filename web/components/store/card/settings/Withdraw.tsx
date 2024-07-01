@@ -22,7 +22,7 @@ export function Withdraw({ storePda }: BaseProps) {
   const [amount, setAmount] = useState(0);
 
   return (
-    <label className="form-control w-full max-w-xs">
+    <label className="form-control flex-1 max-w-xs">
       <div className="label">
         <span className="label-text">Available</span>
         {balanceQuery.isLoading || !balanceQuery.data ? (
