@@ -23,6 +23,7 @@ export const MIN_CHOICES = 2;
 
 // ----------------------------- Bounty -----------------------------
 export const BOUNTY_SEED = 'BOUNTY';
+export const RENEW_THRESHOLD = BigInt(10); // 10% of the last issued bounty.
 
 // ----------------------------- Player -----------------------------
 export const PLAYER_SEED = 'LUCKY_PLAYER';

@@ -13,7 +13,7 @@ export function decodeName(name: number[]) {
   return new TextDecoder().decode(Uint8Array.from(name));
 }
 
-export function toBigInt(value: number, decimals: number) {
+export function toBigInt(value: number, decimals = 0) {
   if (isNaN(value)) return BigInt(0);
   if (isNaN(decimals) || decimals === 0) return BigInt(value);
   if (decimals < 0) throw new Error('Decimals must be a positive number');
@@ -22,11 +22,11 @@ export function toBigInt(value: number, decimals: number) {
   return BigInt(value) * BigInt(10 ** decimals);
 }
 
-export function toBN(value: number, decimals: number) {
+export function toBN(value: number, decimals = 0) {
   return new BN(toBigInt(value, decimals).toString());
 }
 
-export function fromBigInt(value: bigint, decimals: number) {
+export function fromBigInt(value?: bigint, decimals = 0) {
   if (!value) return 0;
   if (isNaN(decimals) || decimals === 0) return Number(value);
   if (decimals < 0) throw new Error('Decimals must be a positive number');
@@ -34,7 +34,8 @@ export function fromBigInt(value: bigint, decimals: number) {
   return Number(value) / 10 ** decimals;
 }
 
-export function fromBN(value: BN, decimals: number) {
+export function fromBN(value?: BN, decimals = 0) {
+  if (!value) return 0;
   return fromBigInt(BigInt(value.toString()), decimals);
 }
 

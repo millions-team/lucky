@@ -8,6 +8,13 @@ export function getEscrowPDA(cluster?: Cluster) {
   )[0];
 }
 
+export function getTollkeeperPDA(cluster?: Cluster) {
+  return PublicKey.findProgramAddressSync(
+    [Buffer.from(COLLECTOR_SEED, 'utf8')],
+    getGamesProgramId(cluster)
+  )[0];
+}
+
 export function getCollectorPDA(trader: PublicKey, cluster?: Cluster) {
   return PublicKey.findProgramAddressSync(
     [Buffer.from(COLLECTOR_SEED, 'utf8'), trader.toBytes()],

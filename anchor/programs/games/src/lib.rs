@@ -26,7 +26,7 @@ pub mod games {
         treasure::forge::pay(&ctx)
     }
 
-    pub fn launch_escrow(ctx: Context<LaunchEscrow>) -> Result<()> {
+    pub fn launch_escrow(ctx: Context<LaunchTrader>) -> Result<()> {
         escrow::launch::pay_definition(&ctx)
     }
 

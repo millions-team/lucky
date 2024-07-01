@@ -456,6 +456,29 @@ export type Games = {
           }
         },
         {
+          "name": "tollkeeper",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  79,
+                  76,
+                  76,
+                  75,
+                  69,
+                  69,
+                  80,
+                  69,
+                  82
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "treasure",
           "writable": true,
           "pda": {
@@ -909,7 +932,7 @@ export type Games = {
       ],
       "accounts": [
         {
-          "name": "escrow",
+          "name": "tollkeeper",
           "writable": true,
           "pda": {
             "seeds": [
@@ -917,20 +940,15 @@ export type Games = {
                 "kind": "const",
                 "value": [
                   84,
-                  82,
-                  69,
-                  65,
-                  83,
-                  85,
-                  82,
-                  69,
-                  95,
-                  69,
-                  83,
-                  67,
-                  82,
                   79,
-                  87
+                  76,
+                  76,
+                  75,
+                  69,
+                  69,
+                  80,
+                  69,
+                  82
                 ]
               }
             ]
@@ -1752,33 +1770,23 @@ export type Games = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidSlots",
-      "msg": "Slots must be between 1 and 16"
+      "name": "invalidOwner",
+      "msg": "Bounty is not owned by the supplier"
     },
     {
       "code": 6001,
-      "name": "invalidDigits",
-      "msg": "Digits must be between 1 and 8"
+      "name": "thresholdNotReached",
+      "msg": "Vault amount is above threshold"
     },
     {
       "code": 6002,
-      "name": "invalidChoices",
-      "msg": "Choices must be between 2 and max value of digits"
+      "name": "invalidGem",
+      "msg": "Invalid gem"
     },
     {
       "code": 6003,
-      "name": "invalidWinnerSingleChoice",
-      "msg": "Winner choice must be between 1 and choices"
-    },
-    {
-      "code": 6004,
-      "name": "invalidWinnerChoice",
-      "msg": "Winner choice must be between 0 and choices"
-    },
-    {
-      "code": 6005,
-      "name": "invalidPickWinner",
-      "msg": "Pick winner is true but winner choice is 0"
+      "name": "uncollectibleReward",
+      "msg": "Total vault reward is uncollectible"
     }
   ],
   "types": [

@@ -1,5 +1,5 @@
 pub use crate::state::treasure::Treasure;
-use crate::constants::{KEEPER_SEED, ESCROW_SEED, TREASURE_SEED};
+use crate::constants::{KEEPER_SEED, ESCROW_SEED, COLLECTOR_SEED, TREASURE_SEED};
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
@@ -23,6 +23,16 @@ pub struct BuildTreasure<'info> {
         space = 8 + 1
     )]
     escrow: AccountInfo<'info>,
+
+    /// CHECK: This is the collectors vault keeper, required to manage a collector.
+    #[account(
+        init,
+        payer = authority,
+        seeds = [COLLECTOR_SEED],
+        bump,
+        space = 8 + 1
+    )]
+    tollkeeper: AccountInfo<'info>,
 
     /// CHECK: This is the main treasure account. It will contain all the main program settings.
     #[account(

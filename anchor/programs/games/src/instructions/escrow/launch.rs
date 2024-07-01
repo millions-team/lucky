@@ -1,11 +1,11 @@
-use crate::constants::{ESCROW_SEED, COLLECTOR_SEED, TREASURE_SEED, TRADER_LAUNCH_COST};
+use crate::constants::{COLLECTOR_SEED, TREASURE_SEED, TRADER_LAUNCH_COST};
 use anchor_lang::prelude::*;
 use anchor_lang::system_program;
 use anchor_lang::solana_program::native_token::LAMPORTS_PER_SOL;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use crate::instructions::Treasure;
 
-pub fn pay_definition(ctx: &Context<LaunchEscrow>) -> Result<()> {
+pub fn pay_definition(ctx: &Context<LaunchTrader>) -> Result<()> {
     // When the supplier is the treasure authority, it is free to launch.
     if ctx.accounts.treasure.authority.key() == ctx.accounts.supplier.key() { return Ok(()); }
 
@@ -15,7 +15,7 @@ pub fn pay_definition(ctx: &Context<LaunchEscrow>) -> Result<()> {
         ctx.accounts.system_program.to_account_info(),
         system_program::Transfer {
             from: ctx.accounts.supplier.to_account_info(),
-            to: ctx.accounts.escrow.to_account_info(),
+            to: ctx.accounts.tollkeeper.to_account_info(),
         },
     );
     system_program::transfer(cpi_context, lamports)?;
@@ -24,22 +24,22 @@ pub fn pay_definition(ctx: &Context<LaunchEscrow>) -> Result<()> {
 }
 
 #[derive(Accounts)]
-pub struct LaunchEscrow<'info> {
-    /// CHECK: This is the treasure escrow, required to initialize the collector. and pay for the launch.
+pub struct LaunchTrader<'info> {
+    /// CHECK: This is the treasure tollkeeper, required to initialize the collector. and pay for the launch.
     #[account(
         mut,
-        seeds = [ESCROW_SEED],
+        seeds = [COLLECTOR_SEED],
         bump,
     )]
-    escrow: AccountInfo<'info>,
+    tollkeeper: AccountInfo<'info>,
 
-    // Only traders owned by the escrow could be collected as payment.
+    // Only traders owned by the tollkeeper could be collected as payment.
     #[account(
         init,
         payer = supplier,
         seeds = [COLLECTOR_SEED, trader.key().as_ref()],
         token::mint = trader,
-        token::authority = escrow,
+        token::authority = tollkeeper,
         bump
     )]
     collector: Account<'info, TokenAccount>,

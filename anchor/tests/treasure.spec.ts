@@ -1,5 +1,5 @@
 import * as anchor from '@coral-xyz/anchor';
-import { BN, Program } from '@coral-xyz/anchor';
+import { BN } from '@coral-xyz/anchor';
 import { Keypair, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import {
   Account,
@@ -10,10 +10,11 @@ import {
   mintToChecked,
 } from '@solana/spl-token';
 
-import { Games } from '../target/types/games';
 import {
+  getGamesProgram,
   getKeeperPDA,
   getEscrowPDA,
+  getTollkeeperPDA,
   getTreasurePDA,
   getStrongholdPDA,
   getCollectorPDA,
@@ -26,7 +27,7 @@ describe('Treasure', () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
-  const program = anchor.workspace.Games as Program<Games>;
+  const program = getGamesProgram(provider);
   const connection = provider.connection;
 
   let gem: PublicKey;
@@ -62,9 +63,10 @@ describe('Treasure', () => {
 
     accounts = {
       keeper: getKeeperPDA(),
+      escrow: getEscrowPDA(),
+      tollkeeper: getTollkeeperPDA(),
       treasure: getTreasurePDA(),
       stronghold: getStrongholdPDA(gem),
-      escrow: getEscrowPDA(),
       gem,
       trader,
     };
@@ -89,7 +91,7 @@ describe('Treasure', () => {
       await connection.confirmTransaction(tx);
     });
 
-    it('Should create the keeper, escrow, and treasure accounts', async () => {
+    it('Should create the keeper, escrow, tollkeeper, and treasure accounts', async () => {
       const { treasure: pda } = accounts;
       const _ = await program.account.treasure.fetchNullable(pda);
       expect(_).toBeNull();
@@ -100,8 +102,14 @@ describe('Treasure', () => {
         .signers([authority])
         .rpc();
 
+      const keeper = await connection.getAccountInfo(accounts.keeper);
+      const escrow = await connection.getAccountInfo(accounts.escrow);
+      const tollkeeper = await connection.getAccountInfo(accounts.tollkeeper);
       const treasure = await program.account.treasure.fetch(pda);
-      // TODO: Verify that keeper and escrow accounts are created.
+
+      expect(keeper.owner).toEqual(program.programId);
+      expect(escrow.owner).toEqual(program.programId);
+      expect(tollkeeper.owner).toEqual(program.programId);
       expect(treasure.authority).toEqual(authority.publicKey);
     });
 
@@ -142,6 +150,7 @@ describe('Treasure', () => {
 
         const stronghold = await getAccount(connection, getStrongholdPDA(gem));
         expect(stronghold.owner).toEqual(accounts.keeper);
+        expect(stronghold.mint).toEqual(gem);
         expect(stronghold.amount.toString()).toEqual('0');
       });
     });
@@ -173,6 +182,7 @@ describe('Treasure', () => {
 
         expect(balance).toEqual(balanceBeforeForge + cost);
         expect(stronghold.owner).toEqual(accounts.keeper);
+        expect(stronghold.mint).toEqual(gem);
         expect(stronghold.amount.toString()).toEqual('0');
       });
     });
@@ -192,8 +202,8 @@ describe('Treasure', () => {
         );
       });
 
-      it('Should launch an escrow collector', async () => {
-        const { escrow } = accounts;
+      it('Should launch a tollkeeper collector', async () => {
+        const { tollkeeper } = accounts;
         const balance = await connection.getBalance(authority.publicKey);
         expect(balance).toBeLessThan(TRADER_LAUNCH_COST * LAMPORTS_PER_SOL);
 
@@ -204,7 +214,8 @@ describe('Treasure', () => {
           .rpc();
 
         const collector = await getAccount(connection, getCollectorPDA(trader));
-        expect(collector.owner).toEqual(escrow);
+        expect(collector.owner).toEqual(tollkeeper);
+        expect(collector.mint).toEqual(trader);
         expect(collector.amount.toString()).toEqual('0');
       });
     });
@@ -220,9 +231,9 @@ describe('Treasure', () => {
         await connection.confirmTransaction(tx);
       });
 
-      it('Should launch an escrow collector and charge the payer for the cost', async () => {
-        const { trader, escrow } = accounts;
-        const balanceBeforeLaunch = await connection.getBalance(escrow);
+      it('Should launch a tollkeeper collector and charge the payer for the cost', async () => {
+        const { trader, tollkeeper } = accounts;
+        const balanceBeforeLaunch = await connection.getBalance(tollkeeper);
         const cost = TRADER_LAUNCH_COST * LAMPORTS_PER_SOL;
 
         await program.methods
@@ -232,10 +243,11 @@ describe('Treasure', () => {
           .rpc();
 
         const collector = await getAccount(connection, getCollectorPDA(trader));
-        const balance = await connection.getBalance(escrow);
+        const balance = await connection.getBalance(tollkeeper);
 
         expect(balance).toEqual(balanceBeforeLaunch + cost);
-        expect(collector.owner).toEqual(escrow);
+        expect(collector.owner).toEqual(tollkeeper);
+        expect(collector.mint).toEqual(trader);
         expect(collector.amount.toString()).toEqual('0');
       });
     });
