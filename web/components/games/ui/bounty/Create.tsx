@@ -14,14 +14,13 @@ export function CreateBounty({
   onCompleted,
   onCancel,
 }: CreateBountyProps) {
-  const { create } = useBountyProgram();
+  const { create } = useBountyProgram({ callback: onCompleted });
 
   return (
     <BountyForm
       task={task}
       onSubmit={async (bounty) => {
         await create.mutateAsync(bounty);
-        onCompleted?.();
       }}
       onCancel={() => onCancel?.()}
     />

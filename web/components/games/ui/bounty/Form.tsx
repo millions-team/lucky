@@ -3,7 +3,11 @@ import { PublicKey } from '@solana/web3.js';
 
 import { type Bounty, fromBN, toBN } from '@luckyland/anchor';
 
-import { type TokenAccount, useTreasureGems } from '@/hooks';
+import {
+  type TokenAccount,
+  useTollkeeperTraders,
+  useTreasureGems,
+} from '@/hooks';
 
 type BountyFormProps = {
   task: PublicKey;
@@ -85,23 +89,24 @@ export function BountyForm({
   onSubmit,
   onCancel,
 }: BountyFormProps) {
-  const { tokens } = useTreasureGems({});
+  const { gems, getGem } = useTreasureGems({});
+  const { traders, getTrader } = useTollkeeperTraders({});
 
   const [submitting, setSubmitting] = useState(false);
   const [settings, setSettings] = useState({} as BountySettings);
 
   useEffect(() => {
-    if (!_init) return;
-    const gem = tokens.find((t) => t.mint.equals(_init.gem));
-    const trader = tokens.find((t) => t.mint.equals(_init.trader));
+    if (!_init || (settings.gem && settings.trader)) return;
+    const gem = getGem(_init.gem);
+    const trader = getTrader(_init.trader);
 
     setSettings({
-      gem: gem || tokens[0],
+      gem: gem || gems[0],
       reward: fromBN(_init.reward, gem?.decimals || 0),
-      trader: trader || tokens[0],
+      trader: trader || traders[0],
       price: fromBN(_init.price, trader?.decimals || 0),
     });
-  }, [_init, tokens]);
+  }, [_init, getGem, getTrader, gems, traders]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,7 +158,7 @@ export function BountyForm({
                 <span className="label-text">Gem</span>
               </label>
               <SelectToken
-                tokens={tokens}
+                tokens={gems}
                 token={settings.gem}
                 setToken={(gem) => setSettings((s) => ({ ...s, gem }))}
               />
@@ -187,7 +192,7 @@ export function BountyForm({
                 <span className="label-text">Trader</span>
               </label>
               <SelectToken
-                tokens={tokens}
+                tokens={traders}
                 token={settings.trader}
                 setToken={(trader) => setSettings((s) => ({ ...s, trader }))}
               />

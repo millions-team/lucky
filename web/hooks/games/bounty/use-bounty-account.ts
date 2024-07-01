@@ -7,17 +7,30 @@ import { BN } from '@coral-xyz/anchor';
 import toast from 'react-hot-toast';
 
 import { useCluster } from '@/providers';
-import { useTransactionToast } from '@/components/ui/ui-layout';
 
-import { type Bounty, getBountyVaultPDA } from '@luckyland/anchor';
-import { useGamesProgram } from '@/hooks';
+import {
+  type Bounty,
+  getBountyVaultPDA,
+  fromBigInt,
+  fromBN,
+  RENEW_THRESHOLD,
+} from '@luckyland/anchor';
+import {
+  useGamesProgram,
+  useTreasureGems,
+  useTollkeeperTraders,
+  useTransactionToast,
+} from '@/hooks';
 
 export function useBountyAccount({ pda }: { pda: PublicKey }) {
   const { publicKey } = useWallet();
   const { connection } = useConnection();
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
-  const { program, games } = useGamesProgram({});
+  const { program } = useGamesProgram();
+
+  const { getGem } = useTreasureGems({});
+  const { getTrader } = useTollkeeperTraders({});
 
   const bountyQuery = useQuery({
     queryKey: ['bounty', 'account', { cluster, pda }],
@@ -25,6 +38,21 @@ export function useBountyAccount({ pda }: { pda: PublicKey }) {
       return program.account.bounty.fetch(pda);
     },
   });
+
+  const gem = useMemo(() => {
+    if (!bountyQuery.data) return;
+    return getGem(bountyQuery.data.gem);
+  }, [bountyQuery.data, getGem]);
+
+  const trader = useMemo(() => {
+    if (!bountyQuery.data) return;
+    return getTrader(bountyQuery.data.trader);
+  }, [bountyQuery.data, getTrader]);
+
+  const price = useMemo(() => {
+    if (!bountyQuery.data) return 0;
+    return fromBN(bountyQuery.data.price, trader?.decimals);
+  }, [bountyQuery.data, trader]);
 
   const isOwner = useMemo(() => {
     if (!publicKey || !bountyQuery.data) return false;
@@ -44,6 +72,24 @@ export function useBountyAccount({ pda }: { pda: PublicKey }) {
     },
   });
 
+  const emptyVault = useMemo(() => {
+    return (
+      !vaultQuery.data ||
+      !bountyQuery.data ||
+      !gem ||
+      fromBigInt(vaultQuery.data.amount, gem.decimals) <
+        fromBN(bountyQuery.data.reward, gem.decimals)
+    );
+  }, [vaultQuery.data, bountyQuery.data, gem]);
+
+  const canUpdate = useMemo(() => {
+    if (!bountyQuery.data || !vaultQuery.data || !isOwner) return false;
+
+    return bountyQuery.data.currentlyIssued.gte(
+      new BN((vaultQuery.data.amount * RENEW_THRESHOLD).toString())
+    );
+  }, [bountyQuery.data, vaultQuery.data, isOwner]);
+
   const fund = useMutation({
     mutationKey: ['bounty', 'fund', { cluster, pda }],
     mutationFn: async (amount: BN) => {
@@ -60,7 +106,7 @@ export function useBountyAccount({ pda }: { pda: PublicKey }) {
     },
     onSuccess: (tx) => {
       transactionToast(tx);
-      return games.refetch();
+      return vaultQuery.refetch();
     },
     onError: (e, a, b) => {
       console.log(e, a, b);
@@ -81,7 +127,7 @@ export function useBountyAccount({ pda }: { pda: PublicKey }) {
     },
     onSuccess: (tx) => {
       transactionToast(tx);
-      return games.refetch();
+      return bountyQuery.refetch();
     },
     onError: (e, a, b) => {
       console.log(e, a, b);
@@ -93,6 +139,13 @@ export function useBountyAccount({ pda }: { pda: PublicKey }) {
     bountyQuery,
     vaultQuery,
     isOwner,
+
+    gem,
+    trader,
+    price,
+    emptyVault,
+    canUpdate,
+
     fund,
     update,
   };

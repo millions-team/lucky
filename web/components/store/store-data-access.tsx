@@ -231,6 +231,7 @@ export function useStoreProgramAccount({
     storeQuery,
     vaultQuery,
     balanceQuery,
+    tokenQuery,
 
     vaultPDA,
     token: tokenQuery.token,

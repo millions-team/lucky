@@ -18,7 +18,7 @@ export function toBigInt(value: number, decimals = 0) {
   if (isNaN(decimals) || decimals === 0) return BigInt(value);
   if (decimals < 0) throw new Error('Decimals must be a positive number');
 
-  if (value < 1) return BigInt(value * 10 ** decimals);
+  if (value < 1) return BigInt(Math.round(value * 10 ** decimals));
   return BigInt(value) * BigInt(10 ** decimals);
 }
 

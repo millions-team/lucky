@@ -32,11 +32,11 @@ export function GameMode({ pda }: { pda: PublicKey }) {
       />
     ) : (
       activeForm === 'bounty' &&
-      modeQuery.data && (
+      data && (
         <CreateBounty
           task={pda}
-          gameMode={modeQuery.data}
-          onCompleted={() => setActiveForm('')}
+          gameMode={data}
+          onCompleted={() => modeQuery.refetch().then(() => setActiveForm(''))}
           onCancel={() => setActiveForm('')}
         />
       )

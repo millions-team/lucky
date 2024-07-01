@@ -2,31 +2,27 @@ import { useMemo, useState } from 'react';
 import { PublicKey } from '@solana/web3.js';
 import {
   IconAlertTriangle,
+  IconBuildingBank,
   IconCoins,
-  IconDeviceGamepad2,
   IconDotsVertical,
-  IconTransform,
+  IconMoneybag,
   IconTrophy,
 } from '@tabler/icons-react';
 
+import { useBountyAccount, usePlayerGame } from '@/hooks';
 import { fromBN, formatAmount, fromBigInt } from '@luckyland/anchor';
-import { useBountyAccount, useTreasureGems } from '@/hooks';
 
 import { UpdateBounty } from './Update';
 import { FundBounty } from './Fund';
+import { PlayForBounty } from './Play';
 
 export function Badge({ pda }: { pda: PublicKey }) {
-  const { mints } = useTreasureGems({});
-  const { bountyQuery, vaultQuery, isOwner } = useBountyAccount({ pda });
+  const { bountyQuery, vaultQuery, gem, trader, emptyVault, canUpdate } =
+    useBountyAccount({
+      pda,
+    });
+  const { ammo } = usePlayerGame({ bounty: pda });
   const [updating, setUpdating] = useState(false);
-
-  const { gem, trader } = useMemo(() => {
-    if (!bountyQuery?.data) return {};
-    const gem = mints[bountyQuery.data.gem.toString()];
-    const trader = mints[bountyQuery.data.trader.toString()];
-
-    return { gem, trader };
-  }, [mints, bountyQuery?.data]);
 
   const reward = useMemo(
     () =>
@@ -42,7 +38,10 @@ export function Badge({ pda }: { pda: PublicKey }) {
         : 0,
     [bountyQuery?.data?.price, trader]
   );
-  const vaultMissed = !vaultQuery.isPending && !vaultQuery.data?.amount;
+  const shots = useMemo(() => {
+    if (!ammo.token) return 0;
+    return Math.floor(ammo.token.amount / price);
+  }, [ammo, price]);
 
   const vaultAmount = useMemo(() => {
     if (!vaultQuery.data?.amount || !gem) return '0';
@@ -51,25 +50,23 @@ export function Badge({ pda }: { pda: PublicKey }) {
     )} $${gem.symbol}`;
   }, [vaultQuery.data, gem]);
 
-  return updating && isOwner ? (
+  return updating && canUpdate ? (
     <UpdateBounty pda={pda} onChange={(active) => setUpdating(active)} />
   ) : (
     <div
-      className={`badge badge-outline h-auto uppercase py-4 text-xl group ${
+      className={`badge badge-outline h-auto uppercase py-4 text-xl relative group ${
         vaultQuery.isPending
           ? 'badge-secondary'
-          : vaultMissed
+          : emptyVault
           ? 'badge-error'
-          : 'badge-primary'
+          : 'badge-primary animate-glow hover:shadow-glow hover:animate-none transition-transform hover:scale-110'
       }`}
     >
       {vaultQuery.isLoading ? (
         <span className="loading loading-ring loading-xs"></span>
       ) : (
         <>
-          <span className="tooltip tooltip-primary" data-tip={vaultAmount}>
-            <IconTrophy />
-          </span>
+          <IconTrophy />
           <div className="space-x-2 mx-2 flex max-md:flex-col items-center justify-center">
             <span
               className="cursor-default tooltip tooltip-accent"
@@ -78,7 +75,7 @@ export function Badge({ pda }: { pda: PublicKey }) {
               {reward}
             </span>
 
-            {vaultMissed ? (
+            {emptyVault ? (
               <IconAlertTriangle />
             ) : (
               <div className="tooltip tooltip-info" data-tip="Play">
@@ -101,22 +98,35 @@ export function Badge({ pda }: { pda: PublicKey }) {
             </span>
           </div>
           <IconCoins />
-          {isOwner &&
-            (vaultMissed ? (
-              <FundBounty pda={pda} />
-            ) : (
-              <button
-                className="btn btn-xs btn-circle btn-ghost"
-                onClick={() => setUpdating(true)}
-              >
-                <div
-                  className="tooltip tooltip-primary"
-                  data-tip="Update Bounty"
-                >
-                  <IconDotsVertical />
-                </div>
-              </button>
-            ))}
+          {emptyVault && <FundBounty pda={pda} />}
+          {canUpdate && (
+            <button
+              className="btn btn-xs btn-circle btn-ghost"
+              onClick={() => setUpdating(true)}
+            >
+              <div className="tooltip tooltip-primary" data-tip="Update Bounty">
+                <IconDotsVertical />
+              </div>
+            </button>
+          )}
+
+          {!emptyVault && (
+            <>
+              <div className="absolute hidden group-hover:flex gap-2 top-[-30px]">
+                <IconBuildingBank />
+                <span className="tooltip tooltip-primary" data-tip="Vault">
+                  {vaultAmount}
+                </span>
+              </div>
+
+              <div className="absolute hidden group-hover:flex gap-2 bottom-[-30px]">
+                <IconMoneybag />
+                <span className="tooltip tooltip-primary" data-tip="Vault">
+                  {shots}
+                </span>
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

@@ -12,10 +12,11 @@ import { CreateTokenAccount } from '@/components/shared';
 
 export function Sell({ storePda }: BaseProps) {
   const { balance } = usePlayer();
-  const { sell, token, storeQuery, vaultQuery } = useStoreProgramAccount({
-    storePda,
-    callback: () => balance.refetch(),
-  });
+  const { sell, token, storeQuery, vaultQuery, tokenQuery } =
+    useStoreProgramAccount({
+      storePda,
+      callback: () => balance.refetch(),
+    });
   const [amount, setAmount] = useState(0);
 
   const dataFeed = useDataFeed();
@@ -87,7 +88,7 @@ export function Sell({ storePda }: BaseProps) {
     storeQuery.data?.mint && (
       <CreateTokenAccount
         mint={storeQuery.data.mint}
-        onChange={(success) => success && balance.refetch()}
+        onChange={(success) => success && tokenQuery.refresh()}
       />
     )
   );
