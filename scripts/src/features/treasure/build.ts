@@ -1,8 +1,11 @@
-import { Program } from '@coral-xyz/anchor';
-import { Games, getTreasurePDA } from '@luckyland/anchor';
-import { type Cluster, confirmAndLogTransaction } from '../../utils';
+import { getTreasurePDA } from '@luckyland/anchor';
+import {
+  type Portal,
+  type Cluster,
+  confirmAndLogTransaction,
+} from '../../utils';
 
-export async function CreateTreasure(portal: Program<Games>, cluster: Cluster) {
+export async function CreateTreasure({ portal }: Portal, cluster: Cluster) {
   console.log('------------------ Treasure ------------------');
   const treasurePDA = getTreasurePDA(cluster.asCluster());
   console.log('Treasure: ' + treasurePDA);

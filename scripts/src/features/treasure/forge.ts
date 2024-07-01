@@ -1,10 +1,14 @@
 import { Connection, PublicKey } from '@solana/web3.js';
 import { getAccount } from '@solana/spl-token';
-import { Program } from '@coral-xyz/anchor';
 
-import { Games, getKeeperPDA, getStrongholdPDA } from '@luckyland/anchor';
 import { getToken } from '@utils/token';
-import { type Cluster, formatter, confirmAndLogTransaction } from '../../utils';
+import { getKeeperPDA, getStrongholdPDA } from '@luckyland/anchor';
+import {
+  type Portal,
+  type Cluster,
+  formatter,
+  confirmAndLogTransaction,
+} from '../../utils';
 
 let market: Connection;
 let formatAmount: (amount: bigint, raw?: boolean) => string;
@@ -19,7 +23,7 @@ async function getStronghold(pda: PublicKey) {
 
 export async function InitStronghold(
   gem: PublicKey,
-  portal: Program<Games>,
+  { portal }: Portal,
   cluster: Cluster
 ) {
   console.log(`------------------ Stronghold ------------------`);

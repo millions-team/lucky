@@ -1,10 +1,16 @@
 import { Connection, PublicKey } from '@solana/web3.js';
 import { getAccount } from '@solana/spl-token';
-import { BN, Program } from '@coral-xyz/anchor';
+import { BN } from '@coral-xyz/anchor';
 
-import { Games, getStrongholdPDA } from '@luckyland/anchor';
+import {
+  type Portal,
+  type Cluster,
+  formatter,
+  confirmAndLogTransaction,
+} from '../../utils';
+
 import { Token } from '@utils/token';
-import { type Cluster, formatter, confirmAndLogTransaction } from '../../utils';
+import { getStrongholdPDA } from '@luckyland/anchor';
 
 let market: Connection;
 let formatAmount: (amount: bigint, raw?: boolean) => string;
@@ -13,7 +19,7 @@ export async function StockpileGems(
   { symbol, mint: gem, decimals }: Token,
   reserve: PublicKey,
   amount: bigint,
-  portal: Program<Games>,
+  { portal }: Portal,
   cluster: Cluster
 ) {
   console.log(`------------------ Stockpile ------------------`);

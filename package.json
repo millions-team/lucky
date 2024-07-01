@@ -8,7 +8,7 @@
     "anchor-localnet": "nx run anchor:anchor localnet",
     "anchor-test": "nx run anchor:anchor test",
     "scripts:loaders": "nx run scripts:load-bpf",
-    "scripts:token-create": "nx token-create scripts",
+    "scripts:deploy": "nx deploy scripts",
     "feature": "nx generate @solana-developers/preset-react:feature",
     "build": "nx build web",
     "dev": "nx serve web",
