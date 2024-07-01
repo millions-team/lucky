@@ -16,6 +16,9 @@ const links: { label: string; path: string; program?: boolean }[] = [
   { label: 'Lucky', path: '/lucky', program: true },
   { label: 'TinyAdventure', path: '/tiny-adventure', program: true },
   { label: 'Dealer', path: '/dealer', program: true },
+  // { label: 'Roadmap', path: '/roadmap', program: true },
+  // { label: 'Tokenomics', path: '/tokenomics', program: true },
+  // { label: 'Leaderboard', path: '/leaderboard', program: true },
 ];
 
 if (NEXT_PUBLIC_VERCEL_ENV !== 'production')
