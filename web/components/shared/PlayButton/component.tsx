@@ -64,7 +64,7 @@ export function PlayButton({
 
   return (
     <button
-      className={`${styles.border} bg-[url('/img/push-me/boton.png')] bg-center bg-no-repeat bg-cover`}
+      className={`${styles.border} bg-[url('/img/push-me/boton.svg')] bg-center bg-no-repeat bg-cover`}
       onMouseDown={start}
       onMouseUp={play}
       onTouchStart={start}

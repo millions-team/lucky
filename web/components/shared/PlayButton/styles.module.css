@@ -35,7 +35,7 @@
   animation: blink-shadow 1s linear infinite;
   transition: transform 0.3s ease;
   user-select: none;
-
+  padding: -2%;
   width: 11rem; /* w-44 */
   height: 11rem; /* h-44 */
 
@@ -115,7 +115,8 @@
       box-shadow: 0 0 10px #ffc600, 0 0 20px #ffc600, 0 0 30px #ffc600,
         0 0 40px #ffc600;
       animation: none;
-      /* transform: scale(1.1); */
+      transform: scale(1.1);
+      padding: -7%;
 
       .button {
         text-shadow: 0 0 10px #ffc600, 0 0 20px #ffc600, 0 0 30px #ffc600,

@@ -37,7 +37,7 @@ export function UiLayout({
 
   return (
     <div
-      className={`bg-[url('/img/fondo.jpeg')] bg-center bg-no-repeat  drawer`}
+      className={`bg-[url('/img/fondo.svg')] bg-center bg-no-repeat  drawer`}
     >
       <input
         id="my-drawer-3"
