@@ -5,3 +5,4 @@ export * from './game-mode';
 export * from './treasure';
 export * from './escrow';
 export * from './bounty';
+export * from './player';

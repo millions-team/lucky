@@ -78,16 +78,10 @@ export function Badge({ pda }: { pda: PublicKey }) {
             {emptyVault ? (
               <IconAlertTriangle />
             ) : (
-              <div className="tooltip tooltip-info" data-tip="Play">
-                <span className="swap swap-rotate group-hover:swap-active">
-                  <div className="btn btn-sm btn-circle swap-off">
-                    <IconTransform size={20} />
-                  </div>
-                  <div className="btn btn-sm btn-circle btn-outline btn-info swap-on">
-                    <IconDeviceGamepad2 size={20} />
-                  </div>
-                </span>
-              </div>
+              <PlayForBounty
+                bounty={pda}
+                onSucceed={() => vaultQuery.refetch()}
+              />
             )}
 
             <span
