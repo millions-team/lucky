@@ -1738,6 +1738,111 @@ export type Games = {
       ]
     },
     {
+      "name": "storeFirstTrade",
+      "discriminator": [
+        152,
+        247,
+        213,
+        115,
+        26,
+        242,
+        26,
+        128
+      ],
+      "accounts": [
+        {
+          "name": "tollkeeper",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  79,
+                  76,
+                  76,
+                  75,
+                  69,
+                  69,
+                  80,
+                  69,
+                  82
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "collector",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  79,
+                  76,
+                  76,
+                  75,
+                  69,
+                  69,
+                  80,
+                  69,
+                  82
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ]
+          }
+        },
+        {
+          "name": "receiver",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "feed"
+        },
+        {
+          "name": "chainlinkProgram"
+        },
+        {
+          "name": "trader"
+        },
+        {
+          "name": "store",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "storeSale",
       "discriminator": [
         96,
@@ -2165,23 +2270,18 @@ export type Games = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidOwner",
-      "msg": "Bounty is not owned by the supplier"
+      "name": "insufficientBalance",
+      "msg": "Not enough balance to withdraw"
     },
     {
       "code": 6001,
-      "name": "thresholdNotReached",
-      "msg": "Vault amount is above threshold"
+      "name": "invalidFeed",
+      "msg": "Invalid feed for the store"
     },
     {
       "code": 6002,
-      "name": "invalidGem",
-      "msg": "Invalid gem"
-    },
-    {
-      "code": 6003,
-      "name": "uncollectibleReward",
-      "msg": "Total vault reward is uncollectible"
+      "name": "invalidTrader",
+      "msg": "Invalid trader for the store"
     }
   ],
   "types": [

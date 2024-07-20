@@ -1732,6 +1732,111 @@
       ]
     },
     {
+      "name": "store_first_trade",
+      "discriminator": [
+        152,
+        247,
+        213,
+        115,
+        26,
+        242,
+        26,
+        128
+      ],
+      "accounts": [
+        {
+          "name": "tollkeeper",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  79,
+                  76,
+                  76,
+                  75,
+                  69,
+                  69,
+                  80,
+                  69,
+                  82
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "collector",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  84,
+                  79,
+                  76,
+                  76,
+                  75,
+                  69,
+                  69,
+                  80,
+                  69,
+                  82
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "trader"
+              }
+            ]
+          }
+        },
+        {
+          "name": "receiver",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "feed"
+        },
+        {
+          "name": "chainlink_program"
+        },
+        {
+          "name": "trader"
+        },
+        {
+          "name": "store",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "store_sale",
       "discriminator": [
         96,
@@ -2159,23 +2264,18 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidOwner",
-      "msg": "Bounty is not owned by the supplier"
+      "name": "InsufficientBalance",
+      "msg": "Not enough balance to withdraw"
     },
     {
       "code": 6001,
-      "name": "ThresholdNotReached",
-      "msg": "Vault amount is above threshold"
+      "name": "InvalidFeed",
+      "msg": "Invalid feed for the store"
     },
     {
       "code": 6002,
-      "name": "InvalidGem",
-      "msg": "Invalid gem"
-    },
-    {
-      "code": 6003,
-      "name": "UncollectibleReward",
-      "msg": "Total vault reward is uncollectible"
+      "name": "InvalidTrader",
+      "msg": "Invalid trader for the store"
     }
   ],
   "types": [

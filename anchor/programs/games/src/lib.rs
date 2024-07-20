@@ -47,6 +47,10 @@ pub mod games {
         store::sale::trader(&ctx, amount)
     }
 
+    pub fn store_first_trade(ctx: Context<StoreInitSale>, amount: u64) -> Result<()> {
+        store::sale::first_trade(&ctx, amount)
+    }
+
     pub fn retrieve_gems(ctx: Context<UnlockStronghold>, amount: u64) -> Result<()> {
         treasure::unlock::acquire_loot(&ctx, amount)
     }

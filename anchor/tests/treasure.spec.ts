@@ -6,6 +6,7 @@ import {
   createAssociatedTokenAccount,
   createMint,
   getAccount,
+  getAssociatedTokenAddress,
   getOrCreateAssociatedTokenAccount,
   mintToChecked,
 } from '@solana/spl-token';
@@ -401,6 +402,12 @@ describe('Treasure', () => {
   });
 
   describe('Store', () => {
+    let storePda: PublicKey;
+
+    beforeAll(async () => {
+      storePda = getStorePDA(trader, feed);
+    });
+
     describe('Define', () => {
       describe('By Authority', () => {
         it('Should define a new store for the trader', async () => {
@@ -412,8 +419,7 @@ describe('Treasure', () => {
             .signers([authority])
             .rpc();
 
-          const pda = getStorePDA(trader, feed);
-          const store = await program.account.store.fetch(pda);
+          const store = await program.account.store.fetch(storePda);
 
           expect(store.feed).toEqual(feed);
           expect(store.trader).toEqual(trader);
@@ -422,8 +428,7 @@ describe('Treasure', () => {
 
         it('Should update the store price', async () => {
           const price = new BN(PRICE.toString()); // 1 USD/TRADER => This will be the last price
-          const pda = getStorePDA(trader, feed);
-          const existingStore = await program.account.store.fetch(pda);
+          const existingStore = await program.account.store.fetch(storePda);
           expect(existingStore.price).not.toEqual(price);
 
           await program.methods
@@ -432,7 +437,7 @@ describe('Treasure', () => {
             .signers([authority])
             .rpc();
 
-          const store = await program.account.store.fetch(pda);
+          const store = await program.account.store.fetch(storePda);
 
           expect(store.feed).toEqual(feed);
           expect(store.trader).toEqual(trader);
@@ -533,12 +538,28 @@ describe('Treasure', () => {
         );
         await connection.confirmTransaction(tx);
 
-        reserve = await createAssociatedTokenAccount(
-          connection,
-          receiver,
-          trader,
-          receiver.publicKey
-        );
+        reserve = await getAssociatedTokenAddress(receiver.publicKey, trader);
+      });
+
+      it('Should initialize the payer account on first purchase', async () => {
+        await expect(getAccount(connection, reserve)).rejects.toThrow();
+        const amount = toBigInt(200, DECIMALS / 2);
+
+        await program.methods
+          .storeFirstTrade(new BN(amount.toString()))
+          .accounts({
+            payer: receiver.publicKey,
+            receiver: reserve,
+            store: storePda,
+            trader,
+            feed,
+            chainlinkProgram,
+          })
+          .signers([receiver])
+          .rpc();
+
+        const payerAccountAfter = await getAccount(connection, reserve);
+        expect(payerAccountAfter.amount).toEqual(amount);
       });
 
       it('Should purchase some trader tokens from the store', async () => {
@@ -625,12 +646,11 @@ describe('Treasure', () => {
 
         it('Should fail to withdraw from store | Only Store Authority allowed', async () => {
           const { trader } = accounts;
-          const store = getStorePDA(trader, feed);
 
           await expect(
             program.methods
               .storeWithdraw(new BN(0))
-              .accounts({ store, authority: payer.publicKey })
+              .accounts({ store: storePda, authority: payer.publicKey })
               .signers([payer])
               .rpc()
           ).rejects.toThrow(/InvalidAuthority/);
@@ -639,9 +659,9 @@ describe('Treasure', () => {
 
       describe('By Authority', () => {
         it('Should withdraw amount from store balance', async () => {
-          const { trader } = accounts;
-          const store = getStorePDA(trader, feed);
-          const storeBalanceBeforeWithdraw = await connection.getBalance(store);
+          const storeBalanceBeforeWithdraw = await connection.getBalance(
+            storePda
+          );
           const receiverBalanceBeforeWithdraw = await connection.getBalance(
             authority.publicKey
           );
@@ -653,11 +673,11 @@ describe('Treasure', () => {
 
           await program.methods
             .storeWithdraw(new BN(amount))
-            .accounts({ store, authority: authority.publicKey })
+            .accounts({ store: storePda, authority: authority.publicKey })
             .signers([authority])
             .rpc();
 
-          const storeBalance = await connection.getBalance(store);
+          const storeBalance = await connection.getBalance(storePda);
           const receiverBalance = await connection.getBalance(
             authority.publicKey
           );
@@ -670,9 +690,9 @@ describe('Treasure', () => {
         });
 
         it('Should withdraw all available balance from store', async () => {
-          const { trader } = accounts;
-          const store = getStorePDA(trader, feed);
-          const storeBalanceBeforeWithdraw = await connection.getBalance(store);
+          const storeBalanceBeforeWithdraw = await connection.getBalance(
+            storePda
+          );
           const receiverBalanceBeforeWithdraw = await connection.getBalance(
             authority.publicKey
           );
@@ -682,11 +702,11 @@ describe('Treasure', () => {
 
           await program.methods
             .storeWithdraw(new BN(0))
-            .accounts({ store, authority: authority.publicKey })
+            .accounts({ store: storePda, authority: authority.publicKey })
             .signers([authority])
             .rpc();
 
-          const storeBalance = await connection.getBalance(store);
+          const storeBalance = await connection.getBalance(storePda);
           const receiverBalance = await connection.getBalance(
             authority.publicKey
           );

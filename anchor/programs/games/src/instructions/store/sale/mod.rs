@@ -1,4 +1,6 @@
+mod utils;
 pub mod client;
+pub mod new;
 
 pub use client::*;
-mod utils;
+pub use new::*;

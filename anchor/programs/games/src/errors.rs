@@ -10,6 +10,12 @@ pub enum TreasureErrorCode {
 pub enum StoreErrorCode {
     #[msg("Not enough balance to withdraw")]
     InsufficientBalance,
+
+    #[msg("Invalid feed for the store")]
+    InvalidFeed,
+
+    #[msg("Invalid trader for the store")]
+    InvalidTrader,
 }
 
 #[error_code]
