@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-games = "HCZ5KdroZ7BQrmkZq1a72t2FVVQuxqVjkR4ZmAvi8CTr"
+games = "Luck4nbs8aCxxJE9uDuiNq28UVc4SKJDCnKgWMWZdmJ"
 
 [registry]
 url = "https://api.apr.dev"
@@ -34,6 +34,11 @@ program = "bpf-programs/chainlink_store.so"
 address = "cjg3oHmg9uuPsP8D6g29NWvhySJkdYdAo9D25PRbKXJ"
 program = "bpf-programs/chainlink_aggregator.so"
 
+[test.validator]
+bind_address = "127.0.0.1"
+ledger = ".anchor/test-ledger"
+rpc_port = 8899
+
 [[test.validator.account]]
 address = "CH31Xns5z3M1cTAbKW34jcxPPciazARpijcHj9rxtemt"
 filename = "bpf-programs/usd_sol_feed_main.json"
@@ -41,8 +46,3 @@ filename = "bpf-programs/usd_sol_feed_main.json"
 [[test.validator.account]]
 address = "99B2bTijsU6f1GCT73HmdR7HCFFjGMBcPZY6jZ96ynrR"
 filename = "bpf-programs/usd_sol_feed_dev.json"
-
-[test.validator]
-bind_address = "127.0.0.1"
-ledger = ".anchor/test-ledger"
-rpc_port = 8899
