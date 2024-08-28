@@ -11,7 +11,7 @@ import {
 } from 'react';
 import { useTranslations } from 'next-intl';
 
-import {
+import type {
   Message,
   Messages,
   MessagesContext,
@@ -98,6 +98,7 @@ export function Provider({
   namespace = 'General',
 }: PropsWithChildren<{ namespace?: string }>) {
   const [messages, setMessages] = useState<Messages>([]);
+  const [loading, setLoading] = useState(false);
 
   const value = {
     namespace,
@@ -107,6 +108,9 @@ export function Provider({
       if (!messages.length) return;
       setMessages([]);
     }, [messages.length]),
+
+    loading,
+    setLoading,
   } as MessagesContext;
 
   return <Context.Provider value={value}>{children}</Context.Provider>;

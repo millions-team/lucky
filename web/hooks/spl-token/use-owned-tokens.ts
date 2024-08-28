@@ -29,6 +29,7 @@ export function useOwnedTokens(address: PublicKey) {
             address,
             decimals,
             amount,
+            publicKey: pubkey,
           } as TokenAccount;
         })
       )

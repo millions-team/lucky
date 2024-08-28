@@ -11,8 +11,11 @@ import { locales } from '@/i18n';
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  minimumScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: 'cover',
+  themeColor: [{ media: '(prefers-color-scheme: dark)', color: '#000' }],
 };
 
 export function generateStaticParams() {
@@ -26,6 +29,25 @@ export async function generateMetadata({ params: { locale } }: Params) {
   return {
     title: t('title'),
     description: t('description'),
+    manifest: '/manifest.json',
+    keywords: [
+      'luck',
+      'airdrop',
+      'solana',
+      'web3',
+      'token',
+      'spl-token',
+      'nft',
+      'sft',
+      'pwa',
+      'meme-coins',
+      'gamble',
+      'casino',
+    ],
+    icons: [
+      { rel: 'apple-touch-icon', url: 'icons/lucky-128.png' },
+      { rel: 'icon', url: 'icons/lucky-128.png' },
+    ],
   };
 }
 

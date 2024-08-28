@@ -86,7 +86,7 @@ export function UiLayout({
         <ClusterChecker>
           <AccountChecker />
         </ClusterChecker>
-        <div className="flex-grow min-h-[calc(100dvh_-_114px)] lg:min-h-[calc(100dvh_-_120px)]">
+        <div className="flex-grow h-[calc(100dvh_-_114px)] lg:h-[calc(100dvh_-_120px)] overflow-auto">
           <Suspense
             fallback={
               <div className="text-center my-32">

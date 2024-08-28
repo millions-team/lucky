@@ -24,7 +24,9 @@
         "secure": "Secure",
 
         "lock": "Lock",
-        "unlock": "Unlock"
+        "unlock": "Unlock",
+
+        "ask": "Ask"
       },
       "alert": {
         "password": {
@@ -34,7 +36,8 @@
       },
       "input": {
         "password": "Password",
-        "confirm": "Confirm password"
+        "confirm": "Confirm password",
+        "question": "Write your question"
       },
       "links": {
         "lobby": "Lobby",
@@ -289,6 +292,10 @@
       "Notification": {
         "new-winner": "🎉 Winner! {player}"
       }
+    },
+    "Assistant": {
+      "hello": "I’m glad you’re here! Let’s explore the world of LuckyLand together. What questions or topics would you like to dive into?",
+      "error": "I'm sorry, something went wrong. Please try again later."
     }
   },
   "General": {
@@ -541,6 +548,377 @@
       "idle": "Redeem",
       "success": "Success",
       "error": "Error"
+    }
+  },
+  "Roadmap": {
+    "title": "Roadmap",
+    "goals": "Goals",
+    "milestones": "Milestones",
+    "state": {
+      "completed": "Completed",
+      "active": "In Progress",
+      "blocked": "Blocked",
+      "upcoming": "Upcoming"
+    },
+    "date": {
+      "completed": "Completed on",
+      "active": "In Progress since",
+      "blocked": "Blocked until"
+    },
+    "steps": [
+      {
+        "title": "Phase 1: Pre-Sale",
+        "slug": "pre-sale",
+        "tags": "solana, web3, luck, fortunate, casino, bet",
+        "description": "Get your LuckyBag and secure it with a password."
+      },
+      {
+        "title": "Phase 2: Launch",
+        "slug": "launch",
+        "tags": "solana, web3, luck, fortunate, casino, bet",
+        "description": "Activate your LuckyPass to enter the realms of Luckyland."
+      },
+      {
+        "title": "Phase 3: Expansion",
+        "slug": "expansion",
+        "tags": "solana, web3, luck, fortunate, casino, bet",
+        "description": "Explore different realms and claim your treasures."
+      },
+      {
+        "title": "Phase 4: Probability Manipulation",
+        "slug": "probability",
+        "tags": "solana, web3, luck, fortunate, casino, bet",
+        "description": "Get your Lucky Shots and claim your treasures."
+      },
+      {
+        "title": "Phase 5: Airdrops",
+        "slug": "airdrops",
+        "tags": "solana, web3, luck, fortunate, casino, bet",
+        "description": "Get your Lucky Shots and claim your treasures."
+      },
+      {
+        "title": "Phase 6: Multiplayer Games",
+        "slug": "multiplayer",
+        "tags": "solana, web3, luck, fortunate, casino, bet",
+        "description": "Get your Lucky Shots and claim your treasures."
+      },
+      {
+        "title": "Phase 7: Realms",
+        "slug": "realms",
+        "tags": "solana, web3, luck, fortunate, casino, bet",
+        "description": "Get your Lucky Shots and claim your treasures."
+      }
+    ],
+    "details": {
+      "pre-sale": {
+        "title": "Phase 1: Pre-Sale",
+        "goals": [
+          "Develop and launch the minimum viable product (MVP).",
+          "Build a committed community of investors and users from the start.",
+          "Raise initial funds for the project deployment."
+        ],
+        "milestones": [
+          {
+            "title": "MVP Launch",
+            "tasks": [
+              "Develop and launch a basic version of the platform on DevNet to showcase the team's capabilities and the project's vision.",
+              "Demonstrate key functionalities to help users understand the project's potential."
+            ]
+          },
+          {
+            "title": "Pre-Sale Start",
+            "tasks": [
+              "Offer 17.5% of the total LUCK supply for early sale.",
+              "Encourage participation in the pre-sale through discounts and exclusive benefits for early investors."
+            ]
+          },
+          {
+            "title": "Community Building",
+            "tasks": [
+              "Start building a community around LuckyLand, using social platforms, forums, and marketing campaigns.",
+              "Encourage investor participation in shaping and improving the project through a DAO (Decentralized Autonomous Organization).",
+              "Organize events and activities to promote community engagement and commitment."
+            ]
+          },
+          {
+            "title": "Pre-Sale Completion",
+            "tasks": [
+              "Complete the pre-sale once 17.5% of the LUCK supply is sold or after a set time period.",
+              "Prepare for the project’s deployment on MainNet and establish liquidity pools on decentralized exchanges."
+            ]
+          }
+        ]
+      },
+      "launch": {
+        "title": "Phase 2: Launch",
+        "goals": [
+          "Initiate full platform operations with community participation.",
+          "Open the first realms and games so users can start earning treasures.",
+          "Activate the main `LUCK` token on DEXs.",
+          "Launch the governance token (LUCKY).",
+          "Distribute initial airdrops and rewards.",
+          "Run promotion and marketing campaigns to attract new users."
+        ],
+        "milestones": [
+          {
+            "title": "MainNet Deployment",
+            "tasks": [
+              "Migrate the platform from DevNet to MainNet.",
+              "Set up liquidity pools on decentralized and centralized exchanges.",
+              "Deploy the governance token and activate the airdrop contract."
+            ]
+          },
+          {
+            "title": "First Realm Launch",
+            "tasks": [
+              "Start with the Coin Realm and the first available games in LuckyLand.",
+              "Distribute the first airdrop of 42.5% of the total LUCK supply through the games.",
+              "Incentivize participation by approximately 2,000 users by giving away 64,000 LUCKYSHOT as an initial promotion."
+            ]
+          },
+          {
+            "title": "Promotions and Discounts",
+            "tasks": [
+              "Offer promotional packages with discounts on LUCKYSHOT for early users participating in the platform.",
+              "Monitor and adjust promotions based on demand and participation."
+            ]
+          },
+          {
+            "title": "Second Realm Opening",
+            "tasks": [
+              "Introduce the Dice Realm, with new rewards and challenges.",
+              "Encourage treasure collection through active community participation."
+            ]
+          },
+          {
+            "title": "Continuous Expansion",
+            "tasks": [
+              "Repeat the cycle of opening and closing realms, starting with the Card Realm and finally the Slot Machines Realm.",
+              "Ensure each realm offers more valuable treasures and more complex challenges than the previous one."
+            ]
+          }
+        ]
+      },
+      "expansion": {
+        "title": "Phase 3: Expansion",
+        "goals": [
+          "Introduce new features and games to keep the community engaged and interested.",
+          "Expand the platform beyond the initial games."
+        ],
+        "milestones": [
+          {
+            "title": "New Game Development",
+            "tasks": [
+              "Develop and launch new games such as roulette, poker, and other challenges.",
+              "Integrate these games into the platform, offering new ways to earn LUCK."
+            ]
+          },
+          {
+            "title": "Special Events",
+            "tasks": [
+              "Organize special events and tournaments to encourage participation and competition among users.",
+              "Offer exclusive prizes and additional rewards for event winners."
+            ]
+          },
+          {
+            "title": "Referral Program",
+            "tasks": [
+              "Launch a referral program to encourage users to invite their friends and family to join LuckyLand.",
+              "Reward users who refer new players with LUCKYSHOT and other prizes."
+            ]
+          },
+          {
+            "title": "Platform Expansion",
+            "tasks": [
+              "Open the platform to the community for participation in creating new realms and games.",
+              "Facilitate participation through the DAO, allowing users to propose and vote on new features."
+            ]
+          },
+          {
+            "title": "DAO Integration",
+            "tasks": [
+              "Activate the governance token, enabling users to influence key project decisions.",
+              "Use this token as a tool to expand the community and increase LuckyLand's visibility."
+            ]
+          }
+        ]
+      },
+      "probability": {
+        "title": "Phase 4: Probability Manipulation",
+        "goals": [
+          "Integrate NFTs within the platform, allowing users to personalize their gaming experience.",
+          "Introduce gameplay mechanics that allow players to increase their chances of winning."
+        ],
+        "milestones": [
+          {
+            "title": "NFT Launch",
+            "tasks": [
+              "Allow users to mint their Lucky Companions, unique NFTs with special abilities.",
+              "Ensure the uniqueness of each NFT through a generation process based on the user's wallet address."
+            ]
+          },
+          {
+            "title": "NFT Integration in Games",
+            "tasks": [
+              "Implement NFT abilities in the games, enabling users to improve their chances of success.",
+              "Expand NFT functionality so they can be used in different types of games."
+            ]
+          },
+          {
+            "title": "NFT Marketplace",
+            "tasks": [
+              "Create a closed marketplace where users can trade their NFTs.",
+              "Ensure that only users committed to the community can access this marketplace."
+            ]
+          },
+          {
+            "title": "Special Events",
+            "tasks": [
+              "Organize special events and tournaments requiring active player participation.",
+              "Offer exclusive prizes and additional rewards for event winners.",
+              "Integrate NFTs into these events, allowing players to use their special abilities to increase their chances of winning."
+            ]
+          }
+        ]
+      },
+      "airdrops": {
+        "title": "Phase 5: Airdrops",
+        "goals": [
+          "Enable other cryptocurrency projects to use the platform for controlled airdrops.",
+          "Incentivize community participation through rewards and special prizes.",
+          "Launch marketing and promotional campaigns to promote LuckyLand's recent integration with other projects."
+        ],
+        "milestones": [
+          {
+            "title": "Platform Opening for Airdrops",
+            "tasks": [
+              "Allow other projects to use LuckyLand's infrastructure for airdrops.",
+              "Establish rules and standards to ensure the quality and value of distributed tokens."
+            ]
+          },
+          {
+            "title": "Project Evaluation and Selection",
+            "tasks": [
+              "Implement an evaluation process to select projects that can perform airdrops on LuckyLand.",
+              "Promote transparency and quality in the distribution of these tokens."
+            ]
+          },
+          {
+            "title": "Ecosystem Expansion",
+            "tasks": [
+              "Use airdrops from other projects to attract new communities to LuckyLand.",
+              "Expand the user base and increase the project's visibility."
+            ]
+          }
+        ]
+      },
+      "multiplayer": {
+        "title": "Phase 6: Multiplayer Games",
+        "goals": [
+          "Expand LuckyLand's game offerings to include multiplayer modes.",
+          "Encourage interaction and competition among players, creating an active and engaged community."
+        ],
+        "milestones": [
+          {
+            "title": "Multiplayer Game Development",
+            "tasks": [
+              "Introduce multiplayer games like poker, ludo, and others where users can compete against each other.",
+              "Ensure these games are fully auditable and fair."
+            ]
+          },
+          {
+            "title": "Betting and Rewards Integration",
+            "tasks": [
+              "Allow users to place bets in multiplayer games using LUCK and LUCKYSHOT.",
+              "Distribute rewards fairly and transparently, based on player performance."
+            ]
+          },
+          {
+            "title": "League and Tournament Creation",
+            "tasks": [
+              "Organize leagues and tournaments that incentivize competition and keep the community engaged.",
+              "Offer special rewards for winners of these events."
+            ]
+          }
+        ]
+      },
+      "realms": {
+        "title": "Phase 7: Realms",
+        "goals": [
+          "Expand LuckyLand by creating new realms and allowing other projects to build on the platform.",
+          "Create a diverse and exciting gaming experience for users.",
+          "Encourage exploration and active participation on the platform."
+        ],
+        "milestones": [
+          {
+            "title": "New Realm Development",
+            "tasks": [
+              "Create and launch new realms within LuckyLand, each with its own unique theme and challenges.",
+              "Ensure each realm offers new opportunities to earn LUCK and engage with the platform."
+            ]
+          },
+          {
+            "title": "External Project Integration",
+            "tasks": [
+              "Allow other projects to use LuckyLand's core to build their own games and realms.",
+              "Facilitate interoperability between LuckyLand and other platforms."
+            ]
+          },
+          {
+            "title": "Continuous Expansion",
+            "tasks": [
+              "Continue expanding LuckyLand with new realms and features, ensuring the platform remains relevant and attractive to users."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Tokenomics": {
+    "messages": {
+      "welcome": {
+        "text": "Greetings lucky traveler! My name is Lucky, and I'm here to help you. You are in the Tokenomics section of Luckyland.",
+        "advice": "Here you can find information about the economy of our world and how it is used to improve yours.",
+        "select": {
+          "title": "What would you like to do?",
+          "options": "View the supply, View the distribution, View the use, FAQ (Frequently Asked Questions), I want to ask"
+        }
+      },
+      "assistant": { "text": "" }
+    }
+  },
+  "Presale": {
+    "title": "Presale",
+    "stage": "Stage {stage}",
+    "Active": {
+      "title": "Active Presale",
+      "description": "The Luckyland presale is active. Take advantage of this opportunity to get LUCK at a special price."
+    },
+    "input": {
+      "amount": {
+        "label": "Amount of {symbol}",
+        "placeholder": "How much {symbol} do you want?"
+      }
+    },
+    "state": {
+      "planned": "Planned",
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "Planned": {
+      "title": "The presale has not started yet",
+      "description": "The {name} Presale will start on {date}."
+    },
+    "messages": {
+      "welcome": {
+        "text": "Wonderful to see you here! My name is Lucky, and I'm here to guide you through the Presale section of Luckyland.",
+        "advice": "The Presale will only be available for a limited time, so make sure to join before it's too late.",
+        "select": {
+          "title": "What would you like to do?",
+          "options": "Go to Presale, Check Tokenomics, Check Roadmap, I want to ask"
+        }
+      },
+      "assistant": { "text": "" }
     }
   }
 }

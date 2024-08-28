@@ -106,7 +106,7 @@ function Provider({ children }: PropsWithChildren) {
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
-function ActivePlayerProvider({ children }: PropsWithChildren) {
+export function ActivePlayerProvider({ children }: PropsWithChildren) {
   const { publicKey } = useWallet();
 
   return (

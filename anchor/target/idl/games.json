@@ -1,5 +1,5 @@
 {
-  "address": "HCZ5KdroZ7BQrmkZq1a72t2FVVQuxqVjkR4ZmAvi8CTr",
+  "address": "Luck4nbs8aCxxJE9uDuiNq28UVc4SKJDCnKgWMWZdmJ",
   "metadata": {
     "name": "games",
     "version": "0.1.0",
@@ -1380,7 +1380,7 @@
         },
         {
           "name": "program",
-          "address": "HCZ5KdroZ7BQrmkZq1a72t2FVVQuxqVjkR4ZmAvi8CTr"
+          "address": "Luck4nbs8aCxxJE9uDuiNq28UVc4SKJDCnKgWMWZdmJ"
         }
       ],
       "args": [
@@ -2337,23 +2337,13 @@
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidOwner",
-      "msg": "Bounty is not owned by the supplier"
+      "name": "InvalidSeed",
+      "msg": "Invalid seed"
     },
     {
       "code": 6001,
-      "name": "ThresholdNotReached",
-      "msg": "Vault amount is above threshold"
-    },
-    {
-      "code": 6002,
-      "name": "InvalidGem",
-      "msg": "Invalid gem"
-    },
-    {
-      "code": 6003,
-      "name": "UncollectibleReward",
-      "msg": "Total vault reward is uncollectible"
+      "name": "InvalidPlayerChoice",
+      "msg": "Invalid choice"
     }
   ],
   "types": [

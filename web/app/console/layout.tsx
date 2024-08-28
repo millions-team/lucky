@@ -25,6 +25,7 @@ const links: { label: string; path: string; program?: boolean }[] = [
   { label: 'Treasury', path: '/treasure', program: true },
   { label: 'Games', path: '/games', program: true },
   { label: 'Store', path: '/store', program: true },
+  { label: 'Sale', path: '/sale', program: true },
 ].map((link) => ({ ...link, path: `/console${link.path}` }));
 
 if (NEXT_PUBLIC_VERCEL_ENV !== 'production')

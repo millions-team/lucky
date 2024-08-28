@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/games.json`.
  */
 export type Games = {
-  "address": "HCZ5KdroZ7BQrmkZq1a72t2FVVQuxqVjkR4ZmAvi8CTr",
+  "address": "Luck4nbs8aCxxJE9uDuiNq28UVc4SKJDCnKgWMWZdmJ",
   "metadata": {
     "name": "games",
     "version": "0.1.0",
@@ -1386,7 +1386,7 @@ export type Games = {
         },
         {
           "name": "program",
-          "address": "HCZ5KdroZ7BQrmkZq1a72t2FVVQuxqVjkR4ZmAvi8CTr"
+          "address": "Luck4nbs8aCxxJE9uDuiNq28UVc4SKJDCnKgWMWZdmJ"
         }
       ],
       "args": [
@@ -2343,23 +2343,13 @@ export type Games = {
   "errors": [
     {
       "code": 6000,
-      "name": "invalidOwner",
-      "msg": "Bounty is not owned by the supplier"
+      "name": "invalidSeed",
+      "msg": "Invalid seed"
     },
     {
       "code": 6001,
-      "name": "thresholdNotReached",
-      "msg": "Vault amount is above threshold"
-    },
-    {
-      "code": 6002,
-      "name": "invalidGem",
-      "msg": "Invalid gem"
-    },
-    {
-      "code": 6003,
-      "name": "uncollectibleReward",
-      "msg": "Total vault reward is uncollectible"
+      "name": "invalidPlayerChoice",
+      "msg": "Invalid choice"
     }
   ],
   "types": [

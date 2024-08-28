@@ -3,6 +3,7 @@ import { unstable_setRequestLocale } from 'next-intl/server';
 import type { Params } from '../locale';
 import { LockController } from './_ui';
 import { MessagesProvider } from '@/providers';
+import { ActivePresale } from '@/ui';
 
 export default async function Landing({ params: { locale } }: Params) {
   unstable_setRequestLocale(locale);
@@ -21,6 +22,7 @@ export default async function Landing({ params: { locale } }: Params) {
         <div className="hero-content text-neutral-content text-center">
           <div className="max-w-md">
             <MessagesProvider namespace="Index">
+              <ActivePresale />
               <LockController />
             </MessagesProvider>
           </div>

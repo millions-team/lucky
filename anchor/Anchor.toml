@@ -6,6 +6,7 @@ skip-lint = false
 
 [programs.localnet]
 games = "Luck4nbs8aCxxJE9uDuiNq28UVc4SKJDCnKgWMWZdmJ"
+presale = "uXyqdxGC3btcfYEUt8j4Z7g65jKdxiGKiYjjB5eLand"
 
 [registry]
 url = "https://api.apr.dev"

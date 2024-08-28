@@ -39,11 +39,16 @@ module.exports = {
           '0%': { transform: 'scale(0)' },
           '100%': { transform: 'scale(1)' },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
       },
       animation: {
         glow: 'glow 2s ease-in-out infinite',
         'scale-up': 'scale 0.5s ease-out forwards',
         'scale-down': 'scale 0.5s ease-out reverse forwards',
+        float: 'float 3s ease-in-out infinite',
       },
     },
   },

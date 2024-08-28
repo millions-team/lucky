@@ -11,7 +11,7 @@ export function Generate({
 }) {
   const t = useTranslations('Components.Bag.Generate');
   const { wallet, activate } = useLuckyWallet();
-  const loading = useMemo(() => !Boolean(wallet), [wallet]);
+  const loading = useMemo(() => !wallet, [wallet]);
   const [confirmed, setConfirmed] = useState(!loading);
 
   useEffect(() => {

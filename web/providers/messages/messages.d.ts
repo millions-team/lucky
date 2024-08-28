@@ -14,6 +14,8 @@ export type Message = {
   expire?: number;
   select?: string;
   options?: Array<string>;
+  type?: 'question' | 'answer';
+  loaded?: boolean;
 };
 
 export type Messages = Array<Message>;

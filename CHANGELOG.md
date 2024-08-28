@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.7](///compare/v0.2.6...v0.2.7) (2024-08-28)
+
+
+### Features
+
+* **anchor:** 👻 Presale f468c8f
+* **anchor:** 👻 Presale 8a5372a
+* **anchor:** 👻 Purchase | Presale d5816b7
+* **scripts:** 👻 Presale | Deploy 52e9393
+* **web:** 👻 Assistant 73c50ab
+* **web:** 👻 Assistant 7a910d3
+* **web:** 👻 Assistant 344a0d8
+* **web:** 👻 Github | Links e45f21e
+* **web:** 👻 Player Context | Presale d51f7bd
+* **web:** 👻 Presale 6b20739
+* **web:** 👻 Presale 4ef5765
+* **web:** 👻 Presale | Alert d5b3780
+* **web:** 👻 PWA 4a4d6b1
+* **web:** 👻 Roadmap 74c2822
+* **web:** 👻 Roadmap 287b3db
+* **web:** 👻 Tokenomics f8713a2
+
+
+### Bug Fixes
+
+* **anchor:** 👻 Purchase | Presale b88f23f
+* **web:** 👻 AI Max Tokens 8c94661
+
 ### [0.2.6](///compare/v0.2.5...v0.2.6) (2024-08-16)
 
 
